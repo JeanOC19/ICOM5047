@@ -1,0 +1,1252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Sprout</class>
+ <widget class="QMainWindow" name="Sprout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1400</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>10000</width>
+    <height>10000</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(237, 255, 227);</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>720</y>
+      <width>1400</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #7EE868;
+border-top-width: 8px;
+border-color: #4F8A70;
+border-bottom-style: outset;
+border-top-style: inset;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1400</width>
+      <height>720</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTabBar::tab {
+	background-color: #7EE868;
+	border-right-style: outset;
+	border-width: 0px 3px 0px 0px;
+	border-color: #FFF6BD;
+	border-top: 4px solid #4F8A70;
+	font: bold 14px;
+	height: 30px;
+	width: 100px;
+	padding: 6px;
+}
+QTabWidget::pane { 
+    border-top: 8px solid #4F8A70;
+}
+QTabBar::tab:selected {    
+	text-decoration: underline;
+}
+
+</string>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::ElideNone</enum>
+    </property>
+    <widget class="QWidget" name="home_tab">
+     <attribute name="title">
+      <string>Home</string>
+     </attribute>
+     <widget class="QLabel" name="label_intermediateStepPath">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>330</y>
+        <width>290</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Intermediate Step Path: </string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_progressBar">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>570</y>
+        <width>55</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Progress</string>
+      </property>
+     </widget>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>590</y>
+        <width>400</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: white;
+border-color: black;
+border-width: 1px 1px 1px 1px;
+border-style: inset;
+</string>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhNone</set>
+      </property>
+      <property name="value">
+       <number>75</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="textVisible">
+       <bool>true</bool>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="start_button">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>525</y>
+        <width>100</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #539844;
+border: 2px solid #444444;
+border-radius: 8px;
+color:white;
+font: bold;</string>
+      </property>
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_imageDPI">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>460</y>
+        <width>100</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Image DPI:</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_units">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>480</y>
+        <width>100</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>cm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>mm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>inches</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QFrame" name="frame_4">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>40</y>
+        <width>400</width>
+        <height>200</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;
+border-width:1px;
+border-style:inset;
+border-radius: 50px;
+border-color:#333333;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>25</y>
+         <width>360</width>
+         <height>150</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-radius:0px;
+border-width:0px;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>Images/Sprout Logo.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="browse_button_2">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>346</y>
+        <width>100</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #539844;
+border: 2px solid #444444;
+border-radius: 8px;
+color:white;
+font: bold;</string>
+      </property>
+      <property name="text">
+       <string>Browse ...</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="browse_button_1">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>291</y>
+        <width>100</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #539844;
+border: 2px solid #444444;
+border-radius: 8px;
+color:white;
+font: bold;</string>
+      </property>
+      <property name="text">
+       <string>Browse ...</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_numWedges">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>425</y>
+        <width>80</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_intermediateStepPath">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>350</y>
+        <width>290</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_imagePath">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>295</y>
+        <width>290</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_numRings">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>480</y>
+        <width>100</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_units">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>460</y>
+        <width>100</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Units:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_numRings">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>460</y>
+        <width>100</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Num. Rings:</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_imageEnhancement">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>530</y>
+        <width>200</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Image Enhancement</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_numWedges">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>425</y>
+        <width>200</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Num. Wedges per Quadrant:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_imagePath">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>275</y>
+        <width>290</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Image Path: </string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_numMeasurements">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>390</y>
+        <width>80</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_imageDPI">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>480</y>
+        <width>100</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_numMeasurements">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>390</y>
+        <width>200</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Num. of Diameter Measurements:</string>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_5">
+      <property name="geometry">
+       <rect>
+        <x>697</x>
+        <y>0</y>
+        <width>6</width>
+        <height>700</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #4F8A70;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>900</x>
+        <y>70</y>
+        <width>300</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Input image and detail of input data</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>825</x>
+        <y>125</y>
+        <width>450</width>
+        <height>450</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #333333;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>900</x>
+        <y>580</y>
+        <width>300</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Num. Regions: 48</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_13">
+      <property name="geometry">
+       <rect>
+        <x>825</x>
+        <y>100</y>
+        <width>200</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Num. Rings: 3</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_14">
+      <property name="geometry">
+       <rect>
+        <x>1075</x>
+        <y>100</y>
+        <width>200</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>Num. Wedges: 16 @ 22.5º</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="dashboard_tab">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="title">
+      <string>Dashboard</string>
+     </attribute>
+     <widget class="QTabWidget" name="tabWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1400</width>
+        <height>670</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTabBar::tab {
+	background-color: #EDFFE3;
+	border-right-style: outset;
+	border-width: 0px;
+	font: 14px;
+	height: 30px;
+	width: 120px;
+	padding: 6px;
+}
+QTabWidget::pane { 
+    border-top: 3px solid #4F8A70;
+}
+QTabBar::tab:selected {    
+	text-decoration: underline;
+}
+
+</string>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="graphs_tab">
+       <attribute name="title">
+        <string>Graphs</string>
+       </attribute>
+       <widget class="QFrame" name="frame_11">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1400</width>
+          <height>630</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: white;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QWidget" name="widget" native="true">
+         <property name="geometry">
+          <rect>
+           <x>125</x>
+           <y>130</y>
+           <width>500</width>
+           <height>350</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 1px solid #dddddd;</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="widget_2" native="true">
+         <property name="geometry">
+          <rect>
+           <x>775</x>
+           <y>130</y>
+           <width>500</width>
+           <height>350</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 1px solid #dddddd;</string>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="region_density_tab">
+       <attribute name="title">
+        <string>Region Density</string>
+       </attribute>
+       <widget class="QFrame" name="frame_12">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1400</width>
+          <height>630</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: white;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QTableView" name="tableView">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1400</width>
+           <height>630</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="additional_data_tab">
+       <attribute name="title">
+        <string>Additional Data</string>
+       </attribute>
+       <widget class="QFrame" name="frame_13">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1400</width>
+          <height>630</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: white;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="label_17">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>60</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Average Outer Diameter:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>80</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>8 cm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_18">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>110</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Average Inner Diameter:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>130</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>6 cm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_19">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>160</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Area of Cross-section Surface:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_9">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>230</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>3 cm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_10">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>180</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>22 cm^2</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_20">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>210</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Centroid:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_21">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>260</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Moment of Inertia:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_11">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>280</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>188.496 cm^4</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_8">
+      <property name="geometry">
+       <rect>
+        <x>116</x>
+        <y>12</y>
+        <width>2</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #4F8A70;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_9">
+      <property name="geometry">
+       <rect>
+        <x>262</x>
+        <y>12</y>
+        <width>2</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #4F8A70;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame_10">
+      <property name="geometry">
+       <rect>
+        <x>395</x>
+        <y>12</y>
+        <width>2</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #4F8A70;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>7</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #EDFFE3;
+border: 0px;
+font: 14px;
+</string>
+      </property>
+      <property name="text">
+       <string>Save</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="help_tab">
+     <attribute name="title">
+      <string>Help</string>
+     </attribute>
+     <widget class="QFrame" name="frame_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1400</width>
+        <height>70</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-bottom: 4px solid #4F8A70;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_15">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>22</y>
+         <width>65</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-bottom: 3px solid #4F8A70;</string>
+       </property>
+       <property name="text">
+        <string>User Guide</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_7">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>70</y>
+        <width>1400</width>
+        <height>600</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QScrollBar" name="verticalScrollBar">
+       <property name="geometry">
+        <rect>
+         <x>1381</x>
+         <y>0</y>
+         <width>20</width>
+         <height>596</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: light;</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>0</y>
+         <width>761</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>759</width>
+          <height>389</height>
+         </rect>
+        </property>
+        <widget class="QLabel" name="label_16">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>711</width>
+           <height>641</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>User Input:
+
+1. Image Path - the file path where the bamboo cross section image can be found in the computer.
+
+2. Intermediate Step Path - the file path where all the images for intermediate steps will be saved. This includes enhanced image, binarized image, region images, binarized region images, and additional necessary images for the completion of the tasks.
+
+3. Number of Diameter Measurements - the number of diameter measurements for each quadrant. This information will be used to measure the internal and external diameter of the bamboo.
+
+4. Num. Wedges per Quadrant - the number of wedges in which to divide each quadrant. This information is used to determine the number of regions.
+
+5. Num. Rings - the number of rings in which to divide the bamboo cross-section. This information is used to determine the number of regions.
+
+6. Image DPI - the number of the image dots per inch of the bamboo cross-section image.
+
+</string>
+         </property>
+        </widget>
+        <widget class="QScrollBar" name="verticalScrollBar_2">
+         <property name="geometry">
+          <rect>
+           <x>740</x>
+           <y>0</y>
+           <width>20</width>
+           <height>391</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: light;</string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1400</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #7EE868;
+border-top-width: 4px;
+border-color: #4F8A70;
+border-bottom-style: outset;
+border-top-style: inset;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1400</width>
+      <height>4</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #4F8A70;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>frame_2</zorder>
+   <zorder>frame</zorder>
+   <zorder>tabWidget</zorder>
+   <zorder>frame_3</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1400</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
