@@ -54,12 +54,14 @@ class Ui(QtWidgets.QMainWindow):
 
     def browse_file(self):
         url = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files(*);;*.jpg; *jpeg;; *.png;; *bmp;; *tiff")
-        print(url[0])
+        # print(url[0])
+        in_data['img_path'] = url[0]
         self.lineEdit_imagePath.setText(url[0])
 
     def browse_folder(self):
         url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
-        print(url)
+        # print(url)
+        in_data['intermediate_path'] = url
         self.lineEdit_intermediateStepPath.setText(url)
 
     def start_fiber_dencity_calc(self):
@@ -137,7 +139,7 @@ class Ui(QtWidgets.QMainWindow):
         if count_pb > 100:
             count_pb = 0
             self.timer.stop()
-            self.start_func()
+            self.start_fiber_dencity_calc()
         else:
             self.progressBar.setValue(count_pb)
 
