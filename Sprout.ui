@@ -563,7 +563,7 @@ font: bold;</string>
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_11">
+     <widget class="QLabel" name="label_bamboo">
       <property name="geometry">
        <rect>
         <x>825</x>
@@ -577,6 +577,9 @@ font: bold;</string>
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLabel" name="label_12">
@@ -592,7 +595,7 @@ font: bold;</string>
        <string notr="true">border-width: 0px;</string>
       </property>
       <property name="text">
-       <string>Num. Regions: 48</string>
+       <string>Num. Regions: 0</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -611,13 +614,13 @@ font: bold;</string>
        <string notr="true">border-width: 0px;</string>
       </property>
       <property name="text">
-       <string>Num. Rings: 3</string>
+       <string>Num. Rings: 0</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_14">
+     <widget class="QLabel" name="label_numWedgesFeedback">
       <property name="geometry">
        <rect>
         <x>1075</x>
@@ -630,16 +633,54 @@ font: bold;</string>
        <string notr="true">border-width: 0px;</string>
       </property>
       <property name="text">
-       <string>Num. Wedges: 16 @ 22.5º</string>
+       <string>Num. Wedges: 0 @ 0.0º</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
+     <widget class="QLabel" name="label_numRingsFeedback">
+      <property name="geometry">
+       <rect>
+        <x>898</x>
+        <y>100</y>
+        <width>50</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_numRegionsFeedback">
+      <property name="geometry">
+       <rect>
+        <x>1088</x>
+        <y>580</y>
+        <width>50</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 0px;</string>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="dashboard_tab">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <attribute name="title">
       <string>Dashboard</string>

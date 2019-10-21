@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, uic, QtGui
 import sys
 
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
 from PySide2.QtCharts import QtCharts
@@ -13,11 +14,11 @@ running = False
 in_data = {'img_path': "",
            'intermediate_path': "",
            'units': "",
-           'num_wedges': "",
-           'num_rings': "",
-           'num_measurement': "",
-           'img_dpi': "",
-           'enhance': ""}
+           'num_measurement': "0",
+           'num_wedges': "0",
+           'num_rings': "0",
+           'img_dpi': "0",
+           'enhance': "False"}
 # img_path = ""
 # intermediate_path = ""
 # units = ""
@@ -26,6 +27,10 @@ in_data = {'img_path': "",
 # num_measurement = 0
 # img_dpi = 0
 # enhance = False
+
+# messageBox_flag if true then there is a popup message in screen
+wedges_messageBox_flag = False
+rings_messageBox_flag = False
 
 
 class Ui(QtWidgets.QMainWindow):
@@ -37,8 +42,13 @@ class Ui(QtWidgets.QMainWindow):
         self.ui()
 
     def ui(self):
+        self.lineEdit_numMeasurements.setFocus(0)
+
         self.browse_button_1.clicked.connect(self.browse_file)
         self.browse_button_2.clicked.connect(self.browse_folder)
+
+        self.lineEdit_numWedges.editingFinished.connect(self.update_num_wedges)
+        self.lineEdit_numRings.editingFinished.connect(self.update_num_rings)
 
         self.start_button.clicked.connect(self.start_fiber_dencity_calc)
 
@@ -52,22 +62,63 @@ class Ui(QtWidgets.QMainWindow):
 
         self.show()
 
+    def update_num_wedges(self):
+        global in_data, wedges_messageBox_flag, rings_messageBox_flag
+        wedges_messageBox_flag = True
+        temp = (self.lineEdit_numWedges.text(), 4, 100, self.label_numWedges.text())
+        if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
+            if not rings_messageBox_flag:
+                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
+                                         + str(temp[1]) + " to " + str(temp[2]))
+            return
+
+        temp = int(temp[0])*4
+        self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(360/temp))
+        self.label_numRegionsFeedback.setText(str(temp*int(in_data['num_rings'])))
+        in_data['num_wedges'] = str(temp)
+
+    def update_num_rings(self):
+        global in_data, wedges_messageBox_flag, rings_messageBox_flag
+        rings_messageBox_flag = True
+        temp = (self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text())
+        if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
+            if not wedges_messageBox_flag:
+                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
+                                         + str(temp[1]) + " to " + str(temp[2]))
+            return
+
+        self.label_numRingsFeedback.setText(str(temp[0]))
+        self.label_numRegionsFeedback.setText(str(int(temp[0])*int(in_data['num_wedges'])))
+        in_data['num_rings'] = str(temp[0])
+
     def browse_file(self):
         url = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files(*);;*.jpg; *jpeg;; *.png;; *bmp;; *tiff")
-        # print(url[0])
-        in_data['img_path'] = url[0]
         self.lineEdit_imagePath.setText(url[0])
+        cross_section = QPixmap(url[0])
+        self.label_bamboo.setPixmap(cross_section)
+        in_data['img_path'] = url[0]
 
     def browse_folder(self):
         url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
-        # print(url)
-        in_data['intermediate_path'] = url
         self.lineEdit_intermediateStepPath.setText(url)
+        in_data['intermediate_path'] = url
 
     def start_fiber_dencity_calc(self):
         global count_pb, running, in_data
         # if program is currently in progress
         if running:
+            if count_pb == 0:
+                self.dashboard_tab.setEnabled(True)
+
+            self.browse_button_1.setEnabled(True)
+            self.browse_button_2.setEnabled(True)
+            self.comboBox_units.setEnabled(True)
+            self.lineEdit_numMeasurements.setEnabled(True)
+            self.lineEdit_numWedges.setEnabled(True)
+            self.lineEdit_numRings.setEnabled(True)
+            self.lineEdit_imageDPI.setEnabled(True)
+            self.checkBox_imageEnhancement.setEnabled(True)
+
             self.start_button.setStyleSheet("background-color: #539844;\nborder: 2px solid #444444;\n"
                                             "border-radius: 8px;\ncolor:white;\nfont: bold;")
             self.start_button.setText("Start")
@@ -87,13 +138,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.warning_message_box("Make sure all inputs are filled in.")
                 return
 
-            temp = (self.lineEdit_numWedges.text(), 4, 100, self.label_numWedges.text())
-            if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
-                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
-                                         + str(temp[1]) + " to " + str(temp[2]))
-                return
-
-            temp = (self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text())
+            temp = (self.lineEdit_numMeasurements.text(), 4, 100, self.label_numMeasurements.text())
             if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
                 self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
                                          + str(temp[1]) + " to " + str(temp[2]))
@@ -105,12 +150,12 @@ class Ui(QtWidgets.QMainWindow):
                                          + str(temp[1]) + " to " + str(temp[2]))
                 return
 
-            in_data['img_path'] = self.lineEdit_imagePath.text()
-            in_data['intermediate_path'] = self.lineEdit_intermediateStepPath.text()
+            # in_data['img_path'] = self.lineEdit_imagePath.text()
+            # in_data['intermediate_path'] = self.lineEdit_intermediateStepPath.text()
             in_data['units'] = self.comboBox_units.currentText()
-            in_data['num_wedges'] = str(int(self.lineEdit_numWedges.text())*4)
-            in_data['num_rings'] = self.lineEdit_numRings.text()
             in_data['num_measurement'] = str(int(self.lineEdit_numMeasurements.text())*4)
+            # in_data['num_wedges'] = str(int(self.lineEdit_numWedges.text())*4)
+            # in_data['num_rings'] = self.lineEdit_numRings.text()
             in_data['img_dpi'] = self.lineEdit_imageDPI.text()
             in_data['enhance'] = str(self.checkBox_imageEnhancement.isChecked())
 
@@ -118,11 +163,20 @@ class Ui(QtWidgets.QMainWindow):
             print("img_path = " + in_data['img_path'])
             print("intermediate_path = " + in_data['intermediate_path'])
             print("units = " + in_data['units'])
+            print("num_measurement = " + in_data['num_measurement'])
             print("num_wedges = " + in_data['num_wedges'])
             print("num_rings = " + in_data['num_rings'])
-            print("num_measurement = " + in_data['num_measurement'])
             print("img_dpi = " + in_data['img_dpi'])
             print("enhance = " + in_data['enhance'])
+
+            self.browse_button_1.setEnabled(False)
+            self.browse_button_2.setEnabled(False)
+            self.comboBox_units.setEnabled(False)
+            self.lineEdit_numMeasurements.setEnabled(False)
+            self.lineEdit_numWedges.setEnabled(False)
+            self.lineEdit_numRings.setEnabled(False)
+            self.lineEdit_imageDPI.setEnabled(False)
+            self.checkBox_imageEnhancement.setEnabled(False)
 
             self.start_button.setStyleSheet("background-color: #da2a2a;\nborder: 2px solid #444444;\n"
                                             "border-radius: 8px;\ncolor:white;\nfont: bold;")
@@ -144,7 +198,12 @@ class Ui(QtWidgets.QMainWindow):
             self.progressBar.setValue(count_pb)
 
     def warning_message_box(self, message):
-        QMessageBox.information(self, "Warning!", message)
+        global wedges_messageBox_flag, rings_messageBox_flag
+        mbox = QMessageBox.information(self, "Warning!", message)
+        if mbox == QMessageBox.Ok:
+                self.lineEdit_numMeasurements.setFocus(0)
+                rings_messageBox_flag = False
+                wedges_messageBox_flag = False
 
 
 app = QtWidgets.QApplication(sys.argv)
