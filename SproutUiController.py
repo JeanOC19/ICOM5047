@@ -2,13 +2,20 @@ from PyQt5 import QtWidgets, uic, QtGui
 import sys
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QInputDialog
 
-from PySide2.QtCharts import QtCharts
+# from PySide2 import QtGui
+# from PySide2 import QtWidgets as sideWid
+# from PySide2.QtCharts import QtCharts
+
 from PyQt5.QtCore import QTimer
 
 count_pb = 0
 running = False
+
+# messageBox_flag if true then there is a popup message in screen
+wedges_messageBox_flag = False
+rings_messageBox_flag = False
 
 # input data
 in_data = {'img_path': "",
@@ -19,18 +26,18 @@ in_data = {'img_path': "",
            'num_rings': "0",
            'img_dpi': "0",
            'enhance': "False"}
-# img_path = ""
-# intermediate_path = ""
-# units = ""
-# num_wedges = 0
-# num_rings = 0
-# num_measurement = 0
-# img_dpi = 0
-# enhance = False
 
-# messageBox_flag if true then there is a popup message in screen
-wedges_messageBox_flag = False
-rings_messageBox_flag = False
+# columns: wedges, rows: rings (r1(w1,w2,...,w7,wAvg),r2(...),r3(...),rAvg(...))
+densities = ((0.7500, 0.7100, 0.7000, 0.6800, 0.6900, 0.7000, 0.7500, 0.7200, 0.7125),
+             (0.5000, 0.5500, 0.4900, 0.4500, 0.5000, 0.5100, 0.4700, 0.5300, 0.5000),
+             (0.4500, 0.4400, 0.4000, 0.3800, 0.3500, 0.3900, 0.4500, 0.4200, 0.4100),
+             (0.5667, 0.5667, 0.5300, 0.5033, 0.5133, 0.5333, 0.5567, 0.5567, 0.5408))
+
+measurement_data = {'avg_outer_diameter': 8,
+                    'avg_inner_diameter': 6,
+                    'area': 22,
+                    'centroid': 3,
+                    'moment_of_inertia': 188.496}
 
 
 class Ui(QtWidgets.QMainWindow):
@@ -42,6 +49,8 @@ class Ui(QtWidgets.QMainWindow):
         self.ui()
 
     def ui(self):
+        self.tabWidget_1.setCurrentIndex(0)
+        self.tabWidget_2.setCurrentIndex(0)
         self.lineEdit_numMeasurements.setFocus(0)
 
         self.browse_button_1.clicked.connect(self.browse_file)
@@ -51,6 +60,7 @@ class Ui(QtWidgets.QMainWindow):
         self.lineEdit_numRings.editingFinished.connect(self.update_num_rings)
 
         self.start_button.clicked.connect(self.start_fiber_dencity_calc)
+        self.save_button.clicked.connect(self.save_files)
 
         # progress bar details
         self.timer = QTimer()
@@ -104,11 +114,59 @@ class Ui(QtWidgets.QMainWindow):
         in_data['intermediate_path'] = url
 
     def start_fiber_dencity_calc(self):
-        global count_pb, running, in_data
+        global count_pb, running, in_data, densities, measurement_data
         # if program is currently in progress
         if running:
+            # count_pb must be set to zero when the fiber density calculation is finished
             if count_pb == 0:
                 self.dashboard_tab.setEnabled(True)
+                self.tabWidget_2.setEnabled(True)
+                self.graphs_tab.setEnabled(True)
+                self.region_density_tab.setEnabled(True)
+
+                # create graphs
+
+
+                # create table
+                i = 0
+                j = 0
+                column_name = []
+                row_name = []
+
+                self.tableWidget.setRowCount(len(densities))
+                self.tableWidget.setColumnCount(len(densities[0]))
+
+                for ring in densities:
+                    for wedge in ring:
+                        self.tableWidget.setItem(i, j, QTableWidgetItem("{:.4f}".format(wedge)))
+                        j += 1
+                    j = 0
+                    i += 1
+
+                for x in range(len(densities[0])):
+                    if x == len(densities[0]) - 1:
+                        column_name.append("Average " + str(x))
+                    else:
+                        column_name.append("Wedge " + str(x + 1))
+                for x in range(len(densities)):
+                    if x == len(densities[0]) - 1:
+                        row_name.append("Average " + str(x))
+                    else:
+                        row_name.append("Ring " + str(x + 1))
+
+                self.tableWidget.setHorizontalHeaderLabels(column_name)
+                self.tableWidget.setVerticalHeaderLabels(row_name)
+                self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+
+                # set measurement data
+                self.lineEdit_avgOuterDiameter.setText(str(measurement_data['avg_outer_diameter']) + " cm")
+                self.lineEdit_avgInnerDiameter.setText(str(measurement_data['avg_inner_diameter']) + " cm")
+                self.lineEdit_area.setText(str(measurement_data['area']) + " cm^2")
+                self.lineEdit_centroid.setText(str(measurement_data['centroid']) + " cm")
+                self.lineEdit_momentOfInertia.setText(str(measurement_data['moment_of_inertia']) + " cm^4")
+
+                self.tabWidget_1.setCurrentIndex(1)
+                self.tabWidget_2.setCurrentIndex(0)
 
             self.browse_button_1.setEnabled(True)
             self.browse_button_2.setEnabled(True)
@@ -132,11 +190,11 @@ class Ui(QtWidgets.QMainWindow):
             running = False
         # if program has not started
         else:
-            if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
-                    self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
-                    self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
-                self.warning_message_box("Make sure all inputs are filled in.")
-                return
+            # if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
+            #         self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
+            #         self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
+            #     self.warning_message_box("Make sure all inputs are filled in.")
+            #     return
 
             temp = (self.lineEdit_numMeasurements.text(), 4, 100, self.label_numMeasurements.text())
             if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
@@ -204,6 +262,13 @@ class Ui(QtWidgets.QMainWindow):
                 self.lineEdit_numMeasurements.setFocus(0)
                 rings_messageBox_flag = False
                 wedges_messageBox_flag = False
+
+    def save_files(self):
+        mbox = QMessageBox.question(self, "Warning!", "Quiere Salvar?", QMessageBox.Save | QMessageBox.Cancel)
+        if mbox == QMessageBox.Cancel:
+                print("cancel")
+        elif mbox == QMessageBox.Save:
+            print("save")
 
 
 app = QtWidgets.QApplication(sys.argv)

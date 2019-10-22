@@ -58,7 +58,7 @@ border-top-style: inset;</string>
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="tabWidget_1">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -92,7 +92,7 @@ QTabBar::tab:selected {
 </string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -701,7 +701,7 @@ font: bold;</string>
 	border-width: 0px;
 	font: 14px;
 	height: 30px;
-	width: 120px;
+	width: 130px;
 	padding: 6px;
 }
 QTabWidget::pane { 
@@ -714,7 +714,7 @@ QTabBar::tab:selected {
 </string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="graphs_tab">
        <attribute name="title">
@@ -738,7 +738,7 @@ QTabBar::tab:selected {
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <widget class="QWidget" name="widget" native="true">
+        <widget class="QWidget" name="widget_rings" native="true">
          <property name="geometry">
           <rect>
            <x>125</x>
@@ -751,7 +751,7 @@ QTabBar::tab:selected {
           <string notr="true">border: 1px solid #dddddd;</string>
          </property>
         </widget>
-        <widget class="QWidget" name="widget_2" native="true">
+        <widget class="QWidget" name="widget_wedges" native="true">
          <property name="geometry">
           <rect>
            <x>775</x>
@@ -767,6 +767,9 @@ QTabBar::tab:selected {
        </widget>
       </widget>
       <widget class="QWidget" name="region_density_tab">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>Region Density</string>
        </attribute>
@@ -780,7 +783,7 @@ QTabBar::tab:selected {
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: white;</string>
+         <string notr="true">background-color: light;</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -788,21 +791,33 @@ QTabBar::tab:selected {
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <widget class="QTableView" name="tableView">
+        <widget class="QTableWidget" name="tableWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
            <width>1400</width>
-           <height>630</height>
+           <height>622</height>
           </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color:white;</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="rowCount">
+          <number>0</number>
+         </property>
+         <property name="columnCount">
+          <number>0</number>
          </property>
         </widget>
        </widget>
       </widget>
-      <widget class="QWidget" name="additional_data_tab">
+      <widget class="QWidget" name="measurement_data_tab">
        <attribute name="title">
-        <string>Additional Data</string>
+        <string>Measurement Data</string>
        </attribute>
        <widget class="QFrame" name="frame_13">
         <property name="geometry">
@@ -835,7 +850,7 @@ QTabBar::tab:selected {
           <string>Average Outer Diameter:</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="lineEdit_avgOuterDiameter">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -852,7 +867,7 @@ QTabBar::tab:selected {
 border: 1px solid #444444;</string>
          </property>
          <property name="text">
-          <string>8 cm</string>
+          <string>0 cm</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -871,7 +886,7 @@ border: 1px solid #444444;</string>
           <string>Average Inner Diameter:</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_2">
+        <widget class="QLineEdit" name="lineEdit_avgInnerDiameter">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -888,7 +903,7 @@ border: 1px solid #444444;</string>
 border: 1px solid #444444;</string>
          </property>
          <property name="text">
-          <string>6 cm</string>
+          <string>0 cm</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -907,7 +922,7 @@ border: 1px solid #444444;</string>
           <string>Area of Cross-section Surface:</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_9">
+        <widget class="QLineEdit" name="lineEdit_centroid">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -924,13 +939,13 @@ border: 1px solid #444444;</string>
 border: 1px solid #444444;</string>
          </property>
          <property name="text">
-          <string>3 cm</string>
+          <string>0 cm</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_10">
+        <widget class="QLineEdit" name="lineEdit_area">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -947,7 +962,7 @@ border: 1px solid #444444;</string>
 border: 1px solid #444444;</string>
          </property>
          <property name="text">
-          <string>22 cm^2</string>
+          <string>0 cm^2</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -979,7 +994,7 @@ border: 1px solid #444444;</string>
           <string>Moment of Inertia:</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_11">
+        <widget class="QLineEdit" name="lineEdit_momentOfInertia">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -996,7 +1011,7 @@ border: 1px solid #444444;</string>
 border: 1px solid #444444;</string>
          </property>
          <property name="text">
-          <string>188.496 cm^4</string>
+          <string>0 cm^4</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -1008,7 +1023,7 @@ border: 1px solid #444444;</string>
      <widget class="QFrame" name="frame_8">
       <property name="geometry">
        <rect>
-        <x>116</x>
+        <x>130</x>
         <y>12</y>
         <width>2</width>
         <height>20</height>
@@ -1027,7 +1042,7 @@ border: 1px solid #444444;</string>
      <widget class="QFrame" name="frame_9">
       <property name="geometry">
        <rect>
-        <x>262</x>
+        <x>280</x>
         <y>12</y>
         <width>2</width>
         <height>20</height>
@@ -1046,7 +1061,7 @@ border: 1px solid #444444;</string>
      <widget class="QFrame" name="frame_10">
       <property name="geometry">
        <rect>
-        <x>395</x>
+        <x>425</x>
         <y>12</y>
         <width>2</width>
         <height>20</height>
@@ -1062,10 +1077,10 @@ border: 1px solid #444444;</string>
        <enum>QFrame::Raised</enum>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="save_button">
       <property name="geometry">
        <rect>
-        <x>400</x>
+        <x>430</x>
         <y>7</y>
         <width>93</width>
         <height>28</height>
@@ -1271,7 +1286,7 @@ border-top-style: inset;</string>
    </widget>
    <zorder>frame_2</zorder>
    <zorder>frame</zorder>
-   <zorder>tabWidget</zorder>
+   <zorder>tabWidget_1</zorder>
    <zorder>frame_3</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
