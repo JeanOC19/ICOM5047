@@ -39,12 +39,17 @@ measurement_data = {'avg_outer_diameter': 8,
                     'centroid': 3,
                     'moment_of_inertia': 188.496}
 
+save_file_file_name = ""
+save_folder_file_path = ""
+
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
         super(Ui, self).__init__()
         uic.loadUi('Sprout.ui', self)
         self.setWindowTitle("Sprout")
+
+        self.save_window_ui = SaveWindow()
 
         self.ui()
 
@@ -264,13 +269,64 @@ class Ui(QtWidgets.QMainWindow):
                 wedges_messageBox_flag = False
 
     def save_files(self):
-        mbox = QMessageBox.question(self, "Warning!", "Quiere Salvar?", QMessageBox.Save | QMessageBox.Cancel)
-        if mbox == QMessageBox.Cancel:
-                print("cancel")
-        elif mbox == QMessageBox.Save:
-            print("save")
+        self.windowModality()
+        self.save_window_ui.show()
+        self.save_window_ui.raise_()
+        # mbox = QMessageBox.question(self, "Warning!", "Quiere Salvar?", QMessageBox.Save | QMessageBox.Cancel)
+        # if mbox == QMessageBox.Cancel:
+        #         print("cancel")
+        # elif mbox == QMessageBox.Save:
+        #     print("save")
 
 
-app = QtWidgets.QApplication(sys.argv)
-window = Ui()
-app.exec_()
+class SaveWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(SaveWindow, self).__init__()
+        uic.loadUi('SproutSave.ui', self)
+        self.setWindowTitle("Save Files")
+
+        self.ui()
+
+    def ui(self):
+        self.browse_button_3.clicked.connect(self.browse_folder)
+        self.save_button.clicked.connect(self.save_graph_data)
+        self.cancel_button.clicked.connect(self.cancel_save_graph_data)
+
+        # self.show()
+
+    def browse_folder(self):
+        url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
+        self.lineEdit_filePath.setText(url)
+
+    def save_graph_data(self):
+        global save_file_file_name, save_folder_file_path
+        save_file_file_name = ""
+        save_folder_file_path = ""
+
+        if(self.lineEdit_fileName.text() is "" or self.lineEdit_filePath.text() is ""
+                or not (self.checkBox_graphs.isChecked() or self.checkBox_data.isChecked())):
+            mbox = QMessageBox.information(self, "Warning!", "Please make sure to provide a file name file path,   \n"
+                                                             " and have at least one checkbox selected.")
+        else:
+            save_folder_file_path = self.lineEdit_filePath.text()
+            save_file_file_name = self.lineEdit_fileName.text()
+            if self.checkBox_graphs.isChecked():
+                print("call: save graphs")
+            if self.checkBox_data.isChecked():
+                print("call: save density data")
+                print("call: save additional data")
+            print(save_folder_file_path + "/" + save_file_file_name)
+            self.close()
+
+    def cancel_save_graph_data(self):
+        self.close()
+
+
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    window = Ui()
+    sys.exit(app.exec_())
+
+
+if __name__=='__main__':
+    main()

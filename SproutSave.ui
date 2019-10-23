@@ -35,7 +35,7 @@
    <string notr="true">background-color: rgb(237, 255, 227);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QCheckBox" name="checkBox_imageEnhancement_2">
+   <widget class="QCheckBox" name="checkBox_graphs">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -77,7 +77,7 @@ font: bold;</string>
      <string>Browse ...</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_imagePath_2">
+   <widget class="QLineEdit" name="lineEdit_fileName">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -96,7 +96,7 @@ font: bold;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_imagePath_2">
+   <widget class="QLabel" name="label_fileName">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -112,7 +112,7 @@ font: bold;</string>
      <string>File Name: </string>
     </property>
    </widget>
-   <widget class="QPushButton" name="browse_button_4">
+   <widget class="QPushButton" name="cancel_button">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -135,7 +135,7 @@ font: bold;</string>
      <string>Cancel</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="start_button_2">
+   <widget class="QPushButton" name="save_button">
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -158,7 +158,7 @@ font: bold;</string>
      <string>Save</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_imageEnhancement_3">
+   <widget class="QCheckBox" name="checkBox_data">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -177,7 +177,7 @@ font: bold;</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_imagePath_3">
+   <widget class="QLineEdit" name="lineEdit_filePath">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -196,7 +196,7 @@ font: bold;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_imagePath_3">
+   <widget class="QLabel" name="label_filePath">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -212,15 +212,15 @@ font: bold;</string>
      <string>File Path: </string>
     </property>
    </widget>
-   <zorder>checkBox_imageEnhancement_2</zorder>
+   <zorder>checkBox_graphs</zorder>
    <zorder>browse_button_3</zorder>
-   <zorder>label_imagePath_2</zorder>
-   <zorder>browse_button_4</zorder>
-   <zorder>start_button_2</zorder>
-   <zorder>checkBox_imageEnhancement_3</zorder>
-   <zorder>lineEdit_imagePath_2</zorder>
-   <zorder>label_imagePath_3</zorder>
-   <zorder>lineEdit_imagePath_3</zorder>
+   <zorder>label_fileName</zorder>
+   <zorder>cancel_button</zorder>
+   <zorder>save_button</zorder>
+   <zorder>checkBox_data</zorder>
+   <zorder>lineEdit_fileName</zorder>
+   <zorder>label_filePath</zorder>
+   <zorder>lineEdit_filePath</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
