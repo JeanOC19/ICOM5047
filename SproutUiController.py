@@ -1,12 +1,14 @@
 from PyQt5 import QtWidgets, uic, QtGui
 import sys
 
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QPen
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QInputDialog
+from PyQt5.Qt import QGradient, Qt
 
 # from PySide2 import QtGui
 # from PySide2 import QtWidgets as sideWid
 # from PySide2.QtCharts import QtCharts
+from PyQt5.QtChart import QChart, QLineSeries, QChartView
 
 from PyQt5.QtCore import QTimer
 
@@ -50,6 +52,7 @@ class Ui(QtWidgets.QMainWindow):
         self.setWindowTitle("Sprout")
 
         self.save_window_ui = SaveWindow()
+        self.chartView = None
 
         self.ui()
 
@@ -74,6 +77,9 @@ class Ui(QtWidgets.QMainWindow):
         self.progressBar.setValue(0)
         self.progressBar.hide()
         self.label_progressBar.hide()
+
+        # Testing:
+        # self.create_graphs()
 
         self.show()
 
@@ -130,45 +136,13 @@ class Ui(QtWidgets.QMainWindow):
                 self.region_density_tab.setEnabled(True)
 
                 # create graphs
-
+                self.create_graphs()
 
                 # create table
-                i = 0
-                j = 0
-                column_name = []
-                row_name = []
-
-                self.tableWidget.setRowCount(len(densities))
-                self.tableWidget.setColumnCount(len(densities[0]))
-
-                for ring in densities:
-                    for wedge in ring:
-                        self.tableWidget.setItem(i, j, QTableWidgetItem("{:.4f}".format(wedge)))
-                        j += 1
-                    j = 0
-                    i += 1
-
-                for x in range(len(densities[0])):
-                    if x == len(densities[0]) - 1:
-                        column_name.append("Average " + str(x))
-                    else:
-                        column_name.append("Wedge " + str(x + 1))
-                for x in range(len(densities)):
-                    if x == len(densities[0]) - 1:
-                        row_name.append("Average " + str(x))
-                    else:
-                        row_name.append("Ring " + str(x + 1))
-
-                self.tableWidget.setHorizontalHeaderLabels(column_name)
-                self.tableWidget.setVerticalHeaderLabels(row_name)
-                self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+                self.create_table()
 
                 # set measurement data
-                self.lineEdit_avgOuterDiameter.setText(str(measurement_data['avg_outer_diameter']) + " cm")
-                self.lineEdit_avgInnerDiameter.setText(str(measurement_data['avg_inner_diameter']) + " cm")
-                self.lineEdit_area.setText(str(measurement_data['area']) + " cm^2")
-                self.lineEdit_centroid.setText(str(measurement_data['centroid']) + " cm")
-                self.lineEdit_momentOfInertia.setText(str(measurement_data['moment_of_inertia']) + " cm^4")
+                self.set_measurement_data()
 
                 self.tabWidget_1.setCurrentIndex(1)
                 self.tabWidget_2.setCurrentIndex(0)
@@ -249,6 +223,109 @@ class Ui(QtWidgets.QMainWindow):
 
             self.timer.start()
             running = True
+
+    def create_graphs(self):
+        global densities
+
+        # Ring Graph
+        chart = QChart()
+
+        for x in range(len(densities)):
+            ring_series = QLineSeries()
+            for y in range(len(densities[x])-1):
+                ring_series.append(y+1, densities[x][y])
+            chart.addSeries(ring_series)
+
+        # series = QLineSeries()
+        # series.append(0, 0)
+        # series.append(1, 7)
+        # series.append(1.5, 4)
+        # series.append(1.7, 3)
+        # series.append(2, 9)
+        # series.append(2.5, 10)
+        # series.append(3, 10)
+        #
+        # chart.addSeries(series)
+        #
+        # series = QLineSeries()
+        # series.append(0, 0)
+        # series.append(.5, 1)
+        # series.append(1, 2)
+        # series.append(1.5, 3)
+        # series.append(2, 4)
+        # series.append(2.5, 5)
+        # series.append(3, 6)
+        #
+        # chart.addSeries(series)
+
+        chart.setTitle('Fiber Density VS Wedges')
+        #chart.legend().hide()
+        chart.createDefaultAxes()
+        chart.axes(Qt.Horizontal)[0].setRange(1, len(densities[0])-1)
+        chart.axes(Qt.Vertical)[0].setRange(0, 1)
+
+        self.chartView = QChartView(chart, self.widget_rings)
+        self.chartView.resize(self.widget_rings.size())
+
+        # Wedges Graph
+        chart = QChart()
+
+        for y in range(len(densities[0])):
+            ring_series = QLineSeries()
+            for x in range(len(densities)-1):
+                ring_series.append(x+1, densities[x][y])
+            chart.addSeries(ring_series)
+
+
+        chart.setTitle('Fiber Density VS Rings')
+        #chart.legend().hide()
+        chart.createDefaultAxes()
+        chart.axes(Qt.Horizontal)[0].setRange(1, len(densities)-1)
+        chart.axes(Qt.Vertical)[0].setRange(0, 1)
+
+        self.chartView = QChartView(chart, self.widget_wedges)
+        self.chartView.resize(self.widget_wedges.size())
+
+    def create_table(self):
+        global densities
+
+        i = 0
+        j = 0
+        column_name = []
+        row_name = []
+
+        self.tableWidget.setRowCount(len(densities))
+        self.tableWidget.setColumnCount(len(densities[0]))
+
+        for ring in densities:
+            for wedge in ring:
+                self.tableWidget.setItem(i, j, QTableWidgetItem("{:.4f}".format(wedge)))
+                j += 1
+            j = 0
+            i += 1
+
+        for x in range(len(densities[0])):
+            if x == len(densities[0]) - 1:
+                column_name.append("Average")
+            else:
+                column_name.append("Wedge " + str(x + 1))
+        for y in range(len(densities)):
+            if y == len(densities) - 1:
+                row_name.append("Average")
+            else:
+                row_name.append("Ring " + str(y + 1))
+
+        self.tableWidget.setHorizontalHeaderLabels(column_name)
+        self.tableWidget.setVerticalHeaderLabels(row_name)
+        self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
+
+    def set_measurement_data(self):
+        global measurement_data
+        self.lineEdit_avgOuterDiameter.setText(str(measurement_data['avg_outer_diameter']) + " cm")
+        self.lineEdit_avgInnerDiameter.setText(str(measurement_data['avg_inner_diameter']) + " cm")
+        self.lineEdit_area.setText(str(measurement_data['area']) + " cm^2")
+        self.lineEdit_centroid.setText(str(measurement_data['centroid']) + " cm")
+        self.lineEdit_momentOfInertia.setText(str(measurement_data['moment_of_inertia']) + " cm^4")
 
     def runProgressBar(self):
         global count_pb
