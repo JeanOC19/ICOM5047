@@ -44,6 +44,8 @@ measurement_data = {'avg_outer_diameter': 8,
 save_file_file_name = ""
 save_folder_file_path = ""
 
+# default values
+default_comboBox_item = 3
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -61,6 +63,7 @@ class Ui(QtWidgets.QMainWindow):
         self.tabWidget_2.setCurrentIndex(0)
         self.lineEdit_numMeasurements.setFocus(0)
 
+        # Main Screen
         self.browse_button_1.clicked.connect(self.browse_file)
         self.browse_button_2.clicked.connect(self.browse_folder)
 
@@ -70,16 +73,20 @@ class Ui(QtWidgets.QMainWindow):
         self.start_button.clicked.connect(self.start_fiber_dencity_calc)
         self.save_button.clicked.connect(self.save_files)
 
+        # Graphs View
+        self.comboBox_rings.currentIndexChanged.connect(self.change_rings_graph)
+        self.comboBox_wedges.currentIndexChanged.connect(self.change_wedges_graph)
+
         # progress bar details
         self.timer = QTimer()
-        self.timer.setInterval(100)
+        self.timer.setInterval(25)
         self.timer.timeout.connect(self.runProgressBar)
         self.progressBar.setValue(0)
         self.progressBar.hide()
         self.label_progressBar.hide()
 
         # Testing:
-        # self.create_graphs()
+        self.create_graphs()
 
         self.show()
 
@@ -225,66 +232,101 @@ class Ui(QtWidgets.QMainWindow):
             running = True
 
     def create_graphs(self):
-        global densities
+        global densities, default_comboBox_item
+
+        # Set Ring ComboBox
+        for x in range(self.comboBox_rings.count()):
+            if x >= default_comboBox_item:
+                self.comboBox_rings.removeItem(default_comboBox_item)
+
+        # Set Wedges ComboBox
+        for x in range(self.comboBox_wedges.count()):
+            if x >= default_comboBox_item:
+                self.comboBox_wedges.removeItem(default_comboBox_item)
 
         # Ring Graph
-        chart = QChart()
+        self.ring_chart = QChart()
 
         for x in range(len(densities)):
             ring_series = QLineSeries()
             for y in range(len(densities[x])-1):
                 ring_series.append(y+1, densities[x][y])
-            chart.addSeries(ring_series)
+            self.ring_chart.addSeries(ring_series)
+            if x < len(densities)-1:
+                self.comboBox_rings.addItem("Ring " + str(x+1))
 
-        # series = QLineSeries()
-        # series.append(0, 0)
-        # series.append(1, 7)
-        # series.append(1.5, 4)
-        # series.append(1.7, 3)
-        # series.append(2, 9)
-        # series.append(2.5, 10)
-        # series.append(3, 10)
-        #
-        # chart.addSeries(series)
-        #
-        # series = QLineSeries()
-        # series.append(0, 0)
-        # series.append(.5, 1)
-        # series.append(1, 2)
-        # series.append(1.5, 3)
-        # series.append(2, 4)
-        # series.append(2.5, 5)
-        # series.append(3, 6)
-        #
-        # chart.addSeries(series)
-
-        chart.setTitle('Fiber Density VS Wedges')
+        self.ring_chart.setTitle('Fiber Density VS Wedges')
         #chart.legend().hide()
-        chart.createDefaultAxes()
-        chart.axes(Qt.Horizontal)[0].setRange(1, len(densities[0])-1)
-        chart.axes(Qt.Vertical)[0].setRange(0, 1)
+        self.ring_chart.createDefaultAxes()
+        self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(densities[0])-1)
+        self.ring_chart.axes(Qt.Vertical)[0].setRange(0, 1)
+        self.ring_chart.axes(Qt.Horizontal)[0].setTitleText("Wedge Number")
+        self.ring_chart.axes(Qt.Vertical)[0].setTitleText("Fiber Density")
 
-        self.chartView = QChartView(chart, self.widget_rings)
+        self.chartView = QChartView(self.ring_chart, self.widget_rings)
         self.chartView.resize(self.widget_rings.size())
 
         # Wedges Graph
-        chart = QChart()
+        self.wedge_chart = QChart()
 
         for y in range(len(densities[0])):
             ring_series = QLineSeries()
             for x in range(len(densities)-1):
                 ring_series.append(x+1, densities[x][y])
-            chart.addSeries(ring_series)
+            self.wedge_chart.addSeries(ring_series)
+            if y < len(densities[0])-1:
+                self.comboBox_wedges.addItem("Wedge " + str(y+1))
 
-
-        chart.setTitle('Fiber Density VS Rings')
+        self.wedge_chart.setTitle('Fiber Density VS Rings')
         #chart.legend().hide()
-        chart.createDefaultAxes()
-        chart.axes(Qt.Horizontal)[0].setRange(1, len(densities)-1)
-        chart.axes(Qt.Vertical)[0].setRange(0, 1)
+        self.wedge_chart.createDefaultAxes()
+        self.wedge_chart.axes(Qt.Horizontal)[0].setRange(1, len(densities)-1)
+        self.wedge_chart.axes(Qt.Vertical)[0].setRange(0, 1)
+        self.wedge_chart.axes(Qt.Horizontal)[0].setTitleText("Ring Number")
+        self.wedge_chart.axes(Qt.Vertical)[0].setTitleText("Fiber Density")
 
-        self.chartView = QChartView(chart, self.widget_wedges)
+        self.chartView = QChartView(self.wedge_chart, self.widget_wedges)
         self.chartView.resize(self.widget_wedges.size())
+
+    def change_rings_graph(self):
+        global default_comboBox_item
+
+        for x in range(len(self.ring_chart.series())):
+            self.ring_chart.series()[x].show()
+
+        if self.comboBox_rings.currentText() == "All Rings":
+            for x in range(len(self.ring_chart.series()) - 1):
+                self.ring_chart.series()[x].show()
+            self.ring_chart.series()[len(self.ring_chart.series()) - 1].hide()
+        elif self.comboBox_rings.currentText() == "Average":
+            for x in range(len(self.ring_chart.series()) - 1):
+                self.ring_chart.series()[x].hide()
+            self.ring_chart.series()[len(self.ring_chart.series()) - 1].show()
+        elif "Ring" in self.comboBox_rings.currentText():
+            for x in range(len(self.ring_chart.series())):
+                self.ring_chart.series()[x].hide()
+            self.ring_chart.series()[self.comboBox_rings.currentIndex()-default_comboBox_item].show()
+
+
+
+    def change_wedges_graph(self):
+        global default_comboBox_item
+
+        for x in range(len(self.wedge_chart.series())):
+            self.wedge_chart.series()[x].show()
+
+        if self.comboBox_wedges.currentText() == "All Wedges":
+            for x in range(len(self.wedge_chart.series()) - 1):
+                self.wedge_chart.series()[x].show()
+            self.wedge_chart.series()[len(self.wedge_chart.series()) - 1].hide()
+        elif self.comboBox_wedges.currentText() == "Average":
+            for x in range(len(self.wedge_chart.series()) - 1):
+                self.wedge_chart.series()[x].hide()
+            self.wedge_chart.series()[len(self.wedge_chart.series()) - 1].show()
+        elif "Wedge" in self.comboBox_wedges.currentText():
+            for x in range(len(self.wedge_chart.series())):
+                self.wedge_chart.series()[x].hide()
+            self.wedge_chart.series()[self.comboBox_wedges.currentIndex()-default_comboBox_item].show()
 
     def create_table(self):
         global densities
