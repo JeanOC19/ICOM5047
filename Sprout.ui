@@ -32,9 +32,14 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(237, 255, 227);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">QFrame{
+	background-color: #EDFFE3;
+}</string>
+   </property>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
@@ -92,7 +97,7 @@ QTabBar::tab:selected {
 </string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -444,9 +449,9 @@ border-width:0px;</string>
          <colorrole role="Button">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>83</red>
-            <green>152</green>
-            <blue>68</blue>
+            <red>160</red>
+            <green>176</green>
+            <blue>160</blue>
            </color>
           </brush>
          </colorrole>
@@ -471,18 +476,18 @@ border-width:0px;</string>
          <colorrole role="Base">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>83</red>
-            <green>152</green>
-            <blue>68</blue>
+            <red>160</red>
+            <green>176</green>
+            <blue>160</blue>
            </color>
           </brush>
          </colorrole>
          <colorrole role="Window">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>83</red>
-            <green>152</green>
-            <blue>68</blue>
+            <red>160</red>
+            <green>176</green>
+            <blue>160</blue>
            </color>
           </brush>
          </colorrole>
@@ -502,11 +507,16 @@ border-width:0px;</string>
        <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #539844;
-border: 2px solid #444444;
-border-radius: 8px;
-color:white;
-font: bold;</string>
+       <string notr="true">QPushButton{
+	background-color: #539844;
+	border: 2px solid #444444;
+	border-radius: 8px;
+	color:white;
+	font: bold;
+}
+QPushButton:disabled{
+	background-color: #A0B0A0;
+}</string>
       </property>
       <property name="text">
        <string>Browse ...</string>
@@ -666,9 +676,9 @@ font: bold;</string>
          <colorrole role="Button">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>83</red>
-            <green>152</green>
-            <blue>68</blue>
+            <red>160</red>
+            <green>176</green>
+            <blue>160</blue>
            </color>
           </brush>
          </colorrole>
@@ -693,18 +703,18 @@ font: bold;</string>
          <colorrole role="Base">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>83</red>
-            <green>152</green>
-            <blue>68</blue>
+            <red>160</red>
+            <green>176</green>
+            <blue>160</blue>
            </color>
           </brush>
          </colorrole>
          <colorrole role="Window">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>83</red>
-            <green>152</green>
-            <blue>68</blue>
+            <red>160</red>
+            <green>176</green>
+            <blue>160</blue>
            </color>
           </brush>
          </colorrole>
@@ -723,12 +733,20 @@ font: bold;</string>
       <property name="cursor">
        <cursorShape>PointingHandCursor</cursorShape>
       </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #539844;
-border: 2px solid #444444;
-border-radius: 8px;
-color:white;
-font: bold;</string>
+       <string notr="true">QPushButton{
+	background-color: #539844;
+	border: 2px solid #444444;
+	border-radius: 8px;
+	color:white;
+	font: bold;
+}
+QPushButton:disabled{
+	background-color: #A0B0A0;
+}</string>
       </property>
       <property name="text">
        <string>Browse ...</string>
@@ -875,7 +893,7 @@ font: bold;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">border-width: 0px;</string>
+       <string notr="true">border-width: 0px; </string>
       </property>
       <property name="text">
        <string>Image Path: </string>
@@ -1112,7 +1130,7 @@ QTabBar::tab:selected {
 </string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="graphs_tab">
        <attribute name="title">
@@ -1237,7 +1255,9 @@ QTabBar::tab:selected {
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: light;</string>
+         <string notr="true">QFrame{
+	background-color: light;
+}</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -1283,7 +1303,9 @@ QTabBar::tab:selected {
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: white;</string>
+         <string notr="true">QFrame{
+	background-color: white;
+}</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -1565,7 +1587,9 @@ font: 14px;
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">border-bottom: 4px solid #4F8A70;</string>
+       <string notr="true">QFrame{
+	border-bottom: 4px solid #4F8A70;
+}</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -1578,12 +1602,13 @@ font: 14px;
         <rect>
          <x>100</x>
          <y>22</y>
-         <width>65</width>
+         <width>90</width>
          <height>30</height>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">border-bottom: 3px solid #4F8A70;</string>
+        <string notr="true">border-bottom: 3px solid #4F8A70;
+font: 10pt;</string>
        </property>
        <property name="text">
         <string>User Guide</string>
@@ -1603,7 +1628,16 @@ font: 14px;
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color:white;</string>
+       <string notr="true">QFrame{
+	background-color:white;
+}
+QTextEdit{
+	border: 0px;
+	padding-left: 90px;
+}
+QScrollBar:vertical{
+	background-color:light;
+}</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -1611,87 +1645,73 @@ font: 14px;
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QScrollBar" name="verticalScrollBar">
+      <widget class="QTextEdit" name="textEdit_2">
        <property name="geometry">
         <rect>
-         <x>1381</x>
+         <x>0</x>
          <y>0</y>
-         <width>20</width>
-         <height>596</height>
+         <width>1400</width>
+         <height>600</height>
+        </rect>
+       </property>
+       <property name="lineWrapMode">
+        <enum>QTextEdit::FixedPixelWidth</enum>
+       </property>
+       <property name="lineWrapColumnOrWidth">
+        <number>640</number>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+       <property name="html">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;Input Parameters:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;1. Image Path - the file path where the bamboo cross section image can be found in the computer.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;2. Intermediate Step Path - the file path where all the images for intermediate steps will be saved. This includes enhanced image, binarized image, region images, binarized region images, and additional necessary images for the completion of the tasks.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;3. Number of Diameter Measurements - the number of diameter measurements for each quadrant. This information will be used to measure the internal and external diameter of the bamboo.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;4. Num. Wedges per Quadrant - the number of wedges in which to divide each quadrant. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;5. Num. Rings - the number of rings in which to divide the bamboo cross-section. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;6. Image DPI - the number of the image dots per inch of the bamboo cross-section image.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;5. Num. Rings - the number of rings in which to divide the bamboo cross-section. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;6. Image DPI - the number of the image dots per inch of the bamboo cross-section image.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_11">
+       <property name="geometry">
+        <rect>
+         <x>800</x>
+         <y>50</y>
+         <width>500</width>
+         <height>500</height>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: light;</string>
+        <string notr="true">border-radius:0px;
+border-width:0px;</string>
        </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+       <property name="text">
+        <string/>
        </property>
-      </widget>
-      <widget class="QScrollArea" name="scrollArea">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>0</y>
-         <width>761</width>
-         <height>391</height>
-        </rect>
+       <property name="pixmap">
+        <pixmap>Images/RingsWedgesRegions.png</pixmap>
        </property>
-       <property name="widgetResizable">
+       <property name="scaledContents">
         <bool>true</bool>
        </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents_2">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>759</width>
-          <height>389</height>
-         </rect>
-        </property>
-        <widget class="QLabel" name="label_16">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>10</y>
-           <width>711</width>
-           <height>641</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>User Input:
-
-1. Image Path - the file path where the bamboo cross section image can be found in the computer.
-
-2. Intermediate Step Path - the file path where all the images for intermediate steps will be saved. This includes enhanced image, binarized image, region images, binarized region images, and additional necessary images for the completion of the tasks.
-
-3. Number of Diameter Measurements - the number of diameter measurements for each quadrant. This information will be used to measure the internal and external diameter of the bamboo.
-
-4. Num. Wedges per Quadrant - the number of wedges in which to divide each quadrant. This information is used to determine the number of regions.
-
-5. Num. Rings - the number of rings in which to divide the bamboo cross-section. This information is used to determine the number of regions.
-
-6. Image DPI - the number of the image dots per inch of the bamboo cross-section image.
-
-</string>
-         </property>
-        </widget>
-        <widget class="QScrollBar" name="verticalScrollBar_2">
-         <property name="geometry">
-          <rect>
-           <x>740</x>
-           <y>0</y>
-           <width>20</width>
-           <height>391</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: light;</string>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </widget>
       </widget>
      </widget>
     </widget>

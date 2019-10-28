@@ -63,14 +63,14 @@ class Ui(QtWidgets.QMainWindow):
         self.tabWidget_2.setCurrentIndex(0)
         self.lineEdit_numMeasurements.setFocus(0)
 
-        # Main Screen
+        # Main Screen and save button
         self.browse_button_1.clicked.connect(self.browse_file)
         self.browse_button_2.clicked.connect(self.browse_folder)
 
         self.lineEdit_numWedges.editingFinished.connect(self.update_num_wedges)
         self.lineEdit_numRings.editingFinished.connect(self.update_num_rings)
 
-        self.start_button.clicked.connect(self.start_fiber_dencity_calc)
+        self.start_button.clicked.connect(self.start_fiber_density_calc)
         self.save_button.clicked.connect(self.save_files)
 
         # Graphs View
@@ -131,7 +131,7 @@ class Ui(QtWidgets.QMainWindow):
         self.lineEdit_intermediateStepPath.setText(url)
         in_data['intermediate_path'] = url
 
-    def start_fiber_dencity_calc(self):
+    def start_fiber_density_calc(self):
         global count_pb, running, in_data, densities, measurement_data
         # if program is currently in progress
         if running:
@@ -256,7 +256,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.comboBox_rings.addItem("Ring " + str(x+1))
 
         self.ring_chart.setTitle('Fiber Density VS Wedges')
-        #chart.legend().hide()
+        self.ring_chart.legend().hide()
         self.ring_chart.createDefaultAxes()
         self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(densities[0])-1)
         self.ring_chart.axes(Qt.Vertical)[0].setRange(0, 1)
@@ -278,7 +278,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.comboBox_wedges.addItem("Wedge " + str(y+1))
 
         self.wedge_chart.setTitle('Fiber Density VS Rings')
-        #chart.legend().hide()
+        self.wedge_chart.legend().hide()
         self.wedge_chart.createDefaultAxes()
         self.wedge_chart.axes(Qt.Horizontal)[0].setRange(1, len(densities)-1)
         self.wedge_chart.axes(Qt.Vertical)[0].setRange(0, 1)
@@ -306,8 +306,6 @@ class Ui(QtWidgets.QMainWindow):
             for x in range(len(self.ring_chart.series())):
                 self.ring_chart.series()[x].hide()
             self.ring_chart.series()[self.comboBox_rings.currentIndex()-default_comboBox_item].show()
-
-
 
     def change_wedges_graph(self):
         global default_comboBox_item
@@ -369,16 +367,6 @@ class Ui(QtWidgets.QMainWindow):
         self.lineEdit_centroid.setText(str(measurement_data['centroid']) + " cm")
         self.lineEdit_momentOfInertia.setText(str(measurement_data['moment_of_inertia']) + " cm^4")
 
-    def runProgressBar(self):
-        global count_pb
-        count_pb += 5
-        if count_pb > 100:
-            count_pb = 0
-            self.timer.stop()
-            self.start_fiber_dencity_calc()
-        else:
-            self.progressBar.setValue(count_pb)
-
     def warning_message_box(self, message):
         global wedges_messageBox_flag, rings_messageBox_flag
         mbox = QMessageBox.information(self, "Warning!", message)
@@ -396,6 +384,19 @@ class Ui(QtWidgets.QMainWindow):
         #         print("cancel")
         # elif mbox == QMessageBox.Save:
         #     print("save")
+
+    def runProgressBar(self):
+        global count_pb
+        count_pb += 5
+        if count_pb > 100:
+            count_pb = 0
+            self.timer.stop()
+            self.start_fiber_density_calc()
+        else:
+            self.update_progress_bar(count_pb)
+
+    def update_progress_bar(self, val):
+        self.progressBar.setValue(val)
 
 
 class SaveWindow(QtWidgets.QMainWindow):
