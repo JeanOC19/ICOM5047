@@ -4,46 +4,53 @@ import time
 import numpy as np
 
 DEBUG = 0
-TESTING = 1
-path = "Pre_Processing"
+TESTING = 0
+outer_units = ""
 
 
-def save_dimensional_measurements(calculated_area: float, calculated_out_diam: float, calculated_in_diam: float,
-                                  calculated_centroid: list, calculated_mom_of_x: float, calculated_mom_of_y: float,
-                                  units: str):
+def set_dimensional_measurements(measurements_list: list):
     """
     Simulate sending the measurement data to the Data Management Module
-    :param calculated_area: area of bamboo cross-section
-    :param calculated_out_diam: outer diameter of the bamboo
-    :param calculated_in_diam: inner diameter of the bamboo
-    :param calculated_centroid: list containing the x and y coordinates of the centroid
-    :param calculated_mom_of_x: moment of inertia with respect to the x axis
-    :param calculated_mom_of_y: moment of inertia with respect to the y axis
-    :param units: units of measurement used
+    :param measurements_list: list containing all the measurements made by the pre-processing module in the following
+    order:  area,
+            outer diameter,
+            inner diameter,
+            x coordinate of centroid,
+            y coordinate of centroid,
+            X moment of inertia
+            y moment of inertia
     """
-    print("Area: " + str(calculated_area) + " " + units + "2")
-    print("Outer Diameter: " + str(calculated_out_diam) + " " + units)
-    print("Inner Diameter: " + str(calculated_in_diam) + " " + units)
-    print("Centroid: " + str(calculated_centroid[0]) + " " + units + ", " + str(calculated_centroid[1]) + " " + units)
-    print("X-axis moment: " + str(calculated_mom_of_x) + " " + units + "4")
-    print("Y-axis moment: " + str(calculated_mom_of_y) + " " + units + "4")
+    print()
+    print("Data Management module received:")
+    print(measurements_list)
+    print()
+    if TESTING:
+        print("Area: " + str(measurements_list[0]) + " " + outer_units + "2")
+        print("Outer Diameter: " + str(measurements_list[1]) + " " + outer_units)
+        print("Inner Diameter: " + str(measurements_list[2]) + " " + outer_units)
+        print("Centroid: " + str(measurements_list[3]) + " " + outer_units + ", "
+              + str(measurements_list[4]) + " " + outer_units)
+        print("X-axis moment: " + str(measurements_list[5]) + " " + outer_units + "4")
+        print("Y-axis moment: " + str(measurements_list[6]) + " " + outer_units + "4")
 
 
-def save_diameter_measurements(outer_diameter_list: list, inner_diameter_list: list):
+def set_diameters(diameter_list: list):
     """
     Simulate sending individual diameter measurements to the Data Management Module
-    :param outer_diameter_list: list of measurements for the outer diameter
-    :param inner_diameter_list: list of measurements for the inner diameter
+    :param diameter_list: list with two columns, one for outer diameter measurements and one for inner diameter measurements.
     """
-    print(outer_diameter_list)
-    print(inner_diameter_list)
+    print()
+    print("Data Management module received:")
+    print(diameter_list)
+    print()
 
 
-def update_progress_bar():
+def update_progress_bar(percent):
     """
     Simulate the process of updating the progress bar of the UI
     """
-    print("Progress bar updated.")
+    print("Progress bar updated to " + str(percent) + "%")
+    print()
 
 
 def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int, units: str) -> object:
@@ -137,7 +144,7 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         eroded = cv.erode(eroded, None, iterations=13)
 
         bounded_filled_image = eroded
-        cv.imwrite(path + '/eroded_image.jpg', bounded_filled_image)
+        cv.imwrite(path + '/filled_image.jpg', bounded_filled_image)
 
         x2, y2, w2, h2 = cv.boundingRect(contours[second_largest_index])
         outer_diameter_measurements = [w, h]
@@ -186,15 +193,20 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         y_moment = M['m20'] * ((units_multiplier / image_dpi) ** 4)
 
         return bounded_image, binarized_bounded_image, meas_area, meas_outer_diameter, meas_inner_diameter, \
-            meas_centroid, x_moment, y_moment, outer_diameter_measurements, inner_diameter_measurements
+               meas_centroid, x_moment, y_moment, outer_diameter_measurements, inner_diameter_measurements
 
     # Validate inputs
     assert type(num_of_measurements) is int, "Dimensional measurements number is not an integer."
     assert type(image_dpi) is int, "Image DPI is not an integer."
     assert type(units) is str, "Units of measurement is not a string."
     assert 400 >= num_of_measurements >= 4, "Number of dimensional measurements is not in allowed range."
-    assert 2600 >= image_dpi >= 0, "Image DPI should be between 0 and 2600."
+    assert 2600 >= image_dpi >= 25, "Image DPI should be between 25 and 2600."
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
+
+    path = "Pre_Processing"
+
+    if TESTING:
+        outer_units = units
 
     # Create folder for images
     if not os.path.exists(path):
@@ -209,35 +221,43 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
                   'in': 1}
     units_multiplier = units_dict[units]
 
-    img = cv.imread(image_name)
+    # Check if input is the image path or the image data
+    if type(image_name) is str:
+        try:
+            img = cv.imread(image_name)
+        except:
+            raise Exception("Unable to open input image")
+    else:
+        img = image_name
 
     # Binarize the input image
     try:
-        processed_image = binarize_image(img)
+        binarized_image = binarize_image(img)
     except:
         raise Exception("Unable to binarize input image.")
 
     # Find contours of the image and make dimensional measurements
     try:
         image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
-            outer_measurements, inner_measurements = image_contours(processed_image)
-        save_dimensional_measurements(area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, units)
-        save_diameter_measurements(outer_measurements, inner_measurements)
+            outer_measurements, inner_measurements = image_contours(binarized_image)
+        set_dimensional_measurements(
+            [area, outer_diameter, inner_diameter, centroid[0], centroid[1], moment_of_x, moment_of_y])
+        set_diameters([outer_measurements, inner_measurements])
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 
-    update_progress_bar()
+    update_progress_bar(20)
 
     if TESTING:
-        return image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
-            outer_measurements, inner_measurements
+        return binarized_image, image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
+               outer_measurements, inner_measurements
     else:
-        return image, binarized_image
+        return binarized_image, image
 
 
 if __name__ == "__main__":
     startt = time.process_time()
 
-    processed_image, image = pre_process_image('Images/R_0.0.0.jpg', 8, 1200, 'cm')
+    bounded_binarized_image, bounded_input_image = pre_process_image('Images/R_0.0.0.jpg', 8, 1200, 'cm')
 
     print("Total time: " + str(time.process_time() - startt))

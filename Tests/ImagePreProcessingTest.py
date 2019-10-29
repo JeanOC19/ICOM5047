@@ -1,10 +1,13 @@
 import unittest
+import os
 import ImagePreProcessing
 
 
 class MyTestCase(unittest.TestCase):
     def test_dimensional_measurements_1(self):
         print("Testing measurements with sample 0.0.0")
+        ImagePreProcessing.TESTING = 1
+
         image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
             outer_measurements, inner_measurements = \
             ImagePreProcessing.pre_process_image('../Images/R_0.0.0.jpg', 8, 1200, 'cm')
@@ -20,6 +23,8 @@ class MyTestCase(unittest.TestCase):
 
     def test_dimensional_measurements_2(self):
         print("Testing measurements with sample 1.1.1")
+        ImagePreProcessing.TESTING = 1
+
         image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
             outer_measurements, inner_measurements = \
             ImagePreProcessing.pre_process_image('../Images/R_1.1.1.jpg', 8, 1800, 'in')
@@ -32,6 +37,17 @@ class MyTestCase(unittest.TestCase):
         self.assertLessEqual(calculate_error(centroid[1], 1.4578), 3.5, "Centroid Y axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(moment_of_y, 11.9410), 3.5, "X-axis moment calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(moment_of_x, 11.2602), 3.5, "Y-axis moment calculation has more than 3.5% of error")
+
+    def test_file_creation(self):
+        print("Testing file creation")
+
+        ImagePreProcessing.pre_process_image('../Images/R_0.0.0.jpg', 8, 1200, 'cm')
+        self.assertTrue(os.path.exists('Pre_Processing/binarized_bounded_image.jpg'), "Binarized bounded image was not saved")
+        self.assertTrue(os.path.exists('Pre_Processing/bounded_image.jpg'), "Bounded input image was not saved")
+        self.assertTrue(os.path.exists('Pre_Processing/centroid.jpg'), "Centroid image was not saved")
+        self.assertTrue(os.path.exists('Pre_Processing/contour_image.jpg'), "Contoured input image was not saved")
+        self.assertTrue(os.path.exists('Pre_Processing/filled_image.jpg'), "Filled image was not saved")
+
 
 def calculate_error(measure, actual):
     return (abs(actual - measure)/actual) * 100
