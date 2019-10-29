@@ -3,7 +3,8 @@ import os
 import time
 import numpy as np
 
-DEBUG = 1
+DEBUG = 0
+TESTING = 1
 path = "Pre_Processing"
 
 
@@ -49,7 +50,6 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
     def binarize_image(source_image: object) -> object:
         """Convert the input image into a binary image.
         """
-
         # Convert RGB image to grayscale
         gray_image = cv.cvtColor(source_image, cv.COLOR_BGR2GRAY)
         if DEBUG:
@@ -162,9 +162,11 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
             inner_diameter_measurements.append(w2)
             inner_diameter_measurements.append(h2)
 
+        # Convert the radial measurements to user input units
         outer_diameter_measurements = list(map(unit_converter(), outer_diameter_measurements))
         inner_diameter_measurements = list(map(unit_converter(), inner_diameter_measurements))
 
+        # Calculate the average inner and outer diameters
         meas_outer_diameter = sum(outer_diameter_measurements) / len(outer_diameter_measurements)
         meas_inner_diameter = sum(inner_diameter_measurements) / len(inner_diameter_measurements)
 
@@ -225,11 +227,17 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 
     update_progress_bar()
-    return image, binarized_image
+
+    if TESTING:
+        return image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
+            outer_measurements, inner_measurements
+    else:
+        return image, binarized_image
 
 
 if __name__ == "__main__":
     startt = time.process_time()
-    processedimage = pre_process_image('Images/R_0.0.0.jpg', 8, 1200, 'cm')
+
+    processed_image, image = pre_process_image('Images/R_0.0.0.jpg', 8, 1200, 'cm')
 
     print("Total time: " + str(time.process_time() - startt))
