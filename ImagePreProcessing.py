@@ -3,7 +3,8 @@ import os
 import time
 import numpy as np
 
-DEBUG = 0
+# Global variables for testing purposes
+DEBUG = 1
 TESTING = 0
 outer_units = ""
 
@@ -12,13 +13,8 @@ def set_dimensional_measurements(measurements_list: list):
     """
     Simulate sending the measurement data to the Data Management Module
     :param measurements_list: list containing all the measurements made by the pre-processing module in the following
-    order:  area,
-            outer diameter,
-            inner diameter,
-            x coordinate of centroid,
-            y coordinate of centroid,
-            X moment of inertia
-            y moment of inertia
+            order:  area, outer diameter, inner diameter, x coordinate of centroid, y coordinate of centroid,
+                    X moment of inertia, y moment of inertia
     """
     print()
     print("Data Management module received:")
@@ -42,20 +38,27 @@ def set_diameters(diameter_list: list):
     print()
     print("Data Management module received:")
     print(diameter_list)
+    print(len(diameter_list[0]))
+    print(len(diameter_list[1]))
     print()
 
 
-def update_progress_bar(percent):
+def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, enhanced_image=None) -> object:
     """
-    Simulate the process of updating the progress bar of the UI
+    Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters, centroid coordinates, and moment of inertia with respect to the x and y axes
+    :param num_of_measurements: number of measurements to use for determining average inner and outer diameters
+    :param image_dpi: DPI of the input image
+    :param units: units used for displaying measurements (cm, in, or mm)
+    :param image_path: path of the input image to be used
+    :param enhanced_image: data of the input image (for when image enhancement is used)
+    :return: bounded input image and bounded binarized input image
     """
-    print("Progress bar updated to " + str(percent) + "%")
-    print()
 
-
-def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int, units: str) -> object:
     def binarize_image(source_image: object) -> object:
-        """Convert the input image into a binary image.
+        """
+        Converts the input image into a binary image
+        :param source_image: image to be binarized
+        :return: binarized image data
         """
         # Convert RGB image to grayscale
         gray_image = cv.cvtColor(source_image, cv.COLOR_BGR2GRAY)
@@ -80,7 +83,7 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         second_largest = 0
         second_largest_area = 0
 
-        # Find largest and second largest contour in image (rings of the bamboo)
+        # Find largest and second largest contours in image (rings of the bamboo)
         for i in range(len(contour_list)):
             contour_area = cv.contourArea(contour_list[i])
             if contour_area > largest_area:
@@ -94,8 +97,13 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         return largest_contour, second_largest
 
     def rotate_image(image, angle):
-        # grab the dimensions of the image and then determine the
-        # center
+        """
+        Function to rotate the input image by a specified angle
+        :param image: input image to rotate
+        :param angle: number of degrees the image will be rotated by
+        :return: rotated input image
+        """
+        # grab the dimensions of the image and then determine the center
         (h, w) = image.shape[:2]
         (cX, cY) = (w // 2, h // 2)
 
@@ -118,43 +126,58 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         return cv.warpAffine(image, M, (nW, nH))
 
     def unit_converter():
+        """
+        Lambda function to convert values to corresponding units
+        :return: lambda function
+        """
         return lambda z: z / image_dpi * units_multiplier
 
-    def image_contours(sourceimage: object, ) -> object:
+    def image_contours(source_image: object):
+        """
+        Find the contours of the bamboo, bound the image and make all dimensional measurements
+        :param source_image: binarized input image
+        :return: bounded image, bounded binarized image, area, outer diameter, inner diameter,
+                 centroid, x moment, y moment, inner diameter measurements, and outer diameter lists
+        """
         # Erode and dilate image to 
-        eroded = cv.dilate(sourceimage, None, iterations=7)
+        eroded = cv.dilate(source_image, None, iterations=7)
         eroded = cv.erode(eroded, None, iterations=7)
 
+        # Find contours of the image and select those belonging to the bamboo
         contours, hierarchy = cv.findContours(eroded, cv.RETR_CCOMP, cv.CHAIN_APPROX_NONE)
         largest_contour_index, second_largest_index = find_largest_contours(contours)
 
+        # Draw bamboo contours on the image and save the new image
         contoured = img.copy()
         cv.drawContours(contoured, contours[largest_contour_index], -1, (0, 255, 0), 7)
         cv.drawContours(contoured, contours[second_largest_index], -1, (0, 255, 0), 7)
         cv.imwrite(path + '/contour_image.jpg', contoured)
 
+        # Find the bounding box of the largest contour and crop both the input and binarized image
         x, y, w, h = cv.boundingRect(contours[largest_contour_index])
         bounded_image = img[y:y + h, x:x + w]
-        binarized_bounded_image = sourceimage[y:y + h, x:x + w]
+        binarized_bounded_image = source_image[y:y + h, x:x + w]
         cv.imwrite(path + '/bounded_image.jpg', bounded_image)
         cv.imwrite(path + '/binarized_bounded_image.jpg', binarized_bounded_image)
 
+        # Dilate and erode the bounded image to fill the fibers. Then save the image
         eroded = binarized_bounded_image
         eroded = cv.dilate(eroded, None, iterations=13)
         eroded = cv.erode(eroded, None, iterations=13)
-
         bounded_filled_image = eroded
         cv.imwrite(path + '/filled_image.jpg', bounded_filled_image)
 
+        # Find the bounding box of the inner bamboo ring and store the height and width
         x2, y2, w2, h2 = cv.boundingRect(contours[second_largest_index])
         outer_diameter_measurements = [w, h]
         inner_diameter_measurements = [w2, h2]
         pre_rotated_image = bounded_filled_image.copy()
 
-        radius_steps = int(90 / (num_of_measurements / 2))
+        # Calculate the degrees between each measurement
+        radius_steps = int(360 / ((num_of_measurements-2) / 2))
 
         # Make multiple inner and outer diameter measurements
-        for angle in range(radius_steps, 90, radius_steps):
+        for angle in range(radius_steps, int(radius_steps*(num_of_measurements/2)), radius_steps):
             # Rotate image
             rotated_image = rotate_image(pre_rotated_image, angle)
             # Find contours of rotated image and find inner and outer ring
@@ -177,18 +200,21 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
         meas_outer_diameter = sum(outer_diameter_measurements) / len(outer_diameter_measurements)
         meas_inner_diameter = sum(inner_diameter_measurements) / len(inner_diameter_measurements)
 
+        # Find the statistics of the filled ring and convert the area to specified units
         output = cv.connectedComponentsWithStats(bounded_filled_image, 4, cv.CV_32S)
         meas_area = (output[2][1][4] / (image_dpi ** 2)) * (units_multiplier ** 2)
 
+        # Find the coordinates of the centroid and convert them to the specified units
         meas_centroid = [0, 0]
         centroid_coordinates = (int(output[3][1][0]), int(output[3][1][1]))
         meas_centroid[0] = ((centroid_coordinates[0] / image_dpi) * units_multiplier)
         meas_centroid[1] = ((centroid_coordinates[1] / image_dpi) * units_multiplier)
+        # Draw the centroid on the image and save it
         cv.circle(bounded_image, centroid_coordinates, 10, (0, 255, 255), 10)
         cv.imwrite(path + "/centroid.jpg", bounded_image)
 
+        # Calculate the moments of the image and obtain the second moments to get the moments of inertia
         M = cv.moments(bounded_filled_image, binaryImage=True)
-
         x_moment = M['m02'] * ((units_multiplier / image_dpi) ** 4)
         y_moment = M['m20'] * ((units_multiplier / image_dpi) ** 4)
 
@@ -196,19 +222,19 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
                meas_centroid, x_moment, y_moment, outer_diameter_measurements, inner_diameter_measurements
 
     # Validate inputs
+    assert image_path is not None or enhanced_image is not None, "Image name or data must be given as input."
     assert type(num_of_measurements) is int, "Dimensional measurements number is not an integer."
     assert type(image_dpi) is int, "Image DPI is not an integer."
     assert type(units) is str, "Units of measurement is not a string."
-    assert 400 >= num_of_measurements >= 4, "Number of dimensional measurements is not in allowed range."
-    assert 2600 >= image_dpi >= 25, "Image DPI should be between 25 and 2600."
+    assert 400 >= num_of_measurements >= 16, "Number of dimensional measurements is not in allowed range."
+    assert 2600 >= image_dpi >= 1200, "Image DPI should be between 25 and 2600."
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
 
     path = "Pre_Processing"
-
     if TESTING:
         outer_units = units
 
-    # Create folder for images
+    # Create folder for images if it does not exist
     if not os.path.exists(path):
         try:
             os.makedirs(path)
@@ -222,13 +248,13 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
     units_multiplier = units_dict[units]
 
     # Check if input is the image path or the image data
-    if type(image_name) is str:
+    if image_path is not None:
         try:
-            img = cv.imread(image_name)
+            img = cv.imread(image_path)
         except:
             raise Exception("Unable to open input image")
     else:
-        img = image_name
+        img = enhanced_image
 
     # Binarize the input image
     try:
@@ -238,15 +264,14 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
 
     # Find contours of the image and make dimensional measurements
     try:
-        image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
-            outer_measurements, inner_measurements = image_contours(binarized_image)
+        image, binarized_image, area, outer_diameter, inner_diameter, \
+            centroid, moment_of_x, moment_of_y, outer_measurements, \
+            inner_measurements = image_contours(binarized_image)
         set_dimensional_measurements(
             [area, outer_diameter, inner_diameter, centroid[0], centroid[1], moment_of_x, moment_of_y])
         set_diameters([outer_measurements, inner_measurements])
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
-
-    update_progress_bar(20)
 
     if TESTING:
         return binarized_image, image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
@@ -258,6 +283,6 @@ def pre_process_image(image_name: str, num_of_measurements: int, image_dpi: int,
 if __name__ == "__main__":
     startt = time.process_time()
 
-    bounded_binarized_image, bounded_input_image = pre_process_image('Images/R_0.0.0.jpg', 8, 1200, 'cm')
+    bounded_binarized_image, bounded_input_image = pre_process_image(16, 1200, 'cm', image_path='Images/R_0.0.0.jpg')
 
     print("Total time: " + str(time.process_time() - startt))

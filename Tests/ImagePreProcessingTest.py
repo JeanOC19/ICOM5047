@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
 
         image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
             outer_measurements, inner_measurements = \
-            ImagePreProcessing.pre_process_image('../Images/R_0.0.0.jpg', 8, 1200, 'cm')
+            ImagePreProcessing.pre_process_image(16, 1200, 'cm', image_path='../Images/R_0.0.0.jpg')
 
         # Compare measurements with actual values
         self.assertLessEqual(calculate_error(area, 16.2273), 3.5, "Area calculation has more than 3.5% of error")
@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
 
         image, binarized_image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
             outer_measurements, inner_measurements = \
-            ImagePreProcessing.pre_process_image('../Images/R_1.1.1.jpg', 8, 1800, 'in')
+            ImagePreProcessing.pre_process_image(16, 1800, 'in', image_path='../Images/R_1.1.1.jpg')
 
         # Compare measurements with actual values
         self.assertLessEqual(calculate_error(area, 3.902), 3.5, "Area calculation has more than 3.5% of error")
@@ -41,7 +41,8 @@ class MyTestCase(unittest.TestCase):
     def test_file_creation(self):
         print("Testing file creation")
 
-        ImagePreProcessing.pre_process_image('../Images/R_0.0.0.jpg', 8, 1200, 'cm')
+        # View if all files are being created in the respective directory
+        ImagePreProcessing.pre_process_image(16, 1200, 'cm', image_path='../Images/R_0.0.0.jpg')
         self.assertTrue(os.path.exists('Pre_Processing/binarized_bounded_image.jpg'), "Binarized bounded image was not saved")
         self.assertTrue(os.path.exists('Pre_Processing/bounded_image.jpg'), "Bounded input image was not saved")
         self.assertTrue(os.path.exists('Pre_Processing/centroid.jpg'), "Centroid image was not saved")
