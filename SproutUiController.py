@@ -1,5 +1,10 @@
 from PyQt5 import QtWidgets, uic, QtGui
 import sys
+import _thread
+import threading
+import time
+import SproutController as Sprout
+
 
 from PyQt5.QtGui import QPixmap, QPen
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QInputDialog
@@ -10,10 +15,8 @@ from PyQt5.Qt import QGradient, Qt
 # from PySide2.QtCharts import QtCharts
 from PyQt5.QtChart import QChart, QLineSeries, QChartView
 
-from PyQt5.QtCore import QTimer
 
 count_pb = 0
-running = False
 
 # messageBox_flag if true then there is a popup message in screen
 wedges_messageBox_flag = False
@@ -27,25 +30,29 @@ in_data = {'img_path': "",
            'num_wedges': "0",
            'num_rings': "0",
            'img_dpi': "0",
-           'enhance': "False"}
+           'enhance': False}
 
 # columns: wedges, rows: rings (r1(w1,w2,...,w7,wAvg),r2(...),r3(...),rAvg(...))
-densities = ((0.7500, 0.7100, 0.7000, 0.6800, 0.6900, 0.7000, 0.7500, 0.7200, 0.7125),
-             (0.5000, 0.5500, 0.4900, 0.4500, 0.5000, 0.5100, 0.4700, 0.5300, 0.5000),
-             (0.4500, 0.4400, 0.4000, 0.3800, 0.3500, 0.3900, 0.4500, 0.4200, 0.4100),
-             (0.5667, 0.5667, 0.5300, 0.5033, 0.5133, 0.5333, 0.5567, 0.5567, 0.5408))
+densities = [[0.4500, 0.4400, 0.4000, 0.3800, 0.3500, 0.3900, 0.4500, 0.4200, 0.4100],
+             [0.5000, 0.5500, 0.4900, 0.4500, 0.5000, 0.5100, 0.4700, 0.5300, 0.5000],
+             [0.7500, 0.7100, 0.7000, 0.6800, 0.6900, 0.7000, 0.7500, 0.7200, 0.7125],
+             [0.5667, 0.5667, 0.5300, 0.5033, 0.5133, 0.5333, 0.5567, 0.5567, 0.5408]]
 
 measurement_data = {'avg_outer_diameter': 8,
                     'avg_inner_diameter': 6,
                     'area': 22,
-                    'centroid': 3,
-                    'moment_of_inertia': 188.496}
+                    'centroid_x': 3,
+                    'centroid_y': 3,
+                    'moment_of_inertia_x': 188.496,
+                    'moment_of_inertia_y': 188.496}
 
 save_file_file_name = ""
 save_folder_file_path = ""
 
 # default values
-default_comboBox_item = 3
+default_comboBox_graph_item = 3
+
+percent_count = 0
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -56,7 +63,11 @@ class Ui(QtWidgets.QMainWindow):
         self.save_window_ui = SaveWindow()
         self.chartView = None
 
+        self.is_running = False
+        self.thread1 = Sprout.SproutController(self, in_data)
+
         self.ui()
+
 
     def ui(self):
         self.tabWidget_1.setCurrentIndex(0)
@@ -70,54 +81,55 @@ class Ui(QtWidgets.QMainWindow):
         self.lineEdit_numWedges.editingFinished.connect(self.update_num_wedges)
         self.lineEdit_numRings.editingFinished.connect(self.update_num_rings)
 
-        self.start_button.clicked.connect(self.start_fiber_density_calc)
+        self.start_button.clicked.connect(self.start_button_func)
         self.save_button.clicked.connect(self.save_files)
 
         # Graphs View
         self.comboBox_rings.currentIndexChanged.connect(self.change_rings_graph)
         self.comboBox_wedges.currentIndexChanged.connect(self.change_wedges_graph)
 
-        # progress bar details
-        self.timer = QTimer()
-        self.timer.setInterval(25)
-        self.timer.timeout.connect(self.runProgressBar)
         self.progressBar.setValue(0)
         self.progressBar.hide()
         self.label_progressBar.hide()
 
-        # Testing:
-        self.create_graphs()
+        self.comboBox_rings.hide()
+        self.comboBox_wedges.hide()
 
         self.show()
 
+    def is_int_inbound(self, ui_in: str, lower: int, upper: int, ui_in_name: str):
+        if not (str.isdigit(ui_in)) or int(ui_in) > upper or int(ui_in) < lower:
+            self.warning_message_box(str(ui_in_name) + "\nPlease input a number from "
+                                     + str(lower) + " to " + str(upper))
+            return False
+        else:
+            return True
+
     def update_num_wedges(self):
         global in_data, wedges_messageBox_flag, rings_messageBox_flag
-        wedges_messageBox_flag = True
-        temp = (self.lineEdit_numWedges.text(), 4, 100, self.label_numWedges.text())
-        if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
-            if not rings_messageBox_flag:
-                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
-                                         + str(temp[1]) + " to " + str(temp[2]))
+        if rings_messageBox_flag:
             return
+        wedges_messageBox_flag = True
 
-        temp = int(temp[0])*4
-        self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(360/temp))
-        self.label_numRegionsFeedback.setText(str(temp*int(in_data['num_rings'])))
-        in_data['num_wedges'] = str(temp)
+        if self.is_int_inbound(self.lineEdit_numWedges.text(), 4, 100, self.label_numWedges.text()):
+            temp = int(self.lineEdit_numWedges.text()) * 4
+            self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(360 / temp))
+            self.label_numRegionsFeedback.setText(str(temp * int(in_data['num_rings'])))
+            wedges_messageBox_flag = False
+            # in_data['num_wedges'] = str(temp)
 
     def update_num_rings(self):
         global in_data, wedges_messageBox_flag, rings_messageBox_flag
-        rings_messageBox_flag = True
-        temp = (self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text())
-        if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
-            if not wedges_messageBox_flag:
-                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
-                                         + str(temp[1]) + " to " + str(temp[2]))
+        if wedges_messageBox_flag:
             return
+        rings_messageBox_flag = True
 
-        self.label_numRingsFeedback.setText(str(temp[0]))
-        self.label_numRegionsFeedback.setText(str(int(temp[0])*int(in_data['num_wedges'])))
-        in_data['num_rings'] = str(temp[0])
+        temp = self.lineEdit_numRings.text()
+        if self.is_int_inbound(temp, 1, 25, self.label_numRings.text()):
+            self.label_numRingsFeedback.setText(str(temp))
+            self.label_numRegionsFeedback.setText(str(int(temp) * int(in_data['num_wedges'])))
+            rings_messageBox_flag = False
+            # in_data['num_rings'] = str(temp)
 
     def browse_file(self):
         url = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files(*);;*.jpg; *jpeg;; *.png;; *bmp;; *tiff")
@@ -131,16 +143,22 @@ class Ui(QtWidgets.QMainWindow):
         self.lineEdit_intermediateStepPath.setText(url)
         in_data['intermediate_path'] = url
 
-    def start_fiber_density_calc(self):
-        global count_pb, running, in_data, densities, measurement_data
+    def start_button_func(self):
+        global count_pb, in_data, densities, measurement_data, percent_count
+
         # if program is currently in progress
-        if running:
-            # count_pb must be set to zero when the fiber density calculation is finished
-            if count_pb == 0:
+        if self.is_running:
+            # if finished successfully
+            # count_pb must be set to zero when the fiber density calculation is finished successfully
+            if self.progressBar.value() >= 100:
+                self.progressBar.setValue(0)
                 self.dashboard_tab.setEnabled(True)
                 self.tabWidget_2.setEnabled(True)
                 self.graphs_tab.setEnabled(True)
                 self.region_density_tab.setEnabled(True)
+
+                self.comboBox_rings.show()
+                self.comboBox_wedges.show()
 
                 # create graphs
                 self.create_graphs()
@@ -154,14 +172,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.tabWidget_1.setCurrentIndex(1)
                 self.tabWidget_2.setCurrentIndex(0)
 
-            self.browse_button_1.setEnabled(True)
-            self.browse_button_2.setEnabled(True)
-            self.comboBox_units.setEnabled(True)
-            self.lineEdit_numMeasurements.setEnabled(True)
-            self.lineEdit_numWedges.setEnabled(True)
-            self.lineEdit_numRings.setEnabled(True)
-            self.lineEdit_imageDPI.setEnabled(True)
-            self.checkBox_imageEnhancement.setEnabled(True)
+            self.inputs_set_enabled(True)
 
             self.start_button.setStyleSheet("background-color: #539844;\nborder: 2px solid #444444;\n"
                                             "border-radius: 8px;\ncolor:white;\nfont: bold;")
@@ -171,9 +182,8 @@ class Ui(QtWidgets.QMainWindow):
             self.progressBar.setValue(0)
 
             count_pb = 0
-            self.timer.stop()
 
-            running = False
+            self.is_running = False
         # if program has not started
         else:
             # if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
@@ -182,67 +192,67 @@ class Ui(QtWidgets.QMainWindow):
             #     self.warning_message_box("Make sure all inputs are filled in.")
             #     return
 
-            temp = (self.lineEdit_numMeasurements.text(), 4, 100, self.label_numMeasurements.text())
-            if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
-                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
-                                         + str(temp[1]) + " to " + str(temp[2]))
+            if not self.is_int_inbound(self.lineEdit_numMeasurements.text(), 1, 25, self.label_numMeasurements.text()):
+                return
+            if not self.is_int_inbound(self.lineEdit_numWedges.text(), 4, 100, self.label_numWedges.text()):
+                return
+            if not self.is_int_inbound(self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text()):
+                return
+            if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 25, 2400, self.label_imageDPI.text()):
                 return
 
-            temp = (self.lineEdit_imageDPI.text(), 0, 2400, self.label_imageDPI.text())
-            if not (str.isdigit(temp[0])) or int(temp[0]) > temp[2] or int(temp[0]) < temp[1]:
-                self.warning_message_box(str(temp[3]) + "\nPlease input a number from "
-                                         + str(temp[1]) + " to " + str(temp[2]))
-                return
-
-            # in_data['img_path'] = self.lineEdit_imagePath.text()
-            # in_data['intermediate_path'] = self.lineEdit_intermediateStepPath.text()
             in_data['units'] = self.comboBox_units.currentText()
             in_data['num_measurement'] = str(int(self.lineEdit_numMeasurements.text())*4)
-            # in_data['num_wedges'] = str(int(self.lineEdit_numWedges.text())*4)
-            # in_data['num_rings'] = self.lineEdit_numRings.text()
+            in_data['num_wedges'] = str(int(self.lineEdit_numWedges.text())*4)
+            in_data['num_rings'] = self.lineEdit_numRings.text()
             in_data['img_dpi'] = self.lineEdit_imageDPI.text()
-            in_data['enhance'] = str(self.checkBox_imageEnhancement.isChecked())
+            in_data['enhance'] = bool(self.checkBox_imageEnhancement.isChecked())
 
-            # print for testing
-            print("img_path = " + in_data['img_path'])
-            print("intermediate_path = " + in_data['intermediate_path'])
-            print("units = " + in_data['units'])
-            print("num_measurement = " + in_data['num_measurement'])
-            print("num_wedges = " + in_data['num_wedges'])
-            print("num_rings = " + in_data['num_rings'])
-            print("img_dpi = " + in_data['img_dpi'])
-            print("enhance = " + in_data['enhance'])
-
-            self.browse_button_1.setEnabled(False)
-            self.browse_button_2.setEnabled(False)
-            self.comboBox_units.setEnabled(False)
-            self.lineEdit_numMeasurements.setEnabled(False)
-            self.lineEdit_numWedges.setEnabled(False)
-            self.lineEdit_numRings.setEnabled(False)
-            self.lineEdit_imageDPI.setEnabled(False)
-            self.checkBox_imageEnhancement.setEnabled(False)
+            self.inputs_set_enabled(False)
 
             self.start_button.setStyleSheet("background-color: #da2a2a;\nborder: 2px solid #444444;\n"
                                             "border-radius: 8px;\ncolor:white;\nfont: bold;")
             self.start_button.setText("Stop")
             self.progressBar.show()
             self.label_progressBar.show()
+            self.progressBar.setValue(1)
 
-            self.timer.start()
-            running = True
+            self.is_running = True
+
+            # Start Sprout Controller for fiber density calculation
+            self.start_sprout_controller()
+            return
+
+    def inputs_set_enabled(self, val):
+        self.browse_button_1.setEnabled(val)
+        self.browse_button_2.setEnabled(val)
+        self.comboBox_units.setEnabled(val)
+        self.lineEdit_numMeasurements.setEnabled(val)
+        self.lineEdit_numWedges.setEnabled(val)
+        self.lineEdit_numRings.setEnabled(val)
+        self.lineEdit_imageDPI.setEnabled(val)
+        self.checkBox_imageEnhancement.setEnabled(val)
+
+        self.label_imagePath.setEnabled(val)
+        self.label_intermediateStepPath.setEnabled(val)
+        self.label_numMeasurements.setEnabled(val)
+        self.label_numWedges.setEnabled(val)
+        self.label_numRings.setEnabled(val)
+        self.label_imageDPI.setEnabled(val)
+        self.label_units.setEnabled(val)
 
     def create_graphs(self):
-        global densities, default_comboBox_item
+        global densities, default_comboBox_graph_item
 
         # Set Ring ComboBox
         for x in range(self.comboBox_rings.count()):
-            if x >= default_comboBox_item:
-                self.comboBox_rings.removeItem(default_comboBox_item)
+            if x >= default_comboBox_graph_item:
+                self.comboBox_rings.removeItem(default_comboBox_graph_item)
 
         # Set Wedges ComboBox
         for x in range(self.comboBox_wedges.count()):
-            if x >= default_comboBox_item:
-                self.comboBox_wedges.removeItem(default_comboBox_item)
+            if x >= default_comboBox_graph_item:
+                self.comboBox_wedges.removeItem(default_comboBox_graph_item)
 
         # Ring Graph
         self.ring_chart = QChart()
@@ -289,7 +299,7 @@ class Ui(QtWidgets.QMainWindow):
         self.chartView.resize(self.widget_wedges.size())
 
     def change_rings_graph(self):
-        global default_comboBox_item
+        global default_comboBox_graph_item
 
         for x in range(len(self.ring_chart.series())):
             self.ring_chart.series()[x].show()
@@ -305,10 +315,10 @@ class Ui(QtWidgets.QMainWindow):
         elif "Ring" in self.comboBox_rings.currentText():
             for x in range(len(self.ring_chart.series())):
                 self.ring_chart.series()[x].hide()
-            self.ring_chart.series()[self.comboBox_rings.currentIndex()-default_comboBox_item].show()
+            self.ring_chart.series()[self.comboBox_rings.currentIndex() - default_comboBox_graph_item].show()
 
     def change_wedges_graph(self):
-        global default_comboBox_item
+        global default_comboBox_graph_item
 
         for x in range(len(self.wedge_chart.series())):
             self.wedge_chart.series()[x].show()
@@ -324,7 +334,7 @@ class Ui(QtWidgets.QMainWindow):
         elif "Wedge" in self.comboBox_wedges.currentText():
             for x in range(len(self.wedge_chart.series())):
                 self.wedge_chart.series()[x].hide()
-            self.wedge_chart.series()[self.comboBox_wedges.currentIndex()-default_comboBox_item].show()
+            self.wedge_chart.series()[self.comboBox_wedges.currentIndex() - default_comboBox_graph_item].show()
 
     def create_table(self):
         global densities
@@ -361,11 +371,15 @@ class Ui(QtWidgets.QMainWindow):
 
     def set_measurement_data(self):
         global measurement_data
-        self.lineEdit_avgOuterDiameter.setText(str(measurement_data['avg_outer_diameter']) + " cm")
-        self.lineEdit_avgInnerDiameter.setText(str(measurement_data['avg_inner_diameter']) + " cm")
-        self.lineEdit_area.setText(str(measurement_data['area']) + " cm^2")
-        self.lineEdit_centroid.setText(str(measurement_data['centroid']) + " cm")
-        self.lineEdit_momentOfInertia.setText(str(measurement_data['moment_of_inertia']) + " cm^4")
+        self.lineEdit_avgOuterDiameter.setText(str(measurement_data['avg_outer_diameter']) + " " + in_data['units'])
+        self.lineEdit_avgInnerDiameter.setText(str(measurement_data['avg_inner_diameter']) + " " + in_data['units'])
+        self.lineEdit_area.setText(str(measurement_data['area']) + " " + in_data['units'] + "^2")
+        self.lineEdit_centroid_x.setText(str(measurement_data['centroid_x']) + " " + in_data['units'])
+        self.lineEdit_centroid_y.setText(str(measurement_data['centroid_y']) + " " + in_data['units'])
+        self.lineEdit_momentOfInertia_x.setText(str(measurement_data['moment_of_inertia_x'])
+                                                + " " + in_data['units'] + "^4")
+        self.lineEdit_momentOfInertia_y.setText(str(measurement_data['moment_of_inertia_y'])
+                                                + " " + in_data['units'] + "^4")
 
     def warning_message_box(self, message):
         global wedges_messageBox_flag, rings_messageBox_flag
@@ -379,24 +393,49 @@ class Ui(QtWidgets.QMainWindow):
         self.windowModality()
         self.save_window_ui.show()
         self.save_window_ui.raise_()
-        # mbox = QMessageBox.question(self, "Warning!", "Quiere Salvar?", QMessageBox.Save | QMessageBox.Cancel)
-        # if mbox == QMessageBox.Cancel:
-        #         print("cancel")
-        # elif mbox == QMessageBox.Save:
-        #     print("save")
 
-    def runProgressBar(self):
-        global count_pb
-        count_pb += 5
-        if count_pb > 100:
-            count_pb = 0
-            self.timer.stop()
-            self.start_fiber_density_calc()
+    def start_sprout_controller(self):
+        global in_data, densities, measurement_data, percent_count
+        print("Sprout Controller:")
+        print("------------------")
+        # print for testing
+        print("img_path = " + in_data['img_path'])
+        print("intermediate_path = " + in_data['intermediate_path'])
+        print("units = " + in_data['units'])
+        print("num_measurement = " + in_data['num_measurement'])
+        print("num_wedges = " + in_data['num_wedges'])
+        print("num_rings = " + in_data['num_rings'])
+        print("img_dpi = " + in_data['img_dpi'])
+        print("enhance = " + str(in_data['enhance']))
+
+        percent_count = 0
+        self.progressBar.setValue(percent_count)
+
+        if in_data['enhance']:
+            Sprout.image_enhancement_module()
+            self.progressBar.setValue(self.update_progress_bar())
+
+        Sprout.image_pre_processing_module()
+        self.progressBar.setValue(self.update_progress_bar())
+        Sprout.region_extraction_module()
+        self.progressBar.setValue(self.update_progress_bar())
+        Sprout.fiber_density_distribution_module()
+        self.progressBar.setValue(self.update_progress_bar())
+
+        self.start_button_func()
+        return
+
+    def update_progress_bar(self):
+        global percent_count
+
+        if in_data['enhance']:
+            percent_count += 25
         else:
-            self.update_progress_bar(count_pb)
+            percent_count += 33
+            if percent_count == 99:
+                percent_count += 1
 
-    def update_progress_bar(self, val):
-        self.progressBar.setValue(val)
+        return percent_count
 
 
 class SaveWindow(QtWidgets.QMainWindow):
@@ -411,7 +450,7 @@ class SaveWindow(QtWidgets.QMainWindow):
         self.browse_button_3.clicked.connect(self.browse_folder)
         self.save_button.clicked.connect(self.save_graph_data)
         self.cancel_button.clicked.connect(self.cancel_save_graph_data)
-
+        self.checkBox_graphs.setChecked(True)
         # self.show()
 
     def browse_folder(self):
@@ -423,13 +462,13 @@ class SaveWindow(QtWidgets.QMainWindow):
         save_file_file_name = ""
         save_folder_file_path = ""
 
-        if(self.lineEdit_fileName.text() is "" or self.lineEdit_filePath.text() is ""
+        if(self.lineEdit_fileName.text().strip() is "" or self.lineEdit_filePath.text().strip() is ""
                 or not (self.checkBox_graphs.isChecked() or self.checkBox_data.isChecked())):
             mbox = QMessageBox.information(self, "Warning!", "Please make sure to provide a file name file path,   \n"
                                                              " and have at least one checkbox selected.")
         else:
             save_folder_file_path = self.lineEdit_filePath.text()
-            save_file_file_name = self.lineEdit_fileName.text()
+            save_file_file_name = self.lineEdit_fileName.text().strip()
             if self.checkBox_graphs.isChecked():
                 print("call: save graphs")
             if self.checkBox_data.isChecked():
@@ -450,3 +489,4 @@ def main():
 
 if __name__=='__main__':
     main()
+

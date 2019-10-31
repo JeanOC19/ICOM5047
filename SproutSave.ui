@@ -95,6 +95,9 @@ font: bold;</string>
     <property name="text">
      <string/>
     </property>
+    <property name="maxLength">
+     <number>150</number>
+    </property>
    </widget>
    <widget class="QLabel" name="label_fileName">
     <property name="geometry">
