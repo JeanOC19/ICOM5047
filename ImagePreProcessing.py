@@ -4,7 +4,6 @@ import time
 import numpy as np
 
 # Global variables for testing purposes
-DEBUG = 1
 TESTING = 0
 outer_units = ""
 
@@ -28,6 +27,7 @@ def set_dimensional_measurements(measurements_list: list):
               + str(measurements_list[4]) + " " + outer_units)
         print("X-axis moment: " + str(measurements_list[5]) + " " + outer_units + "4")
         print("Y-axis moment: " + str(measurements_list[6]) + " " + outer_units + "4")
+        print("Product of inertia: " + str(measurements_list[7]) + " " + outer_units + "4")
 
 
 def set_diameters(diameter_list: list):
@@ -38,8 +38,6 @@ def set_diameters(diameter_list: list):
     print()
     print("Data Management module received:")
     print(diameter_list)
-    print(len(diameter_list[0]))
-    print(len(diameter_list[1]))
     print()
 
 
@@ -62,18 +60,15 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
         """
         # Convert RGB image to grayscale
         gray_image = cv.cvtColor(source_image, cv.COLOR_BGR2GRAY)
-        if DEBUG:
-            cv.imwrite(path + '/grayscale_img.jpg', gray_image)
+        cv.imwrite(path + '/grayscale_image.jpg', gray_image)
 
         # Use Gaussian Blur to remove noise from the image
         blurred_image = cv.GaussianBlur(gray_image, (5, 5), 0)
-        if DEBUG:
-            cv.imwrite(path + '/blurred_img.jpg', blurred_image)
 
         # Calculate the global threshold value and binarize the image
         ret, new_image = cv.threshold(blurred_image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-        if DEBUG:
-            cv.imwrite(path + '/binarized_bamboo.jpg', new_image)
+        cv.imwrite(path + '/binarized_image.jpg', new_image)
+
         return new_image
 
     def find_largest_contours(contour_list: list) -> object:
@@ -103,26 +98,22 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
         :param angle: number of degrees the image will be rotated by
         :return: rotated input image
         """
-        # grab the dimensions of the image and then determine the center
+        # determine center of the image
         (h, w) = image.shape[:2]
         (cX, cY) = (w // 2, h // 2)
 
-        # grab the rotation matrix (applying the negative of the
-        # angle to rotate clockwise), then grab the sine and cosine
-        # (i.e., the rotation components of the matrix)
+        # get the rotation matrix (applying the negative of the
+        # angle to rotate clockwise), then get the sine and cosine
         M = cv.getRotationMatrix2D((cX, cY), -angle, 1.0)
         cos = np.abs(M[0, 0])
         sin = np.abs(M[0, 1])
 
-        # compute the new bounding dimensions of the image
+        # Calculate bounding dimensions of the image
         nW = int((h * sin) + (w * cos))
         nH = int((h * cos) + (w * sin))
-
-        # adjust the rotation matrix to take into account translation
         M[0, 2] += (nW / 2) - cX
         M[1, 2] += (nH / 2) - cY
 
-        # perform the actual rotation and return the image
         return cv.warpAffine(image, M, (nW, nH))
 
     def unit_converter():
@@ -174,10 +165,10 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
         pre_rotated_image = bounded_filled_image.copy()
 
         # Calculate the degrees between each measurement
-        radius_steps = int(360 / ((num_of_measurements-2) / 2))
+        radius_steps = int(360 / ((num_of_measurements - 2) / 2))
 
         # Make multiple inner and outer diameter measurements
-        for angle in range(radius_steps, int(radius_steps*(num_of_measurements/2)), radius_steps):
+        for angle in range(radius_steps, int(radius_steps * (num_of_measurements / 2)), radius_steps):
             # Rotate image
             rotated_image = rotate_image(pre_rotated_image, angle)
             # Find contours of rotated image and find inner and outer ring
@@ -206,32 +197,37 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
 
         # Find the coordinates of the centroid and convert them to the specified units
         meas_centroid = [0, 0]
-        centroid_coordinates = (int(output[3][1][0]), int(output[3][1][1]))
-        meas_centroid[0] = ((centroid_coordinates[0] / image_dpi) * units_multiplier)
-        meas_centroid[1] = ((centroid_coordinates[1] / image_dpi) * units_multiplier)
+        M = cv.moments(binarized_bounded_image, binaryImage=True)
+        centroid_coordinates = (int(M['m10'] / M['m00']), int(M['m01'] / M['m00']))
+        meas_centroid[0] = centroid_coordinates[0] * units_multiplier / image_dpi
+        meas_centroid[1] = centroid_coordinates[1] * units_multiplier / image_dpi
+
         # Draw the centroid on the image and save it
         cv.circle(bounded_image, centroid_coordinates, 10, (0, 255, 255), 10)
         cv.imwrite(path + "/centroid.jpg", bounded_image)
 
         # Calculate the moments of the image and obtain the second moments to get the moments of inertia
-        M = cv.moments(bounded_filled_image, binaryImage=True)
-        x_moment = M['m02'] * ((units_multiplier / image_dpi) ** 4)
-        y_moment = M['m20'] * ((units_multiplier / image_dpi) ** 4)
+        x_moment = (M['m02'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
+        y_moment = (M['m20'] - centroid_coordinates[1] * M['m10']) * ((units_multiplier / image_dpi) ** 4)
+        moment_product = (M['m11'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
 
         return bounded_image, binarized_bounded_image, meas_area, meas_outer_diameter, meas_inner_diameter, \
-               meas_centroid, x_moment, y_moment, outer_diameter_measurements, inner_diameter_measurements
+               meas_centroid, x_moment, y_moment, moment_product, outer_diameter_measurements, \
+               inner_diameter_measurements
 
     # Validate inputs
     assert image_path is not None or enhanced_image is not None, "Image name or data must be given as input."
     assert type(num_of_measurements) is int, "Dimensional measurements number is not an integer."
     assert type(image_dpi) is int, "Image DPI is not an integer."
     assert type(units) is str, "Units of measurement is not a string."
-    assert 400 >= num_of_measurements >= 16, "Number of dimensional measurements is not in allowed range."
+    assert 400 >= num_of_measurements >= 12, "Number of dimensional measurements is not in allowed range."
     assert 2600 >= image_dpi >= 1200, "Image DPI should be between 25 and 2600."
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
 
     path = "Pre_Processing"
+    global TESTING
     if TESTING:
+        global outer_units
         outer_units = units
 
     # Create folder for images if it does not exist
@@ -265,17 +261,18 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
     # Find contours of the image and make dimensional measurements
     try:
         image, binarized_image, area, outer_diameter, inner_diameter, \
-            centroid, moment_of_x, moment_of_y, outer_measurements, \
-            inner_measurements = image_contours(binarized_image)
+        centroid, moment_of_x, moment_of_y, product_of_inertia, outer_measurements, \
+        inner_measurements = image_contours(binarized_image)
         set_dimensional_measurements(
-            [area, outer_diameter, inner_diameter, centroid[0], centroid[1], moment_of_x, moment_of_y])
+            [area, outer_diameter, inner_diameter, centroid[0],
+             centroid[1], moment_of_x, moment_of_y, product_of_inertia])
         set_diameters([outer_measurements, inner_measurements])
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 
     if TESTING:
         return binarized_image, image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
-               outer_measurements, inner_measurements
+               product_of_inertia, outer_measurements, inner_measurements
     else:
         return binarized_image, image
 
@@ -283,6 +280,6 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
 if __name__ == "__main__":
     startt = time.process_time()
 
-    bounded_binarized_image, bounded_input_image = pre_process_image(16, 1200, 'cm', image_path='Images/R_0.0.0.jpg')
+    bounded_binarized_image, bounded_input_image = pre_process_image(12, 1200, 'cm', image_path='Images/R_0.0.0.jpg')
 
     print("Total time: " + str(time.process_time() - startt))
