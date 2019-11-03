@@ -100,7 +100,7 @@ QTabBar::tab:selected {
 </string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -246,7 +246,10 @@ border-style: inset;
        <string>Units for measurement calculatios.</string>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color:white;</string>
+       <string notr="true">QComboBox{
+	background-color:light;
+	border: 1px solid #555555;
+}</string>
       </property>
       <item>
        <property name="text">
@@ -1165,6 +1168,19 @@ max: 2600</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>260</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="dashboard_tab">
      <property name="enabled">
@@ -1208,7 +1224,7 @@ QTabBar::tab:selected {
 </string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="graphs_tab">
        <attribute name="title">
@@ -1224,7 +1240,13 @@ QTabBar::tab:selected {
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: white;</string>
+         <string notr="true">QWidget{
+	background-color: white;
+}
+QComboBox{
+	background-color:light;
+	border: 1px solid #555555;
+}</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -1267,8 +1289,17 @@ QTabBar::tab:selected {
            <height>22</height>
           </rect>
          </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
          <property name="styleSheet">
-          <string notr="true">background-color:white;</string>
+          <string notr="true"/>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+         <property name="insertPolicy">
+          <enum>QComboBox::InsertAtBottom</enum>
          </property>
          <item>
           <property name="text">
@@ -1295,8 +1326,14 @@ QTabBar::tab:selected {
            <height>22</height>
           </rect>
          </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
          <property name="styleSheet">
-          <string notr="true">background-color:white;</string>
+          <string notr="true"/>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
          </property>
          <item>
           <property name="text">
@@ -1395,7 +1432,7 @@ QTabBar::tab:selected {
          <property name="geometry">
           <rect>
            <x>100</x>
-           <y>60</y>
+           <y>110</y>
            <width>200</width>
            <height>16</height>
           </rect>
@@ -1405,42 +1442,6 @@ QTabBar::tab:selected {
          </property>
         </widget>
         <widget class="QLineEdit" name="lineEdit_avgOuterDiameter">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>100</x>
-           <y>80</y>
-           <width>200</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: #eeeeee;
-border: 1px solid #444444;</string>
-         </property>
-         <property name="text">
-          <string>0 cm</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_18">
-         <property name="geometry">
-          <rect>
-           <x>100</x>
-           <y>110</y>
-           <width>200</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Average Inner Diameter:</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_avgInnerDiameter">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -1463,11 +1464,47 @@ border: 1px solid #444444;</string>
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-        <widget class="QLabel" name="label_19">
+        <widget class="QLabel" name="label_18">
          <property name="geometry">
           <rect>
            <x>100</x>
            <y>160</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Average Inner Diameter:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_avgInnerDiameter">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>180</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>0 cm</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_19">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>60</y>
            <width>200</width>
            <height>16</height>
           </rect>
@@ -1506,7 +1543,7 @@ border: 1px solid #444444;</string>
          <property name="geometry">
           <rect>
            <x>100</x>
-           <y>180</y>
+           <y>80</y>
            <width>200</width>
            <height>22</height>
           </rect>
@@ -1669,6 +1706,42 @@ border: 1px solid #444444;</string>
           <string>y:</string>
          </property>
         </widget>
+        <widget class="QLabel" name="label_24">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>370</y>
+           <width>200</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Product of Inertia:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_productOfInertia">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>390</y>
+           <width>200</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #eeeeee;
+border: 1px solid #444444;</string>
+         </property>
+         <property name="text">
+          <string>0 cm^4</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
         <zorder>label_31</zorder>
         <zorder>label_32</zorder>
         <zorder>label_23</zorder>
@@ -1685,6 +1758,8 @@ border: 1px solid #444444;</string>
         <zorder>lineEdit_momentOfInertia_x</zorder>
         <zorder>lineEdit_momentOfInertia_y</zorder>
         <zorder>lineEdit_centroid_y</zorder>
+        <zorder>label_24</zorder>
+        <zorder>lineEdit_productOfInertia</zorder>
        </widget>
       </widget>
      </widget>
