@@ -153,9 +153,10 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         cv.imwrite(path + '/binarized_bounded_image.jpg', binarized_bounded_image)
 
         # Dilate and erode the bounded image to fill the fibers. Then save the image
+        num_of_iterations = int((28 / 3600) * image_dpi) + 1
         eroded = binarized_bounded_image
-        eroded = cv.dilate(eroded, None, iterations=13)
-        eroded = cv.erode(eroded, None, iterations=13)
+        eroded = cv.dilate(eroded, None, iterations=num_of_iterations)
+        eroded = cv.erode(eroded, None, iterations=num_of_iterations+1)
         bounded_filled_image = eroded
         cv.imwrite(path + '/filled_image.jpg', bounded_filled_image)
 
@@ -226,6 +227,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     assert 4800 >= image_dpi >= 25, "Image DPI should be between 25 and 4800."
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
     assert os.path.exists(image_path), "Input image was not found."
+    assert image_path[-4:] in ('.bmp', '.jpg', 'jpeg', '.tif'), "Image format is not supported."
 
     path = "Pre_Processing"
     global TESTING
