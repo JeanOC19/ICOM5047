@@ -44,6 +44,10 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Check to save wedges
+ and rings graphs.</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">border-width: 0px;</string>
     </property>
@@ -89,14 +93,20 @@ font: bold;</string>
       <height>22</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Enter file name.</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color:white;</string>
     </property>
-    <property name="text">
-     <string/>
+    <property name="inputMask">
+     <string>nnnnnnnnnnnnnnnnnnnnnnnnn</string>
     </property>
     <property name="maxLength">
-     <number>150</number>
+     <number>25</number>
+    </property>
+    <property name="cursorPosition">
+     <number>0</number>
     </property>
    </widget>
    <widget class="QLabel" name="label_fileName">
@@ -170,6 +180,10 @@ font: bold;</string>
       <height>20</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Check to save fiber density data
+ and measurement data.</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">border-width: 0px;</string>
     </property>
@@ -182,7 +196,7 @@ font: bold;</string>
    </widget>
    <widget class="QLineEdit" name="lineEdit_filePath">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -192,11 +206,18 @@ font: bold;</string>
       <height>22</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Enter folder path in which
+ to save the data.</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color:white;</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_filePath">

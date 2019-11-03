@@ -38,14 +38,15 @@
    <property name="styleSheet">
     <string notr="true">QFrame{
 	background-color: #EDFFE3;
-}</string>
+}
+</string>
    </property>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>720</y>
-      <width>1321</width>
+      <width>1400</width>
       <height>80</height>
      </rect>
     </property>
@@ -90,17 +91,20 @@ border-top-style: inset;</string>
 	width: 100px;
 	padding: 6px;
 }
+QTabBar::tab:hover {
+	background-color: #B6E9AC;
+	font: bold 15px;
+}
 QTabWidget::pane { 
     border-top: 8px solid #4F8A70;
 }
 QTabBar::tab:selected {    
 	text-decoration: underline;
 }
-
 </string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -195,7 +199,7 @@ border-style: inset;
        </rect>
       </property>
       <property name="cursor">
-       <cursorShape>ArrowCursor</cursorShape>
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="toolTip">
        <string>Start the fiber density
@@ -789,19 +793,22 @@ QPushButton:disabled{
       </property>
       <property name="toolTip">
        <string>Number of Wedges per Quadrant:
-min: 4
+min: 3
 max: 100</string>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color:white;</string>
       </property>
+      <property name="inputMask">
+       <string>000</string>
+      </property>
       <property name="maxLength">
-       <number>4</number>
+       <number>3</number>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_intermediateStepPath">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -818,10 +825,13 @@ max: 100</string>
       <property name="styleSheet">
        <string notr="true">background-color:white;</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_imagePath">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -840,6 +850,9 @@ max: 100</string>
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_numRings">
@@ -862,11 +875,14 @@ max: 25</string>
       <property name="styleSheet">
        <string notr="true">background-color:white;</string>
       </property>
+      <property name="inputMask">
+       <string>00</string>
+      </property>
       <property name="text">
        <string/>
       </property>
       <property name="maxLength">
-       <number>4</number>
+       <number>2</number>
       </property>
      </widget>
      <widget class="QLabel" name="label_units">
@@ -966,14 +982,26 @@ max: 25</string>
       </property>
       <property name="toolTip">
        <string>Number of Diameter Measurements per Quadrant:
-min: 1
-max: 25</string>
+min: 3
+max: 100</string>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color:white;</string>
+       <string notr="true">QLineEdit{
+	background-color:white;
+}
+QLineEdit:clicked{
+	background-color:blue;
+	cursor-position:0;
+}</string>
+      </property>
+      <property name="inputMask">
+       <string>000</string>
       </property>
       <property name="maxLength">
-       <number>4</number>
+       <number>3</number>
+      </property>
+      <property name="cursorPosition">
+       <number>0</number>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_imageDPI">
@@ -987,11 +1015,14 @@ max: 25</string>
       </property>
       <property name="toolTip">
        <string>Image Dots Per Inch:
-min: 1200
-max: 2600</string>
+min: 25
+max: 4800</string>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color:white;</string>
+      </property>
+      <property name="inputMask">
+       <string>0000</string>
       </property>
       <property name="maxLength">
        <number>4</number>
@@ -1168,19 +1199,6 @@ max: 2600</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>570</x>
-        <y>260</y>
-        <width>93</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="dashboard_tab">
      <property name="enabled">
@@ -1193,6 +1211,9 @@ max: 2600</string>
       <string>Dashboard</string>
      </attribute>
      <widget class="QTabWidget" name="tabWidget_2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -1214,6 +1235,9 @@ max: 2600</string>
 	width: 130px;
 	padding: 6px;
 }
+QTabBar::tab:hover {
+	font: bold 13px;
+}
 QTabWidget::pane { 
     border-top: 3px solid #4F8A70;
 }
@@ -1224,9 +1248,12 @@ QTabBar::tab:selected {
 </string>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="graphs_tab">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>Graphs</string>
        </attribute>
@@ -1766,7 +1793,7 @@ border: 1px solid #444444;</string>
      <widget class="QFrame" name="frame_8">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>140</x>
         <y>12</y>
         <width>2</width>
         <height>20</height>
@@ -1829,11 +1856,19 @@ border: 1px solid #444444;</string>
         <height>28</height>
        </rect>
       </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #EDFFE3;
-border: 0px;
-font: 14px;
-</string>
+       <string notr="true">QPushButton{
+	background-color: #EDFFE3;
+	border: 0px;
+	font: 14px;
+}
+
+QPushButton:hover {
+	font: bold 13px;
+}</string>
       </property>
       <property name="text">
        <string>Save</string>

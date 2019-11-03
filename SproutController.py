@@ -1,10 +1,7 @@
 import os
+import random
 import time
 from PyQt5.QtCore import QThread
-
-
-# Output from "Fiber Density and Distribution" Module
-
 
 # sample for time delay of modules
 test_delay = 1
@@ -14,6 +11,10 @@ step_enhanced_image = None
 step_bounded_input_image = None
 bounded_binarized_input_image = None
 
+# Output from "Fiber Density and Distribution" Module
+densities = []
+num_wedges = 0
+num_rings = 0
 
 # class SproutController (threading.Thread):
 class SproutController (QThread):
@@ -27,7 +28,7 @@ class SproutController (QThread):
         self.wait()
 
     def run(self):
-        global step_enhanced_image
+        global step_enhanced_image, step_enhanced_image, step_bounded_input_image, num_rings, num_wedges
         print("--------------------------------------------")
         print("Sprout Controller: Acquired Input Parameters")
         print("--------------------------------------------")
@@ -44,6 +45,10 @@ class SproutController (QThread):
 
         print("Current Working Directory:")
         print(" " + os.getcwd())
+
+        # To aid with simulation for get_fiber_density
+        num_rings = self.in_data['num_rings']
+        num_wedges = self.in_data['num_wedges']
 
         if self.in_data['enhance']:
             step_enhanced_image = image_enhancement(self.in_data['img_path'])
@@ -78,6 +83,7 @@ class SproutController (QThread):
         return
 
 
+# Image Enhancement Module
 def image_enhancement(image_path: str):
     enhanced_image = "\n        _  \n" \
                        "      /   \\  \n"\
@@ -97,6 +103,7 @@ def image_enhancement(image_path: str):
     return enhanced_image
 
 
+# Image Pre-processing Module
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path=None, enhanced_image=None):
     bounded_input_image = "\n    |   _   |\n" \
                             "    | /   \\ | \n"\
@@ -122,6 +129,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     return bounded_input_image, bounded_binarized_input_image
 
 
+# Region Extraction
 def region_extraction(bounded_input_image: object, bounded_binarized_input_image: object,
                       number_wedges: int, number_rings: int):
     print("\n------------------------")
@@ -141,6 +149,7 @@ def region_extraction(bounded_input_image: object, bounded_binarized_input_image
     return
 
 
+# Fiber Density and Distribution Module
 def fiber_density_and_distribution(number_rings: int, number_wedges: int):
     print("\n------------------------------")
     print("Fiber Density and Distribution")
@@ -153,13 +162,17 @@ def fiber_density_and_distribution(number_rings: int, number_wedges: int):
     print("Output Data:")
     print(" None ")
 
+    # To aid with simulation for get_fiber_density
+    set_fiber_density()
+
     time.sleep(test_delay)
     return
 
 
+# Data Management Module
 def get_dimensional_measurements():
     measurement_data = [22, 8, 6, 3, 3, 188.496, 188.496, -1.3]
-    print("\n-------------------------")
+    print("\n---------------------------")
     print("Get Dimensional Measurement")
     print("---------------------------")
 
@@ -179,12 +192,52 @@ def get_dimensional_measurements():
     return measurement_data
 
 
+def set_fiber_density():
+    global densities, num_wedges, num_rings
+    print("***************************")
+    print(num_rings)
+    print(num_wedges)
+    densities = []
+    factor = 90 / int(num_rings)
+    lower = 5
+    upper = factor + 5
+
+    print("*-------------------------*")
+    for x in range(int(num_rings)+1):
+        print("[" + str(int(lower)/100) + ", " + str(int(upper)/100) + "]")
+        temp_list = []
+        for y in range(int(num_wedges)+1):
+            if x == int(num_rings):
+                temp = 0
+                for z in range(len(densities)):
+                    temp += densities[z][y]
+                temp = temp/len(densities)
+                n = int(100*temp)/100
+            elif y == int(num_wedges):
+                temp = 0
+                for z in range(len(temp_list)):
+                    temp += temp_list[z]
+                temp = temp/len(temp_list)
+                n = int(100*temp)/100
+            else:
+                n = random.randint(int(lower), int(upper))/100
+            temp_list.append(n)
+        print(temp_list)
+        densities.append(temp_list)
+        lower += factor
+        upper += factor
+    print("*-------------------------*")
+    print(densities)
+    print("***************************")
+
+
 def get_fiber_density():
-    densities = [[0.4500, 0.4400, 0.4000, 0.3800, 0.3500, 0.3900, 0.4500, 0.4200, 0.4100],
-                 [0.5000, 0.5500, 0.4900, 0.4500, 0.5000, 0.5100, 0.4700, 0.5300, 0.5000],
-                 [0.7500, 0.7100, 0.7000, 0.6800, 0.6900, 0.7000, 0.7500, 0.7200, 0.7125],
-                 [0.5667, 0.5667, 0.5300, 0.5033, 0.5133, 0.5333, 0.5567, 0.5567, 0.5408]]
-    print("\n-------")
+    global densities
+    # densities = [[0.4500, 0.4400, 0.4000, 0.3800, 0.3500, 0.3900, 0.4500, 0.4200, 0.4100],
+    #              [0.5000, 0.5500, 0.4900, 0.4500, 0.5000, 0.5100, 0.4700, 0.5300, 0.5000],
+    #              [0.7500, 0.7100, 0.7000, 0.6800, 0.6900, 0.7000, 0.7500, 0.7200, 0.7125],
+    #              [0.5667, 0.5667, 0.5300, 0.5033, 0.5133, 0.5333, 0.5567, 0.5567, 0.5408]]
+    print("\n---------")
     print("Densities")
     print("---------")
 
@@ -195,3 +248,45 @@ def get_fiber_density():
     print(" densities: " + str(densities))
     return densities
 
+
+def save_graphs(name: str, path: str):
+    print("\n-----------")
+    print("Save Graphs")
+    print("-----------")
+
+    print("Input Parameters:")
+    print(" name: " + name)
+    print(" path: " + path)
+
+    print("Output Data:")
+    print(" None ")
+    return
+
+
+def save_fiber_density_csv(name: str, path: str):
+    print("\n----------------------")
+    print("Save Fiber Density CSV")
+    print("----------------------")
+
+    print("Input Parameters:")
+    print(" name: " + name)
+    print(" path: " + path)
+
+    print("Output Data:")
+    print(" None ")
+    return
+
+
+def save_dimensional_measurements_csv(name: str, path: str, units: str):
+    print("\n---------------------------------")
+    print("Save Dimensional Measurements CSV")
+    print("---------------------------------")
+
+    print("Input Parameters:")
+    print(" name: " + name)
+    print(" path: " + path)
+    print(" units: " + units)
+
+    print("Output Data:")
+    print(" None ")
+    return

@@ -1,33 +1,14 @@
-import ctypes
 import os
-
-from PyQt5 import QtWidgets, uic, QtGui
 import sys
-import _thread
-import threading
-import signal
-import time
 
-# from PyQt5.QtCore import QThread
-# from PyQt5.QtCore import Signal
-from PyQt5.QtCore import pyqtSignal
-
-import SproutController as Sprout
-
-
-from PyQt5.QtGui import QPixmap, QPen
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QInputDialog
-from PyQt5.Qt import QGradient, Qt
-
-# from PySide2 import QtGui
-# from PySide2 import QtWidgets as sideWid
-# from PySide2.QtCharts import QtCharts
+from PyQt5 import QtWidgets, uic
+from PyQt5 import QtCore
+from PyQt5.Qt import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt5.QtChart import QChart, QLineSeries, QChartView
 
-window = None
-# thread1 = None
-
-count_pb = 0
+import SproutController as Sprout
 
 # messageBox_flag if true then there is a popup message in screen
 wedges_messageBox_flag = False
@@ -43,29 +24,9 @@ in_data = {'img_path': "",
            'img_dpi': 0,
            'enhance': False}
 
-# columns: wedges, rows: rings (r1(w1,w2,...,w7,wAvg),r2(...),r3(...),rAvg(...))
-densities = []
-# densities = [[0.4500, 0.4400, 0.4000, 0.3800, 0.3500, 0.3900, 0.4500, 0.4200, 0.4100],
-#              [0.5000, 0.5500, 0.4900, 0.4500, 0.5000, 0.5100, 0.4700, 0.5300, 0.5000],
-#              [0.7500, 0.7100, 0.7000, 0.6800, 0.6900, 0.7000, 0.7500, 0.7200, 0.7125],
-#              [0.5667, 0.5667, 0.5300, 0.5033, 0.5133, 0.5333, 0.5567, 0.5567, 0.5408]]
-
-measurement_data = {} # todo fix wen data is null
-# measurement_data = {'avg_outer_diameter': 8,
-#                     'avg_inner_diameter': 6,
-#                     'area': 22,
-#                     'centroid_x': 3,
-#                     'centroid_y': 3,
-#                     'moment_of_inertia_x': 188.496,
-#                     'moment_of_inertia_y': 188.496}
-
-save_file_file_name = ""
-save_folder_file_path = ""
-
 # default values
-default_comboBox_graph_item = 3
+default_comboBox_graph_item_count = 3
 
-percent_count = 0
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -79,8 +40,9 @@ class Ui(QtWidgets.QMainWindow):
         self.is_running = False
 
         self.myThread = None
-        self.in_density = []
-        self.measurement_data = {}
+        # columns: wedges, rows: rings (r1(w1,w2,...,w7,wAvg),r2(...),r3(...),rAvg(...))
+        self.densities = []
+        self.measurement_data = []
 
         # self.ui()
 
@@ -112,16 +74,16 @@ class Ui(QtWidgets.QMainWindow):
 
         self.progressBar.valueChanged.connect(self.progress_change)
 
-        self.pushButton.clicked.connect(self.terminate_thread)
+        self.tabWidget_1.tabBar().setCursor(QtCore.Qt.PointingHandCursor)
+        self.tabWidget_2.tabBar().setCursor(QtCore.Qt.PointingHandCursor)
 
         self.show()
 
     def progress_change(self):
-        global densities, measurement_data
         if self.progressBar.value() == 99:
             self.myThread.wait()
-            densities = Sprout.get_fiber_density()
-            measurement_data = Sprout.get_dimensional_measurements()
+            self.densities = Sprout.get_fiber_density()
+            self.measurement_data = Sprout.get_dimensional_measurements()
             self.start_button_func()
 
     def terminate_thread(self):
@@ -177,16 +139,14 @@ class Ui(QtWidgets.QMainWindow):
         in_data['intermediate_path'] = url
 
     def start_button_func(self):
-        global count_pb, in_data, densities, measurement_data, percent_count
+        global in_data
 
         # if program is currently in progress
         if self.is_running:
-            # self.thread1.join()
-            # if finished successfully
-            # count_pb must be set to zero when the fiber density calculation is finished successfully
             self.terminate_thread()
+            # if finished successfully
             if self.progressBar.value() == 99:
-                self.progressBar.setValue(0)
+                self.progressBar.setValue(100)
                 self.dashboard_tab.setEnabled(True)
                 self.tabWidget_2.setEnabled(True)
                 self.graphs_tab.setEnabled(True)
@@ -199,7 +159,7 @@ class Ui(QtWidgets.QMainWindow):
                 self.create_table()
 
                 # set measurement data
-                self.set_measurement_data()
+                self.display_measurement_data()
 
                 self.tabWidget_1.setCurrentIndex(1)
                 self.tabWidget_2.setCurrentIndex(0)
@@ -217,12 +177,11 @@ class Ui(QtWidgets.QMainWindow):
 
         # if program has not started
         else:
-            # todo: uncomment before happy hour
-            # if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
-            #         self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
-            #         self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
-            #     self.warning_message_box("Make sure all inputs are filled in.")
-            #     return
+            if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
+                    self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
+                    self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
+                self.warning_message_box("Make sure all inputs are filled in.")
+                return
 
             if not self.is_int_inbound(self.lineEdit_numMeasurements.text(), 3, 100, self.label_numMeasurements.text()):
                 return
@@ -233,9 +192,11 @@ class Ui(QtWidgets.QMainWindow):
             if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 25, 4800, self.label_imageDPI.text()):
                 return
 
-            # todo erase line below before happy hour
-            in_data['intermediate_path'] = "C:/Users/Abdias/Desktop/Sprout"
-            os.chdir(in_data['intermediate_path'])
+            try:
+                os.chdir(in_data['intermediate_path'])
+            except OSError:
+                QMessageBox.information(self, "Warning!", "File path not found for intermediate steps. ")
+                return
 
             in_data['units'] = self.comboBox_units.currentText()
             in_data['num_measurement'] = int(self.lineEdit_numMeasurements.text())*4
@@ -257,14 +218,11 @@ class Ui(QtWidgets.QMainWindow):
             try:
                 self.myThread = Sprout.SproutController(self, in_data)
             except:
-                print("** myThread created failed **")
+                print("** myThread create failed **")
             try:
                 self.myThread.start()
             except :
                 print("** qthread fail **")
-
-    def done(self):
-        print("myTHread is done wiht his f*&# life")
 
     def inputs_set_enabled(self, val):
         self.browse_button_1.setEnabled(val)
@@ -285,33 +243,33 @@ class Ui(QtWidgets.QMainWindow):
         self.label_units.setEnabled(val)
 
     def create_graphs(self):
-        global densities, default_comboBox_graph_item
+        global default_comboBox_graph_item_count
 
         # Set Ring ComboBox
         for x in range(self.comboBox_rings.count()):
-            if x >= default_comboBox_graph_item:
-                self.comboBox_rings.removeItem(default_comboBox_graph_item)
+            if x >= default_comboBox_graph_item_count:
+                self.comboBox_rings.removeItem(default_comboBox_graph_item_count)
 
         # Set Wedges ComboBox
         for x in range(self.comboBox_wedges.count()):
-            if x >= default_comboBox_graph_item:
-                self.comboBox_wedges.removeItem(default_comboBox_graph_item)
+            if x >= default_comboBox_graph_item_count:
+                self.comboBox_wedges.removeItem(default_comboBox_graph_item_count)
 
         # Ring Graph
         self.ring_chart = QChart()
 
-        for x in range(len(densities)):
+        for x in range(len(self.densities)):
             ring_series = QLineSeries()
-            for y in range(len(densities[x])-1):
-                ring_series.append(y+1, densities[x][y])
+            for y in range(len(self.densities[x])-1):
+                ring_series.append(y+1, self.densities[x][y])
             self.ring_chart.addSeries(ring_series)
-            if x < len(densities)-1:
+            if x < len(self.densities)-1:
                 self.comboBox_rings.addItem("Ring " + str(x+1))
 
         self.ring_chart.setTitle('Fiber Density VS Wedges')
         self.ring_chart.legend().hide()
         self.ring_chart.createDefaultAxes()
-        self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(densities[0])-1)
+        self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(self.densities[0])-1)
         self.ring_chart.axes(Qt.Vertical)[0].setRange(0, 1)
         self.ring_chart.axes(Qt.Horizontal)[0].setTitleText("Wedge Number")
         self.ring_chart.axes(Qt.Vertical)[0].setTitleText("Fiber Density")
@@ -322,18 +280,21 @@ class Ui(QtWidgets.QMainWindow):
         # Wedges Graph
         self.wedge_chart = QChart()
 
-        for y in range(len(densities[0])):
+        for y in range(len(self.densities[0])):
             ring_series = QLineSeries()
-            for x in range(len(densities)-1):
-                ring_series.append(x+1, densities[x][y])
+            for x in range(len(self.densities)-1):
+                ring_series.append(x+1, self.densities[x][y])
             self.wedge_chart.addSeries(ring_series)
-            if y < len(densities[0])-1:
+            if y < len(self.densities[0])-1:
                 self.comboBox_wedges.addItem("Wedge " + str(y+1))
 
         self.wedge_chart.setTitle('Fiber Density VS Rings')
         self.wedge_chart.legend().hide()
         self.wedge_chart.createDefaultAxes()
-        self.wedge_chart.axes(Qt.Horizontal)[0].setRange(1, len(densities)-1)
+        if (len(self.densities)) == 2:
+            self.wedge_chart.axes(Qt.Horizontal)[0].setRange(0, 2)
+        else:
+            self.wedge_chart.axes(Qt.Horizontal)[0].setRange(1, len(self.densities)-1)
         self.wedge_chart.axes(Qt.Vertical)[0].setRange(0, 1)
         self.wedge_chart.axes(Qt.Horizontal)[0].setTitleText("Ring Number")
         self.wedge_chart.axes(Qt.Vertical)[0].setTitleText("Fiber Density")
@@ -348,7 +309,7 @@ class Ui(QtWidgets.QMainWindow):
         self.comboBox_wedges.show()
 
     def change_rings_graph(self):
-        global default_comboBox_graph_item
+        global default_comboBox_graph_item_count
 
         for x in range(len(self.ring_chart.series())):
             self.ring_chart.series()[x].show()
@@ -364,10 +325,10 @@ class Ui(QtWidgets.QMainWindow):
         elif "Ring" in self.comboBox_rings.currentText():
             for x in range(len(self.ring_chart.series())):
                 self.ring_chart.series()[x].hide()
-            self.ring_chart.series()[self.comboBox_rings.currentIndex() - default_comboBox_graph_item].show()
+            self.ring_chart.series()[self.comboBox_rings.currentIndex() - default_comboBox_graph_item_count].show()
 
     def change_wedges_graph(self):
-        global default_comboBox_graph_item
+        global default_comboBox_graph_item_count
 
         for x in range(len(self.wedge_chart.series())):
             self.wedge_chart.series()[x].show()
@@ -383,33 +344,31 @@ class Ui(QtWidgets.QMainWindow):
         elif "Wedge" in self.comboBox_wedges.currentText():
             for x in range(len(self.wedge_chart.series())):
                 self.wedge_chart.series()[x].hide()
-            self.wedge_chart.series()[self.comboBox_wedges.currentIndex() - default_comboBox_graph_item].show()
+            self.wedge_chart.series()[self.comboBox_wedges.currentIndex() - default_comboBox_graph_item_count].show()
 
     def create_table(self):
-        global densities
-
         i = 0
         j = 0
         column_name = []
         row_name = []
 
-        self.tableWidget.setRowCount(len(densities))
-        self.tableWidget.setColumnCount(len(densities[0]))
+        self.tableWidget.setRowCount(len(self.densities))
+        self.tableWidget.setColumnCount(len(self.densities[0]))
 
-        for ring in densities:
+        for ring in self.densities:
             for wedge in ring:
                 self.tableWidget.setItem(i, j, QTableWidgetItem("{:.4f}".format(wedge)))
                 j += 1
             j = 0
             i += 1
 
-        for x in range(len(densities[0])):
-            if x == len(densities[0]) - 1:
+        for x in range(len(self.densities[0])):
+            if x == len(self.densities[0]) - 1:
                 column_name.append("Average")
             else:
                 column_name.append("Wedge " + str(x + 1))
-        for y in range(len(densities)):
-            if y == len(densities) - 1:
+        for y in range(len(self.densities)):
+            if y == len(self.densities) - 1:
                 row_name.append("Average")
             else:
                 row_name.append("Ring " + str(y + 1))
@@ -418,16 +377,15 @@ class Ui(QtWidgets.QMainWindow):
         self.tableWidget.setVerticalHeaderLabels(row_name)
         self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
 
-    def set_measurement_data(self):
-        global measurement_data
-        self.lineEdit_area.setText(str(measurement_data[0]) + " " + in_data['units'] + "^2")
-        self.lineEdit_avgOuterDiameter.setText(str(measurement_data[1]) + " " + in_data['units'])
-        self.lineEdit_avgInnerDiameter.setText(str(measurement_data[2]) + " " + in_data['units'])
-        self.lineEdit_centroid_x.setText(str(measurement_data[3]) + " " + in_data['units'])
-        self.lineEdit_centroid_y.setText(str(measurement_data[4]) + " " + in_data['units'])
-        self.lineEdit_momentOfInertia_x.setText(str(measurement_data[5]) + " " + in_data['units'] + "^4")
-        self.lineEdit_momentOfInertia_y.setText(str(measurement_data[6]) + " " + in_data['units'] + "^4")
-        self.lineEdit_productOfInertia.setText(str(measurement_data[7]) + " " + in_data['units'] + "^4")
+    def display_measurement_data(self):
+        self.lineEdit_area.setText(str(self.measurement_data[0]) + " " + in_data['units'] + "^2")
+        self.lineEdit_avgOuterDiameter.setText(str(self.measurement_data[1]) + " " + in_data['units'])
+        self.lineEdit_avgInnerDiameter.setText(str(self.measurement_data[2]) + " " + in_data['units'])
+        self.lineEdit_centroid_x.setText(str(self.measurement_data[3]) + " " + in_data['units'])
+        self.lineEdit_centroid_y.setText(str(self.measurement_data[4]) + " " + in_data['units'])
+        self.lineEdit_momentOfInertia_x.setText(str(self.measurement_data[5]) + " " + in_data['units'] + "^4")
+        self.lineEdit_momentOfInertia_y.setText(str(self.measurement_data[6]) + " " + in_data['units'] + "^4")
+        self.lineEdit_productOfInertia.setText(str(self.measurement_data[7]) + " " + in_data['units'] + "^4")
 
     def warning_message_box(self, message):
         global wedges_messageBox_flag, rings_messageBox_flag
@@ -462,23 +420,24 @@ class SaveWindow(QtWidgets.QMainWindow):
         self.lineEdit_filePath.setText(url)
 
     def save_graph_data(self):
-        global save_file_file_name, save_folder_file_path
-        save_file_file_name = ""
+        save_file_name = ""
         save_folder_file_path = ""
 
-        if(self.lineEdit_fileName.text().strip() is "" or self.lineEdit_filePath.text().strip() is ""
-                or not (self.checkBox_graphs.isChecked() or self.checkBox_data.isChecked())):
-            mbox = QMessageBox.information(self, "Warning!", "Please make sure to provide a file name file path,   \n"
-                                                             " and have at least one checkbox selected.")
+        if not (self.checkBox_graphs.isChecked() or self.checkBox_data.isChecked()):
+            QMessageBox.information(self, "Warning!", "Please make sure to have at least   \n"
+                                                             " one checkbox selected.")
+        elif self.lineEdit_fileName.text().strip() is "":
+            QMessageBox.information(self, "Warning!", "Please make sure to provide a file name.   ")
+        elif self.lineEdit_filePath.text() is "":
+            QMessageBox.information(self, "Warning!", "Please make sure to provide a folder path.   ")
         else:
             save_folder_file_path = self.lineEdit_filePath.text()
-            save_file_file_name = self.lineEdit_fileName.text().strip()
+            save_file_name = self.lineEdit_fileName.text().strip()
             if self.checkBox_graphs.isChecked():
-                print("call: save graphs")
+                Sprout.save_graphs(save_file_name, save_folder_file_path)
             if self.checkBox_data.isChecked():
-                print("call: save density data")
-                print("call: save additional data")
-            print(save_folder_file_path + "/" + save_file_file_name)
+                Sprout.save_fiber_density_csv(save_file_name, save_folder_file_path)
+                Sprout.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
             self.close()
 
     def cancel_save_graph_data(self):
@@ -486,9 +445,7 @@ class SaveWindow(QtWidgets.QMainWindow):
 
 
 def main():
-    global window
     app = QtWidgets.QApplication(sys.argv)
-    # thread1 = Sprout.SproutController(in_data)
     window = Ui()
     window.ui()
     sys.exit(app.exec_())
