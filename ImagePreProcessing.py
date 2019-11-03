@@ -41,7 +41,8 @@ def set_diameters(diameter_list: list):
     print()
 
 
-def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, enhanced_image=None) -> object:
+def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
+                      enhanced_image: object = None):
     """
     Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters, centroid coordinates, and moment of inertia with respect to the x and y axes
     :param num_of_measurements: number of measurements to use for determining average inner and outer diameters
@@ -197,32 +198,34 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
 
         # Find the coordinates of the centroid and convert them to the specified units
         meas_centroid = [0, 0]
-        M = cv.moments(binarized_bounded_image, binaryImage=True)
-        centroid_coordinates = (int(M['m10'] / M['m00']), int(M['m01'] / M['m00']))
+        M = cv.moments(bounded_filled_image, binaryImage=True)
+        centroid_coordinates = (M['m10'] / M['m00'], M['m01'] / M['m00'])
         meas_centroid[0] = centroid_coordinates[0] * units_multiplier / image_dpi
         meas_centroid[1] = centroid_coordinates[1] * units_multiplier / image_dpi
 
         # Draw the centroid on the image and save it
-        cv.circle(bounded_image, centroid_coordinates, 10, (0, 255, 255), 10)
+        cv.circle(bounded_image, (int(centroid_coordinates[0]), int(centroid_coordinates[1])), 10, (0, 255, 255), 10)
         cv.imwrite(path + "/centroid.jpg", bounded_image)
 
         # Calculate the moments of the image and obtain the second moments to get the moments of inertia
-        x_moment = (M['m02'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
-        y_moment = (M['m20'] - centroid_coordinates[1] * M['m10']) * ((units_multiplier / image_dpi) ** 4)
-        moment_product = (M['m11'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
+        x_moment = (M['m02']) * ((units_multiplier / image_dpi) ** 4)
+        y_moment = (M['m20']) * ((units_multiplier / image_dpi) ** 4)
+        moment_product = (M['m11']) * ((units_multiplier / image_dpi) ** 4)
 
-        return bounded_image, binarized_bounded_image, meas_area, meas_outer_diameter, meas_inner_diameter, \
-               meas_centroid, x_moment, y_moment, moment_product, outer_diameter_measurements, \
-               inner_diameter_measurements
+        return bounded_image, binarized_bounded_image, [meas_area, meas_outer_diameter, meas_inner_diameter,
+                                                        meas_centroid[0], meas_centroid[1], x_moment, y_moment,
+                                                        moment_product], [outer_diameter_measurements,
+                                                                          inner_diameter_measurements]
 
     # Validate inputs
-    assert image_path is not None or enhanced_image is not None, "Image name or data must be given as input."
+    assert image_path is not None, "Image path must be given as input."
     assert type(num_of_measurements) is int, "Dimensional measurements number is not an integer."
     assert type(image_dpi) is int, "Image DPI is not an integer."
     assert type(units) is str, "Units of measurement is not a string."
     assert 400 >= num_of_measurements >= 12, "Number of dimensional measurements is not in allowed range."
-    assert 2600 >= image_dpi >= 1200, "Image DPI should be between 25 and 2600."
+    assert 4800 >= image_dpi >= 25, "Image DPI should be between 25 and 4800."
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
+    assert os.path.exists(image_path), "Input image was not found."
 
     path = "Pre_Processing"
     global TESTING
@@ -244,10 +247,10 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
     units_multiplier = units_dict[units]
 
     # Check if input is the image path or the image data
-    if image_path is not None:
+    if enhanced_image is None:
         try:
             img = cv.imread(image_path)
-        except:
+        except Exception:
             raise Exception("Unable to open input image")
     else:
         img = enhanced_image
@@ -258,28 +261,24 @@ def pre_process_image(num_of_measurements, image_dpi, units, image_path=None, en
     except:
         raise Exception("Unable to binarize input image.")
 
-    # Find contours of the image and make dimensional measurements
     try:
-        image, binarized_image, area, outer_diameter, inner_diameter, \
-        centroid, moment_of_x, moment_of_y, product_of_inertia, outer_measurements, \
-        inner_measurements = image_contours(binarized_image)
-        set_dimensional_measurements(
-            [area, outer_diameter, inner_diameter, centroid[0],
-             centroid[1], moment_of_x, moment_of_y, product_of_inertia])
-        set_diameters([outer_measurements, inner_measurements])
+        # Find contours of the image and make dimensional measurements
+        image, binarized_image, measurements_list, diameters_list = image_contours(binarized_image)
+        set_dimensional_measurements(measurements_list)
+        set_diameters(diameters_list)
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 
+    # If user is testing module, send all the parameters
     if TESTING:
-        return binarized_image, image, area, outer_diameter, inner_diameter, centroid, moment_of_x, moment_of_y, \
-               product_of_inertia, outer_measurements, inner_measurements
+        return binarized_image, image, measurements_list[0], measurements_list[1], measurements_list[2], \
+               measurements_list[3], measurements_list[4], measurements_list[5], measurements_list[6], \
+               measurements_list[7], diameters_list[0], diameters_list[1]
     else:
         return binarized_image, image
 
 
 if __name__ == "__main__":
     startt = time.process_time()
-
     bounded_binarized_image, bounded_input_image = pre_process_image(12, 1200, 'cm', image_path='Images/R_0.0.0.jpg')
-
     print("Total time: " + str(time.process_time() - startt))
