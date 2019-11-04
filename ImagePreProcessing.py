@@ -224,7 +224,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     assert type(image_dpi) is int, "Image DPI is not an integer."
     assert type(units) is str, "Units of measurement is not a string."
     assert 400 >= num_of_measurements >= 12, "Number of dimensional measurements is not in allowed range."
-    assert 4800 >= image_dpi >= 25, "Image DPI should be between 25 and 4800."
+    assert 4800 >= image_dpi >= 1200, "Image DPI should be between 1200 and 4800."
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
     assert os.path.exists(image_path), "Input image was not found."
     assert image_path[-4:] in ('.bmp', '.jpg', 'jpeg', '.tif'), "Image format is not supported."
