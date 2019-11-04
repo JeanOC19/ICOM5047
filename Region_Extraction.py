@@ -3,8 +3,6 @@ import numpy as np
 import math
 import os
 
-# for test purposes
-n_regions = 0
 
 def resize_image(img, scale):
     """
@@ -273,10 +271,6 @@ def extract_regions(img, n_rings, wedge_num):
         y = y-region_height
         # Store region on directory
         regions_path = store_region(extracted_region, region_name)
-        # Increment global n_regions variable
-        increment_n_regions()
-
-        # append_regions_dict(region_name, extracted_region)
 
     return regions_path
 
@@ -312,19 +306,19 @@ def store_region(img, img_name):
         return full_path
 
 
-def increment_n_regions():
-    global n_regions
-    n_regions = n_regions+1
-
-
 def show_image(img):
-    """Show on the screen a given image (For debug purposes)"""
+    """
+    Show on the screen a given image
+    :param img: Input image
+    :return: None
+    """
     resized_img, _ = resize_image(img, 500)
     cv2.imshow('Image', resized_img)
     cv2.waitKey(0)
 
 
-def region_extraction(bounded_input_image, bounded_binarized_input_image, number_wedges, number_rings):
+def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_image: np.ndarray,
+                      number_wedges: int, number_rings: int):
     """
     Extract regions from an input bamboo cross-section image.
     :param bounded_input_image: Input image bounded
@@ -334,9 +328,13 @@ def region_extraction(bounded_input_image, bounded_binarized_input_image, number
     :return: None
     """
 
-    # For Testing
-    num_of_regions = number_wedges * number_rings
-    print("Number of Expected Regions: ", num_of_regions)
+    # Validate Inputs
+    assert type(number_wedges) is int, "Number of wedges has to be int."
+    assert type(number_rings) is int, "Number of rings has to be int."
+    assert 400 >= number_wedges >= 12, "Number of wedges should be between 12 and 400"
+    assert 25 >= number_rings >= 1, "Number of rings should be between 1 and 25"
+    assert isinstance(bounded_input_image, np.ndarray), "bounded_input_image is wrong type"
+    assert isinstance(bounded_binarized_input_image, np.ndarray), "bounded_binarized_input_image is wrong type"
 
     # Calculate the angle of the wedge given the number of wedges per quadrant
     wedge_angle = (lambda wedges: 360/wedges)(number_wedges)
@@ -346,21 +344,22 @@ def region_extraction(bounded_input_image, bounded_binarized_input_image, number
     regions_path = str()
     wedge_number = 1
 
+    # Iterate
     while current_angle < 360:
         # Rotate the image to the current calculated angle
         rotated_image = rotate_bound(bounded_binarized_input_image, current_angle)
         # Extract wedge and the wedge's mask from the rotated image
-        wedge, wedge_mask = extract_wedge(rotated_image, bin_img, wedge_angle)
+        wedge, wedge_mask = extract_wedge(rotated_image, bounded_binarized_input_image, wedge_angle)
         # Extract the largest inscribed rectangle from wedge.
         wedge_rectangle = extract_rectangle(wedge, wedge_mask)
         # Extract regions from the extracted rectangle
-        regions_path = extract_regions(wedge_rectangle, num_of_rings, wedge_number)
+        regions_path = extract_regions(wedge_rectangle, number_rings, wedge_number)
         # Increment the current angle for the next iteration
         current_angle = current_angle + wedge_angle
         # Increment the wedge number
         wedge_number = wedge_number + 1
 
-    print("Total Number of Regions: ", n_regions)
+    # For Testing
     print("Stored Regions at: " + regions_path)
 
     return None
@@ -376,7 +375,5 @@ if __name__ == "__main__":
     os.chdir(dir_path)
 
     region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
-
-    # Call Fiber Density Module
 
 
