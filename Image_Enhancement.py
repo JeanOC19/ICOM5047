@@ -21,24 +21,6 @@ def adjust_gamma(image, gamma=1.0):
     return cv2.LUT(image, table)
 
 
-def resize_image(image):
-    """
-    Resize an image
-    :param image: Input image
-    :return: Resized Image
-    """
-
-    img = image.copy()
-
-    # Obtain parameters for scaling
-    height, width, depth = img.shape
-    imgScale = 700 / width
-    newX, newY = img.shape[1] * imgScale, img.shape[0] * imgScale
-
-    # Rescale the image
-    return cv2.resize(img, (int(newX), int(newY)))
-
-
 def store_image(img):
     """
     Store a given image on the 'enhanced_image' directory.
@@ -68,16 +50,6 @@ def store_image(img):
         print("Storage of %s failed on path" % img_name % img_enhacement_path)
     else:
         print("Stored: ", os.path.join(full_path, str(img_name)))
-
-
-def show_image(img):
-    """
-    Show an input image on screen.
-    :param img: Input image
-    :return: None
-    """
-    cv2.imshow('Image', img)
-    cv2.waitKey(0)
 
 
 def image_enhancement(image_path: str):
@@ -110,7 +82,7 @@ def image_enhancement(image_path: str):
     bgr_img = cv2.cvtColor(yuv_img, cv2.COLOR_YUV2BGR)
 
     # Apply gamma correction to raise the brightness of the image
-    enhanced_img = adjust_gamma(bgr_img, 1.25)
+    enhanced_img = adjust_gamma(bgr_img, 1.0)
 
     # Store image on file system
     store_image(enhanced_img)
