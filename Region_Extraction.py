@@ -352,13 +352,14 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         # Increment the wedge number
         wedge_number = wedge_number + 1
 
-    # For Testing
+    # Print path where regions are stored
     print("Stored Regions at: " + regions_path)
 
     return None
 
 
 if __name__ == "__main__":
+    # Simulating User Inputs
     num_wedges = 12
     num_of_rings = 3
     rgb_image = cv2.imread('control_rgb.jpg')
@@ -367,6 +368,7 @@ if __name__ == "__main__":
     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
     os.chdir(dir_path)
 
+    # Calling Region Extraction
     region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
 
 

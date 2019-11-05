@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
         bin_image = re.binarize_image(bw_image)
 
         c_x, c_y = re.get_centroid(bin_image)
-        c_x_cm = (c_x * 2.54)/ 1200  # (center_x * unit_multiplier(cm))/ image_dpi
+        c_x_cm = (c_x * 2.54) / 1200  # (center_x * unit_multiplier(cm))/ image_dpi
         c_y_cm = (c_y * 2.54) / 1200  # (center_y * unit_multiplier(cm))/ image_dpi
 
         self.assertLessEqual(calculate_error(c_x_cm, 3.2406), 3.5, "Centroid X axis has more than 3.5% of error")
