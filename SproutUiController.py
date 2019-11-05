@@ -10,11 +10,7 @@ from PyQt5.QtChart import QChart, QLineSeries, QChartView
 
 import SproutController as Sprout
 
-# messageBox_flag if true then there is a popup message in screen
-wedges_messageBox_flag = False
-rings_messageBox_flag = False
-
-# input data
+# User input data
 in_data = {'img_path': "",
            'intermediate_path': "",
            'units': "",
@@ -24,13 +20,20 @@ in_data = {'img_path': "",
            'img_dpi': 0,
            'enhance': False}
 
-# default values
+# Default values for the number of items that are present in the filter
+# for the rings and wedges graphs (All, All Rings/Wedges, Average)
 default_comboBox_graph_item_count = 3
 
+# messageBox_flag: if true then there is a popup message in screen
+measurement_messageBox_flag = False
+wedges_messageBox_flag = False
+rings_messageBox_flag = False
+dpi_messageBox_flag = False
 
-class Ui(QtWidgets.QMainWindow):
+
+class SproutUI(QtWidgets.QMainWindow):
     def __init__(self):
-        super(Ui, self).__init__()
+        super(SproutUI, self).__init__()
         uic.loadUi('Sprout.ui', self)
         self.setWindowTitle("Sprout")
 
@@ -47,6 +50,10 @@ class Ui(QtWidgets.QMainWindow):
         # self.ui()
 
     def ui(self):
+        """
+        Sets Sprout user interface and displays the user interface
+        :return: None
+        """
         self.tabWidget_1.setCurrentIndex(0)
         self.tabWidget_2.setCurrentIndex(0)
         self.lineEdit_numMeasurements.setFocus(0)
@@ -55,15 +62,17 @@ class Ui(QtWidgets.QMainWindow):
         self.browse_button_1.clicked.connect(self.browse_file)
         self.browse_button_2.clicked.connect(self.browse_folder)
 
+        self.lineEdit_numMeasurements.editingFinished.connect(self.update_num_diameter_measurements)
         self.lineEdit_numWedges.editingFinished.connect(self.update_num_wedges)
         self.lineEdit_numRings.editingFinished.connect(self.update_num_rings)
+        self.lineEdit_imageDPI.editingFinished.connect(self.update_image_dpi)
 
         self.start_button.clicked.connect(self.start_button_func)
-        self.save_button.clicked.connect(self.save_files)
+        self.save_button.clicked.connect(self.show_save_files)
 
         # Graphs View
-        self.comboBox_rings.currentIndexChanged.connect(self.change_rings_graph)
-        self.comboBox_wedges.currentIndexChanged.connect(self.change_wedges_graph)
+        self.comboBox_rings.currentIndexChanged.connect(self.filter_rings_graph)
+        self.comboBox_wedges.currentIndexChanged.connect(self.filter_wedges_graph)
 
         self.progressBar.setValue(0)
         self.progressBar.hide()
@@ -79,73 +88,113 @@ class Ui(QtWidgets.QMainWindow):
 
         self.show()
 
-    def progress_change(self):
-        if self.progressBar.value() == 99:
-            self.myThread.wait()
-            self.densities = Sprout.get_fiber_density()
-            self.measurement_data = Sprout.get_dimensional_measurements()
-            self.start_button_func()
-
-    def terminate_thread(self):
-        if self.myThread is not None:
-            print(" - - killing thread")
-            self.myThread.terminate()
-            self.myThread.wait()
-
-    def is_int_inbound(self, ui_in: str, lower: int, upper: int, ui_in_name: str):
-        if not (str.isdigit(ui_in)) or int(ui_in) > upper or int(ui_in) < lower:
-            self.warning_message_box(str(ui_in_name) + "\nPlease input a number from "
-                                     + str(lower) + " to " + str(upper))
-            return False
-        else:
-            return True
-
-    def update_num_wedges(self):
-        global in_data, wedges_messageBox_flag, rings_messageBox_flag
-        if rings_messageBox_flag:
-            return
-        wedges_messageBox_flag = True
-
-        if self.is_int_inbound(self.lineEdit_numWedges.text(), 3, 100, self.label_numWedges.text()):
-            temp = int(self.lineEdit_numWedges.text()) * 4
-            self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(360 / temp))
-            self.label_numRegionsFeedback.setText(str(temp * int(in_data['num_rings'])))
-            wedges_messageBox_flag = False
-            in_data['num_wedges'] = temp
-
-    def update_num_rings(self):
-        global in_data, wedges_messageBox_flag, rings_messageBox_flag
-        if wedges_messageBox_flag:
-            return
-        rings_messageBox_flag = True
-
-        temp = self.lineEdit_numRings.text()
-        if self.is_int_inbound(temp, 1, 25, self.label_numRings.text()):
-            self.label_numRingsFeedback.setText(str(temp))
-            self.label_numRegionsFeedback.setText(str(int(temp) * int(in_data['num_wedges'])))
-            rings_messageBox_flag = False
-            in_data['num_rings'] = temp
-
     def browse_file(self):
-        url = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files(*);;*.jpg; *jpeg;; *.png;; *bmp;; *tiff")
+        """
+        Function mapped to the brows button used to select the file path of the image that will be used to
+        calculate the fiber density of a bamboo cross-section.
+        :return: None
+        """
+        url = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files(*);;*.jpg; *jpeg;; *bmp;; *tiff")
         self.lineEdit_imagePath.setText(url[0])
         cross_section = QPixmap(url[0])
         self.label_bamboo.setPixmap(cross_section)
         in_data['img_path'] = url[0]
 
     def browse_folder(self):
+        """
+        Function mapped to the brows button used to select the folder path that will be used to
+        save the intermediate step for the fiber density calculation.
+        :return: None
+        """
         url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
         self.lineEdit_intermediateStepPath.setText(url)
         in_data['intermediate_path'] = url
 
-    def start_button_func(self):
+    def update_num_diameter_measurements(self):
+        """
+        Update the value for the total number of measurements in the user interface main screen that serves as feedback.
+        :return: None
+        """
         global in_data
 
-        # if program is currently in progress
+        if self.is_int_inbound(self.lineEdit_numMeasurements.text(), 3, 100):
+            temp = int(self.lineEdit_numMeasurements.text()) * 4
+            self.label_numMeasurementsFeedback.setText("Total Diameter Measurements: " + str(temp))
+            in_data['num_measurement'] = temp
+        else:
+            self.lineEdit_numMeasurements.clear()
+
+    def update_num_wedges(self):
+        """
+        Update the value for number of wedges in the user interface main screen that serves as feedback.
+        :return: None
+        """
+        global in_data
+
+        if self.is_int_inbound(self.lineEdit_numWedges.text(), 3, 100):
+            temp = int(self.lineEdit_numWedges.text()) * 4
+            self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(360 / temp))
+            self.label_numRegionsFeedback.setText(str(temp * int(in_data['num_rings'])))
+            in_data['num_wedges'] = temp
+        else:
+            self.lineEdit_numWedges.clear()
+
+    def update_num_rings(self):
+        """
+        Update the value for number of rings in the user interface main screen that serves as feedback.
+        :return: None
+        """
+        global in_data
+
+        temp = self.lineEdit_numRings.text()
+        if self.is_int_inbound(temp, 1, 25):
+            self.label_numRingsFeedback.setText(str(temp))
+            self.label_numRegionsFeedback.setText(str(int(temp) * int(in_data['num_wedges'])))
+            in_data['num_rings'] = temp
+        else:
+            self.lineEdit_numRings.clear()
+
+    def update_image_dpi(self):
+        """
+        Update the value for the image dpi (dot per inch) in the user interface main screen that serves as feedback.
+        :return: None
+        """
+        global in_data
+
+        if self.is_int_inbound(self.lineEdit_imageDPI.text(), 1200, 4800):
+            temp = int(self.lineEdit_imageDPI.text())
+            self.label_imageDPIFeedback.setText("Image DPI: " + str(temp))
+            in_data['img_dpi'] = temp
+        else:
+            self.lineEdit_imageDPI.clear()
+
+    def terminate_thread(self):
+        """
+        Terminate the thread in which the SproutController will be running.
+        :return: None
+        """
+        if self.myThread is not None:
+            self.myThread.terminate()
+            self.myThread.wait()
+
+    def start_button_func(self):
+        """
+        Sets what the start button will do when it is pressed or is called when the fiber density calculation
+        is completed. If currently the fiber density calculation is in progress it cancels the running session
+        and enables user input. If running session is completed it enables the user input, and proceeds to
+        display the dashboard (graphs, region density table, and measurement data). Other ways it starts the fiber
+        density calculation and disables user input.
+        :return: None
+        """
+        global in_data
+
         if self.is_running:
+            # if program is currently in progress
+
             self.terminate_thread()
-            # if finished successfully
             if self.progressBar.value() == 99:
+                # if finished successfully
+
                 self.progressBar.setValue(100)
                 self.dashboard_tab.setEnabled(True)
                 self.tabWidget_2.setEnabled(True)
@@ -174,30 +223,34 @@ class Ui(QtWidgets.QMainWindow):
             self.progressBar.setValue(0)
 
             self.is_running = False
-
-        # if program has not started
         else:
+            # if program has not started
+
+            # Test input data for being empty
             if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
                     self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
                     self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
                 self.warning_message_box("Make sure all inputs are filled in.")
                 return
 
+            # Test numeric input
             if not self.is_int_inbound(self.lineEdit_numMeasurements.text(), 3, 100, self.label_numMeasurements.text()):
                 return
             if not self.is_int_inbound(self.lineEdit_numWedges.text(), 3, 100, self.label_numWedges.text()):
                 return
             if not self.is_int_inbound(self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text()):
                 return
-            if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 25, 4800, self.label_imageDPI.text()):
+            if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 1200, 4800, self.label_imageDPI.text()):
                 return
 
+            # Change current working directory
             try:
                 os.chdir(in_data['intermediate_path'])
             except OSError:
                 QMessageBox.information(self, "Warning!", "File path not found for intermediate steps. ")
                 return
 
+            # Save input data in in_data dictionary
             in_data['units'] = self.comboBox_units.currentText()
             in_data['num_measurement'] = int(self.lineEdit_numMeasurements.text())*4
             in_data['img_dpi'] = int(self.lineEdit_imageDPI.text())
@@ -224,7 +277,12 @@ class Ui(QtWidgets.QMainWindow):
             except :
                 print("** qthread fail **")
 
-    def inputs_set_enabled(self, val):
+    def inputs_set_enabled(self, val: bool):
+        """
+        Enable or disable the options presented in the home screen depending on input parameter: val.
+        :param val: True to anabel all the options in the home screen and False to disable.
+        :return: None
+        """
         self.browse_button_1.setEnabled(val)
         self.browse_button_2.setEnabled(val)
         self.comboBox_units.setEnabled(val)
@@ -243,6 +301,10 @@ class Ui(QtWidgets.QMainWindow):
         self.label_units.setEnabled(val)
 
     def create_graphs(self):
+        """
+        Creates the graphs that will be displayed int the dashboard's Graphs tab.
+        :return: None
+        """
         global default_comboBox_graph_item_count
 
         # Set Ring ComboBox
@@ -308,7 +370,12 @@ class Ui(QtWidgets.QMainWindow):
         self.comboBox_rings.show()
         self.comboBox_wedges.show()
 
-    def change_rings_graph(self):
+    def filter_rings_graph(self):
+        """
+        Filters the rings graph by: All(includes average), All Wedges(only rings are shown),
+        Average(only average is shown), and individual rings(varies depending on number of rings).
+        :return: None
+        """
         global default_comboBox_graph_item_count
 
         for x in range(len(self.ring_chart.series())):
@@ -327,7 +394,12 @@ class Ui(QtWidgets.QMainWindow):
                 self.ring_chart.series()[x].hide()
             self.ring_chart.series()[self.comboBox_rings.currentIndex() - default_comboBox_graph_item_count].show()
 
-    def change_wedges_graph(self):
+    def filter_wedges_graph(self):
+        """
+        Filters the wedges graph by: All(includes average), All Wedges(only wedges are shown),
+        Average(only average is shown), and individual wedges(varies depending on number of wedges).
+        :return: None
+        """
         global default_comboBox_graph_item_count
 
         for x in range(len(self.wedge_chart.series())):
@@ -347,6 +419,11 @@ class Ui(QtWidgets.QMainWindow):
             self.wedge_chart.series()[self.comboBox_wedges.currentIndex() - default_comboBox_graph_item_count].show()
 
     def create_table(self):
+        """
+        Creates the table that will be presented in the dashboard's Region Density tab
+        based on fiber density calculations.
+        :return: None
+        """
         i = 0
         j = 0
         column_name = []
@@ -378,6 +455,10 @@ class Ui(QtWidgets.QMainWindow):
         self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
 
     def display_measurement_data(self):
+        """
+        Manages all output data related to the measurement data that is presented in the dashboard Measurement Data.
+        :return: None
+        """
         self.lineEdit_area.setText(str(self.measurement_data[0]) + " " + in_data['units'] + "^2")
         self.lineEdit_avgOuterDiameter.setText(str(self.measurement_data[1]) + " " + in_data['units'])
         self.lineEdit_avgInnerDiameter.setText(str(self.measurement_data[2]) + " " + in_data['units'])
@@ -387,18 +468,53 @@ class Ui(QtWidgets.QMainWindow):
         self.lineEdit_momentOfInertia_y.setText(str(self.measurement_data[6]) + " " + in_data['units'] + "^4")
         self.lineEdit_productOfInertia.setText(str(self.measurement_data[7]) + " " + in_data['units'] + "^4")
 
+    def is_int_inbound(self, ui_in: str, lower: int, upper: int, ui_in_name: str = None):
+        """
+        Test if user input is in specified upper and lower bound, including upper and lower bound valu.
+        :param ui_in: user input for value that will be tested
+        :param lower: lowest value that ui_in can have to return True
+        :param upper: highest value that ui_in can hava to return True
+        :param ui_in_name: user input label name that is used in popup messages for users to relate error
+        :return: True if ui_in is in upper and lower bound (lower <= ui_in <= upper)
+                    otherwise False
+        """
+        if not (str.isdigit(ui_in)) or int(ui_in) > upper or int(ui_in) < lower:
+            if ui_in_name is not None:
+                self.warning_message_box(str(ui_in_name) + "\nPlease input a number from "
+                                         + str(lower) + " to " + str(upper))
+            return False
+        else:
+            return True
+
     def warning_message_box(self, message):
-        global wedges_messageBox_flag, rings_messageBox_flag
+        """
+        Display a popup message box to inform users of error.
+        :param message: Message to be displayed in the popup message
+        :return:
+        """
         mbox = QMessageBox.information(self, "Warning!", message)
         if mbox == QMessageBox.Ok:
-                self.lineEdit_numMeasurements.setFocus(0)
-                rings_messageBox_flag = False
-                wedges_messageBox_flag = False
+            self.lineEdit_numMeasurements.setFocus(0)
 
-    def save_files(self):
+    def show_save_files(self):
+        """
+        Call to displays the popup for the Save Popup Window.
+        :return: None
+        """
         self.windowModality()
         self.save_window_ui.show()
         self.save_window_ui.raise_()
+
+    def progress_change(self):
+        """
+        Signals the user interface when process is completed.
+        :return: None
+        """
+        if self.progressBar.value() == 99:
+            self.myThread.wait()
+            self.densities = Sprout.get_fiber_density()
+            self.measurement_data = Sprout.get_dimensional_measurements()
+            self.start_button_func()
 
 
 class SaveWindow(QtWidgets.QMainWindow):
@@ -410,24 +526,34 @@ class SaveWindow(QtWidgets.QMainWindow):
         self.ui()
 
     def ui(self):
+        """
+        Sets the ui for the save popup window.
+        :return: None
+        """
         self.browse_button_3.clicked.connect(self.browse_folder)
         self.save_button.clicked.connect(self.save_graph_data)
         self.cancel_button.clicked.connect(self.cancel_save_graph_data)
-        self.checkBox_graphs.setChecked(True)
+        self.checkBox_data.setChecked(True)
 
     def browse_folder(self):
+        """
+        Mapped to the button that allows user to select the folder where graphs or data will be saved.
+        :return: None
+        """
         url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
         self.lineEdit_filePath.setText(url)
 
     def save_graph_data(self):
-        save_file_name = ""
-        save_folder_file_path = ""
-
+        """
+        Starts the process of saving the graphs and data calling the respective function in the data
+        management module.
+        :return: None
+        """
         if not (self.checkBox_graphs.isChecked() or self.checkBox_data.isChecked()):
             QMessageBox.information(self, "Warning!", "Please make sure to have at least   \n"
                                                              " one checkbox selected.")
         elif self.lineEdit_fileName.text().strip() is "":
-            QMessageBox.information(self, "Warning!", "Please make sure to provide a file name.   ")
+            QMessageBox.information(self, "Warning!", "Please make sure to provide a valid file name.   ")
         elif self.lineEdit_filePath.text() is "":
             QMessageBox.information(self, "Warning!", "Please make sure to provide a folder path.   ")
         else:
@@ -441,12 +567,16 @@ class SaveWindow(QtWidgets.QMainWindow):
             self.close()
 
     def cancel_save_graph_data(self):
+        """
+        Maps what the cancel button does: that is close save popup window.
+        :return: None
+        """
         self.close()
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    window = Ui()
+    window = SproutUI()
     window.ui()
     sys.exit(app.exec_())
 

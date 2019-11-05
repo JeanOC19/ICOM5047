@@ -16,6 +16,7 @@ densities = []
 num_wedges = 0
 num_rings = 0
 
+
 # class SproutController (threading.Thread):
 class SproutController (QThread):
     def __init__(self, ui, in_data):
@@ -28,11 +29,16 @@ class SproutController (QThread):
         self.wait()
 
     def run(self):
+        """
+        Start the process thread that will run the Sprout Controller that calls Image Enhancement Moduel,
+        Image Pre-Processing Moduel, Region Extraction Module, and  Fiber Density and Distribution Moduel.
+        :return: None
+        """
         global step_enhanced_image, step_enhanced_image, step_bounded_input_image, num_rings, num_wedges
         print("--------------------------------------------")
         print("Sprout Controller: Acquired Input Parameters")
         print("--------------------------------------------")
-        # print for testing
+        # print user input for testing
         print("User input:")
         print(" img_path = " + self.in_data['img_path'])
         print(" intermediate_path = " + self.in_data['intermediate_path'])
@@ -50,25 +56,33 @@ class SproutController (QThread):
         num_rings = self.in_data['num_rings']
         num_wedges = self.in_data['num_wedges']
 
+        # If image enhancement is required run Image Enhancement Module
         if self.in_data['enhance']:
             step_enhanced_image = image_enhancement(self.in_data['img_path'])
             self.update_progress_bar()
 
+        # Run Image Pre-processing Module
         step_bounded_input_image, bounded_binarized_input_image = pre_process_image(self.in_data['num_measurement'],
             self.in_data['img_dpi'], self.in_data['units'], self.in_data['img_path'], step_enhanced_image)
         self.update_progress_bar()
 
+        # Run Regeion Extraction Module
         region_extraction(step_bounded_input_image, bounded_binarized_input_image, self.in_data['num_wedges'],
                           self.in_data['num_rings'])
         self.update_progress_bar()
 
+        # Run Fiber Density and Distribution Module
         fiber_density_and_distribution(self.in_data['num_wedges'], self.in_data['num_rings'])
         self.update_progress_bar()
 
-        print(" * Finished Successfully * ")
+        print("\n * Sprout Controller: Finished Successfully * ")
         return
 
     def update_progress_bar(self):
+        """
+        Update the progress bar by 25% if image enhancement is required other wais update by 33%
+        :return: None
+        """
         if self.in_data['enhance']:
             self.percent_count += 25
         else:
@@ -193,10 +207,14 @@ def get_dimensional_measurements():
 
 
 def set_fiber_density():
+    """
+    Test data for densities used in the User Interface Module regarding
+    :return: None
+    """
     global densities, num_wedges, num_rings
     print("***************************")
-    print(num_rings)
-    print(num_wedges)
+    print("num_rings: " + str(num_rings))
+    print("num_wedges: " + str(num_wedges))
     densities = []
     factor = 90 / int(num_rings)
     lower = 5
@@ -204,7 +222,6 @@ def set_fiber_density():
 
     print("*-------------------------*")
     for x in range(int(num_rings)+1):
-        print("[" + str(int(lower)/100) + ", " + str(int(upper)/100) + "]")
         temp_list = []
         for y in range(int(num_wedges)+1):
             if x == int(num_rings):
@@ -220,7 +237,7 @@ def set_fiber_density():
                 temp = temp/len(temp_list)
                 n = int(100*temp)/100
             else:
-                n = random.randint(int(lower), int(upper))/100
+                n = random.randint(int(lower+1), int(upper-1))/100
             temp_list.append(n)
         print(temp_list)
         densities.append(temp_list)
