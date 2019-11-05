@@ -2,6 +2,7 @@ import unittest
 import Region_Extraction as re
 import cv2
 import os
+import time
 
 
 class MyTestCase(unittest.TestCase):
@@ -60,11 +61,52 @@ class MyTestCase(unittest.TestCase):
                         "Expected Regions and Number of Files in 'regions' directory do not match")
 
         # Check if files are named Rn_Wm where n is a number and m is another number
-        ring_count = 1
-        wedge_count = 1
         for f in os.listdir(regions_path):
             self.assertTrue(str(f).find("R") != -1, "%s does not contain R in its name" % f)
-            self.assertTrue(str(f).find("W") != -1, "%s does not contain W in its name" % f )
+            self.assertTrue(str(f).find("W") != -1, "%s does not contain W in its name" % f)
+
+    def test_execution_time(self):
+        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control_rgb.jpg')
+        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        bin_image = re.binarize_image(bw_image)
+        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        os.chdir(int_path)
+
+        start_time = time.time()
+        re.region_extraction(rgb_image, bin_image, 12, 3)
+        execution_time = (time.time() - start_time)
+        print("--- %s seconds ---" % execution_time)
+
+        self.assertLessEqual(execution_time, (60 * .5), "Execution time takes more than 50% of a minute")
+
+    def test_edges(self):
+        print("Test all possibilities")
+
+        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control_rgb.jpg')
+        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        bin_image = re.binarize_image(bw_image)
+        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        os.chdir(int_path)
+
+        try:
+            re.region_extraction(rgb_image, bin_image, 12, 1)
+        except Exception:
+            raise Exception("Failed test at: Number of Wedges(%d), Number of Rings(%d)" % (12, 1))
+
+        try:
+            re.region_extraction(rgb_image, bin_image, 400, 1)
+        except Exception:
+            raise Exception("Failed test at: Number of Wedges(%d), Number of Rings(%d)" % (400, 1))
+
+        try:
+            re.region_extraction(rgb_image, bin_image, 12, 25)
+        except Exception:
+            raise Exception("Failed test at: Number of Wedges(%d), Number of Rings(%d)" % (12, 25))
+
+        try:
+            re.region_extraction(rgb_image, bin_image, 400, 25)
+        except Exception:
+            raise Exception("Failed test at: Number of Wedges(%d), Number of Rings(%d)" % (12, 25))
 
 
 def calculate_error(measure, actual):

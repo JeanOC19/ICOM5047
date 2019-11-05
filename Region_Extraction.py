@@ -31,15 +31,6 @@ def rescale_coordinates(coordinates, scale):
     return [int(item/scale) for item in coordinates]
 
 
-def create_mask(img):
-    """
-    Create mask out of input image
-    :param img: Input image object
-    :return: Array with zero values with same shape as the input image
-    """
-    return np.zeros_like(img)
-
-
 def binarize_image(img):
     """Convert input image to binary image (Won't be used when integrated)"""
 
@@ -50,7 +41,7 @@ def binarize_image(img):
     #   - src: image source
     #   - threshold_value: The thresh value with respect to which the thresholding operation is made
     #   - max_BINARY_value: The value used with the Binary thresholding operations (to set the chosen pixels)
-    ret, thresh = cv2.threshold(gray_image, 127, 255, 0)
+    _, thresh = cv2.threshold(gray_image, 127, 255, 0)
 
     return thresh
 
@@ -92,15 +83,16 @@ def generate_wedge_mask(img, c_x, c_y, angle):
     rc = np.array((c, r)).T
 
     # Create a mask
-    mask = create_mask(img)
+    img = np.zeros_like(img)
 
     # Draw wedge on the mask
-    cv2.drawContours(mask, [rc], 0, 255, -1)
+    cv2.drawContours(img, [rc], 0, 255, -1)
 
-    return mask
+    # return mask
+    return img
 
 
-def extract_wedge(img, bin_img, angle):
+def extract_wedge(img, m_img, angle):
     """
     Extract a wedge of a given angle from the input image
     :param img: Input image
@@ -112,24 +104,30 @@ def extract_wedge(img, bin_img, angle):
     # Get the center coordinate (cX, cY) of the image
     cX, cY = get_centroid(img)
 
+    # # Generate the mask for the wedge
+    # wedge_mask = generate_wedge_mask(img, cX, cY, angle)
+
+    wedge = m_img[:, :, 0]
+    m_img = m_img[:, :, 0]
+
     # Generate the mask for the wedge
-    wedge_mask = generate_wedge_mask(img, cX, cY, angle)
+    m_img = generate_wedge_mask(m_img, cX, cY, angle)
 
     # Create a blank canvas and extract Wedge from main image
-    wedge = np.zeros_like(img)
-    wedge[wedge_mask == 255] = img[wedge_mask == 255]
+    # wedge = np.zeros_like(wedge)
+    wedge.fill(0)
+    wedge[m_img == 255] = img[m_img == 255]
+    img = wedge.copy()
 
     # At this point we have extracted the wedge from the main image.
     # Now we proceed to isolate the area that contains only the wedge
 
     # Create a mask of the extracted wedge
-    img_dilation = cv2.dilate(wedge, None, iterations=14)
-    img_erosion = cv2.erode(img_dilation, None, iterations=18)
-    ret, thresh = cv2.threshold(img_erosion, 150, 255, cv2.THRESH_BINARY)
+    _, img = cv2.threshold(cv2.erode(cv2.dilate(img, None, iterations=18), None, iterations=20), 150, 255, cv2.THRESH_BINARY)
 
+    # show_image(img)
     # Find contours for the wedge
-    edged = cv2.Canny(thresh, 250, 500)
-    contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     # Find the contour with the best area that covers the wedge.
     areas = [cv2.contourArea(c) for c in contours]
@@ -139,7 +137,7 @@ def extract_wedge(img, bin_img, angle):
     # Get the coordinates of the bounding rectangle of the wedge.
     x, y, w, h = cv2.boundingRect(cnt)
 
-    return wedge[y:y + h, x:x + w], thresh[y:y + h, x:x + w]
+    return wedge[y:y + h, x:x + w], img[y:y + h, x:x + w]
 
 
 def find_max_ins_rect(img):
@@ -150,7 +148,7 @@ def find_max_ins_rect(img):
     """
 
     # Resize the image mask(This is to speed up the calculations of largest inscribed rectangle)
-    r_img, r_scale = resize_image(img, 100)
+    r_img, r_scale = resize_image(img, 125)
 
     # Extract a channel from the input image(RGB will be the same since image is binarized)
     data = r_img
@@ -228,17 +226,10 @@ def extract_rectangle(img, img_mask):
 
     # Get coordinates of the largest inscribed rectangle a given wedge.
     coord = find_max_ins_rect(img_mask)
-    # # Test
-    # wedge = img.copy()
-    # cv2.rectangle(wedge, (coord[0], coord[1]), (coord[2], coord[3]), (0, 255, 0), 2)
-    # sh_img, _ = resize_image(wedge, 500)
-    # show_image(sh_img)
     # With coordinates of rectangle obtain the rectangle from the wedge.
-    rect = img[coord[1]:coord[3], coord[0]:coord[2]]
+    img = img[coord[1]:coord[3], coord[0]:coord[2]]
     # Rotate image 90 degrees
-    res = rotate_bound(rect, 90)
-
-    return res
+    return rotate_bound(img, 90)
 
 
 def extract_regions(img, n_rings, wedge_num):
@@ -259,7 +250,7 @@ def extract_regions(img, n_rings, wedge_num):
     # Variable that will store regions path
     regions_path = str()
     # Defining type of image that will be used to store
-    image_type = 'png'
+    image_type = 'jpg'
 
     # For each region number, extract it's corresponding region.
     for region in range(n_rings):
@@ -284,8 +275,8 @@ def store_region(img, img_name):
     """
 
     regions_path = 'regions'
-    cwd = os.getcwd()
-    full_path = os.path.join(cwd, regions_path)
+    intermediate_path = os.getcwd()
+    full_path = os.path.join(intermediate_path, regions_path)
 
     # Check if regions_path exists, if not then create the path
     if not os.path.exists(full_path):
@@ -332,6 +323,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     assert type(number_wedges) is int, "Number of wedges has to be int."
     assert type(number_rings) is int, "Number of rings has to be int."
     assert 400 >= number_wedges >= 12, "Number of wedges should be between 12 and 400"
+    assert (number_wedges % 4) == 0, "Number of wedges mus be divisible by 4"
     assert 25 >= number_rings >= 1, "Number of rings should be between 1 and 25"
     assert isinstance(bounded_input_image, np.ndarray), "bounded_input_image is wrong type"
     assert isinstance(bounded_binarized_input_image, np.ndarray), "bounded_binarized_input_image is wrong type"
@@ -345,11 +337,12 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     wedge_number = 1
 
     # Iterate
-    while current_angle < 360:
+    while wedge_number <= number_wedges:
         # Rotate the image to the current calculated angle
-        rotated_image = rotate_bound(bounded_binarized_input_image, current_angle)
+        rotated_rgb_image = rotate_bound(bounded_input_image, current_angle)
+        rotated_bin_image = rotate_bound(bounded_binarized_input_image, current_angle)
         # Extract wedge and the wedge's mask from the rotated image
-        wedge, wedge_mask = extract_wedge(rotated_image, bounded_binarized_input_image, wedge_angle)
+        wedge, wedge_mask = extract_wedge(rotated_bin_image, rotated_rgb_image,wedge_angle)
         # Extract the largest inscribed rectangle from wedge.
         wedge_rectangle = extract_rectangle(wedge, wedge_mask)
         # Extract regions from the extracted rectangle
@@ -369,7 +362,7 @@ if __name__ == "__main__":
     num_wedges = 12
     num_of_rings = 3
     rgb_image = cv2.imread('control_rgb.jpg')
-    bin_image = cv2.imread('control.png')
+    bin_image = cv2.imread('control.jpg')
     bin_img = binarize_image(bin_image)
     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
     os.chdir(dir_path)
