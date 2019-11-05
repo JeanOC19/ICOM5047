@@ -74,12 +74,11 @@ class MyTestCase(unittest.TestCase):
     def test_input_validation(self):
         print("Testing Input Validation")
 
-        img_path1 = "C:/Users/Caloj/PycharmProjects/ICOM5047/bamboo.jpg"
-        img_path2 = 123
-        img_path3 = None
+        img_path1 = 123
+        img_path2 = None
 
+        self.assertRaises(AssertionError, ie.image_enhancement, img_path1)
         self.assertRaises(AssertionError, ie.image_enhancement, img_path2)
-        self.assertRaises(AssertionError, ie.image_enhancement, img_path3)
 
     def test_image_storage(self):
         print("Testing image storage")
