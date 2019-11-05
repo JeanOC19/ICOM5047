@@ -99,11 +99,11 @@ class MyTestCase(unittest.TestCase):
         num_files_in_dir = len([f for f in os.listdir(img_enhancement_path)
                                 if os.path.isfile(os.path.join(img_enhancement_path, f))])
         self.assertTrue(num_files_in_dir == 1,
-                        "Expected Regions and Number of Files in 'image_enhancement' directory do not match")
+                        "File in 'image_enhancement' directory do not match")
 
         # Check if file created in 'image_enhancement' directory is named correctly
         for f in os.listdir(img_enhancement_path):
-            self.assertEqual(str(f), "enhanced_image.jpg", "%s does not contain R in its name" % f)
+            self.assertEqual(str(f), "enhanced_image.jpg", "%s not not found" % f)
 
 
 def resize_image(image):
