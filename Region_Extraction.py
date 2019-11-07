@@ -3,6 +3,9 @@ import numpy as np
 import math
 import os
 
+# List generated after separating image into regions
+regions_list = dict()
+
 
 def resize_image(img, scale):
     """
@@ -260,10 +263,23 @@ def extract_regions(img, n_rings, wedge_num):
         extracted_region = img[y - region_height:y, x:x + width]
         # Change coordinate for new region to extract
         y = y-region_height
+        # Store region on dictionary
+        append_regions_dict(region_name, extracted_region)
         # Store region on directory
         regions_path = store_region(extracted_region, region_name)
 
     return regions_path
+
+
+def append_regions_dict(region_name, region):
+    """
+    Store a region image on a dictionary
+    :param region_name: Name of the region "R(n)_W(m)"
+    :param region: Image of the region (ndarray object)
+    :return:None
+    """
+    global regions_list
+    regions_list.update({region_name: region})
 
 
 def store_region(img, img_name):
@@ -355,7 +371,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     # Print path where regions are stored
     print("Stored Regions at: " + regions_path)
 
-    return None
+    return regions_list
 
 
 if __name__ == "__main__":
@@ -370,5 +386,4 @@ if __name__ == "__main__":
 
     # Calling Region Extraction
     region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
-
 
