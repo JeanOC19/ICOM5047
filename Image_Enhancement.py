@@ -30,7 +30,7 @@ def store_image(img):
     """Store a given  image in a specified directory"""
 
     img_name = "enhanced_image.jpg"
-    img_enhacement_path = 'image_enhancement'
+    img_enhacement_path = 'Image_enhancement'
     intermediate_path = os.getcwd()
     full_path = os.path.join(intermediate_path, img_enhacement_path)
 
