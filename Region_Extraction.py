@@ -31,7 +31,7 @@ def rescale_coordinates(coordinates, scale):
     :param scale: Number that resizes the coordinates
     :return: List containing the resized coodinates
     """
-    return [int(item/scale) for item in coordinates]
+    return [int(item / scale) for item in coordinates]
 
 
 def binarize_image(img):
@@ -126,7 +126,8 @@ def extract_wedge(img, m_img, angle):
     # Now we proceed to isolate the area that contains only the wedge
 
     # Create a mask of the extracted wedge
-    _, img = cv2.threshold(cv2.erode(cv2.dilate(img, None, iterations=18), None, iterations=20), 150, 255, cv2.THRESH_BINARY)
+    _, img = cv2.threshold(cv2.erode(cv2.dilate(img, None, iterations=18), None, iterations=20), 150, 255,
+                           cv2.THRESH_BINARY)
 
     # show_image(img)
     # Find contours for the wedge
@@ -247,7 +248,7 @@ def extract_regions(img, n_rings, wedge_num):
     # Extract image shape properties
     height, width = img.shape[0], img.shape[1]
     # Calculate region height based on number rings
-    region_height = int(height/n_rings)
+    region_height = int(height / n_rings)
     # Define starting points
     x, y = 0, height
     # Variable that will store regions path
@@ -262,7 +263,7 @@ def extract_regions(img, n_rings, wedge_num):
         # Extract region from input image
         extracted_region = img[y - region_height:y, x:x + width]
         # Change coordinate for new region to extract
-        y = y-region_height
+        y = y - region_height
         # Store region on dictionary
         append_regions_dict(region_name, extracted_region)
         # Store region on directory
@@ -279,7 +280,9 @@ def append_regions_dict(region_name, region):
     :return:None
     """
     global regions_list
-    regions_list.update({region_name: region})
+    file_type_split = (region_name.split('.'))
+    file_key = file_type_split[0]
+    regions_list.update({file_key: region})
 
 
 def store_region(img, img_name):
@@ -345,7 +348,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     assert isinstance(bounded_binarized_input_image, np.ndarray), "bounded_binarized_input_image is wrong type"
 
     # Calculate the angle of the wedge given the number of wedges per quadrant
-    wedge_angle = (lambda wedges: 360/wedges)(number_wedges)
+    wedge_angle = (lambda wedges: 360 / wedges)(number_wedges)
 
     # Initialize variables
     current_angle = 0
@@ -358,7 +361,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         rotated_rgb_image = rotate_bound(bounded_input_image, current_angle)
         rotated_bin_image = rotate_bound(bounded_binarized_input_image, current_angle)
         # Extract wedge and the wedge's mask from the rotated image
-        wedge, wedge_mask = extract_wedge(rotated_bin_image, rotated_rgb_image,wedge_angle)
+        wedge, wedge_mask = extract_wedge(rotated_bin_image, rotated_rgb_image, wedge_angle)
         # Extract the largest inscribed rectangle from wedge.
         wedge_rectangle = extract_rectangle(wedge, wedge_mask)
         # Extract regions from the extracted rectangle
@@ -374,16 +377,26 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     return regions_list
 
 
-if __name__ == "__main__":
+def region_extraction_module(num_wedges, num_of_rings):
     # Simulating User Inputs
-    num_wedges = 12
-    num_of_rings = 3
     rgb_image = cv2.imread('control_rgb.jpg')
-    bin_image = cv2.imread('control.jpg')
+    bin_image = cv2.imread('control.png')
     bin_img = binarize_image(bin_image)
-    dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+    dir_path = "C:\\Users\\israe\\Desktop\\Capstone\\Sprout_Images"
     os.chdir(dir_path)
 
     # Calling Region Extraction
-    region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
+    return region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
 
+# if __name__ == "__main__":
+#     # Simulating User Inputs
+#     num_wedges = 12
+#     num_of_rings = 3
+#     rgb_image = cv2.imread('control_rgb.jpg')
+#     bin_image = cv2.imread('control.jpg')
+#     bin_img = binarize_image(bin_image)
+#     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+#     os.chdir(dir_path)
+#
+#     # Calling Region Extraction
+#     region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
