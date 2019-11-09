@@ -53,9 +53,10 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     :return: bounded input image and bounded binarized input image
     """
 
-    def binarize_image(source_image: object) -> object:
+    def binarize_image(source_image: object, blur_intensity: int) -> object:
         """
         Converts the input image into a binary image
+        :param blur_intensity: size of the kernel for blurring the image
         :param source_image: image to be binarized
         :return: binarized image data
         """
@@ -64,7 +65,9 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         cv.imwrite(path + '/grayscale_image.jpg', gray_image)
 
         # Use Gaussian Blur to remove noise from the image
-        blurred_image = cv.GaussianBlur(gray_image, (5, 5), 0)
+        blurred_image = gray_image
+        if blur_intensity is not 0:
+            blurred_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), 0)
 
         # Calculate the global threshold value and binarize the image
         ret, new_image = cv.threshold(blurred_image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
@@ -124,15 +127,15 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         """
         return lambda z: z / image_dpi * units_multiplier
 
-    def image_contours(source_image: object):
+    def image_contours(binary_source_image: object):
         """
         Find the contours of the bamboo, bound the image and make all dimensional measurements
-        :param source_image: binarized input image
+        :param binary_source_image: binarized input image
         :return: bounded image, bounded binarized image, area, outer diameter, inner diameter,
                  centroid, x moment, y moment, inner diameter measurements, and outer diameter lists
         """
         # Erode and dilate image to 
-        eroded = cv.dilate(source_image, None, iterations=7)
+        eroded = cv.dilate(binary_source_image, None, iterations=7)
         eroded = cv.erode(eroded, None, iterations=7)
 
         # Find contours of the image and select those belonging to the bamboo
@@ -148,12 +151,12 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Find the bounding box of the largest contour and crop both the input and binarized image
         x, y, w, h = cv.boundingRect(contours[largest_contour_index])
         bounded_image = img[y:y + h, x:x + w]
-        binarized_bounded_image = source_image[y:y + h, x:x + w]
+        binarized_bounded_image = binary_source_image[y:y + h, x:x + w]
         cv.imwrite(path + '/bounded_image.jpg', bounded_image)
         cv.imwrite(path + '/binarized_bounded_image.jpg', binarized_bounded_image)
 
         # Dilate and erode the bounded image to fill the fibers. Then save the image
-        num_of_iterations = int((28 / 3600) * image_dpi) + 1
+        num_of_iterations = int((30 / 3600) * image_dpi) + 1
         eroded = binarized_bounded_image
         eroded = cv.dilate(eroded, None, iterations=num_of_iterations)
         eroded = cv.erode(eroded, None, iterations=num_of_iterations+1)
@@ -198,8 +201,11 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         meas_area = (output[2][1][4] / (image_dpi ** 2)) * (units_multiplier ** 2)
 
         # Find the coordinates of the centroid and convert them to the specified units
+        binarized_bounded_image = binarize_image(img, 0)[y:y + h, x:x + w]
         meas_centroid = [0, 0]
-        M = cv.moments(bounded_filled_image, binaryImage=True)
+        # output = cv.connectedComponentsWithStats(binarized_bounded_image & bounded_filled_image, 4, cv.CV_32S)
+        # centroid_coordinates = (output[3][0][0], output[3][0][1])
+        M = cv.moments(binarized_bounded_image & bounded_filled_image, binaryImage=True)
         centroid_coordinates = (M['m10'] / M['m00'], M['m01'] / M['m00'])
         meas_centroid[0] = centroid_coordinates[0] * units_multiplier / image_dpi
         meas_centroid[1] = centroid_coordinates[1] * units_multiplier / image_dpi
@@ -209,9 +215,9 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         cv.imwrite(path + "/centroid.jpg", bounded_image)
 
         # Calculate the moments of the image and obtain the second moments to get the moments of inertia
-        x_moment = (M['m02']) * ((units_multiplier / image_dpi) ** 4)
-        y_moment = (M['m20']) * ((units_multiplier / image_dpi) ** 4)
-        moment_product = (M['m11']) * ((units_multiplier / image_dpi) ** 4)
+        x_moment = (M['m20'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
+        y_moment = (M['m02'] - centroid_coordinates[1] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
+        moment_product = (M['m11'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
 
         return bounded_image, binarized_bounded_image, [meas_area, meas_outer_diameter, meas_inner_diameter,
                                                         meas_centroid[0], meas_centroid[1], x_moment, y_moment,
@@ -259,7 +265,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
     # Binarize the input image
     try:
-        binarized_image = binarize_image(img)
+        binarized_image = binarize_image(img, 5)
     except:
         raise Exception("Unable to binarize input image.")
 
