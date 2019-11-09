@@ -201,11 +201,9 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         meas_area = (output[2][1][4] / (image_dpi ** 2)) * (units_multiplier ** 2)
 
         # Find the coordinates of the centroid and convert them to the specified units
-        binarized_bounded_image = binarize_image(img, 0)[y:y + h, x:x + w]
+        new_binarized_bounded_image = binarize_image(img, 0)[y:y + h, x:x + w]
         meas_centroid = [0, 0]
-        # output = cv.connectedComponentsWithStats(binarized_bounded_image & bounded_filled_image, 4, cv.CV_32S)
-        # centroid_coordinates = (output[3][0][0], output[3][0][1])
-        M = cv.moments(binarized_bounded_image & bounded_filled_image, binaryImage=True)
+        M = cv.moments(new_binarized_bounded_image & bounded_filled_image, binaryImage=True)
         centroid_coordinates = (M['m10'] / M['m00'], M['m01'] / M['m00'])
         meas_centroid[0] = centroid_coordinates[0] * units_multiplier / image_dpi
         meas_centroid[1] = centroid_coordinates[1] * units_multiplier / image_dpi
@@ -265,7 +263,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
     # Binarize the input image
     try:
-        binarized_image = binarize_image(img, 5)
+        binarized_image = binarize_image(img, 7)
     except:
         raise Exception("Unable to binarize input image.")
 
