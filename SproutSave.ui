@@ -32,9 +32,15 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(237, 255, 227);</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">QFrame{
+	background-color: #EDFFE3;
+}
+</string>
+   </property>
    <widget class="QCheckBox" name="checkBox_graphs">
     <property name="geometry">
      <rect>
@@ -236,6 +242,23 @@ font: bold;</string>
      <string>File Path: </string>
     </property>
    </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>460</width>
+      <height>230</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>frame</zorder>
    <zorder>checkBox_graphs</zorder>
    <zorder>browse_button_3</zorder>
    <zorder>label_fileName</zorder>

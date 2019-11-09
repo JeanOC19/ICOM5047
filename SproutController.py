@@ -58,21 +58,41 @@ class SproutController (QThread):
 
         # If image enhancement is required run Image Enhancement Module
         if self.in_data['enhance']:
-            step_enhanced_image = image_enhancement(self.in_data['img_path'])
+            try:
+                step_enhanced_image = image_enhancement(self.in_data['img_path'])
+            except Exception as e:
+                self.sprout_ui.error_message = "Error in Image Enhancement:\n " + str(e)
+                self.sprout_ui.progressBar.setValue(2)
+                return
             self.update_progress_bar()
 
         # Run Image Pre-processing Module
-        step_bounded_input_image, bounded_binarized_input_image = pre_process_image(self.in_data['num_measurement'],
-            self.in_data['img_dpi'], self.in_data['units'], self.in_data['img_path'], step_enhanced_image)
+        try:
+            step_bounded_input_image, bounded_binarized_input_image = pre_process_image(self.in_data['num_measurement'],
+                self.in_data['img_dpi'], self.in_data['units'], self.in_data['img_path'], step_enhanced_image)
+        except Exception as e:
+            self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
+            self.sprout_ui.progressBar.setValue(2)
+            return
         self.update_progress_bar()
 
         # Run Regeion Extraction Module
-        region_extraction(step_bounded_input_image, bounded_binarized_input_image, self.in_data['num_wedges'],
-                          self.in_data['num_rings'])
+        try:
+            region_extraction(step_bounded_input_image, bounded_binarized_input_image, self.in_data['num_wedges'],
+                              self.in_data['num_rings'])
+        except Exception as e:
+            self.sprout_ui.error_message = "Error in Region Extraction:\n " + str(e)
+            self.sprout_ui.progressBar.setValue(2)
+            return
         self.update_progress_bar()
 
         # Run Fiber Density and Distribution Module
-        fiber_density_and_distribution(self.in_data['num_wedges'], self.in_data['num_rings'])
+        try:
+            fiber_density_and_distribution(self.in_data['num_wedges'], self.in_data['num_rings'])
+        except Exception as e:
+            self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
+            self.sprout_ui.progressBar.setValue(2)
+            return
         self.update_progress_bar()
 
         print("\n * Sprout Controller: Finished Successfully * ")
@@ -212,7 +232,7 @@ def set_fiber_density():
     :return: None
     """
     global densities, num_wedges, num_rings
-    print("***************************")
+    print("\n***************************")
     print("num_rings: " + str(num_rings))
     print("num_wedges: " + str(num_wedges))
     densities = []

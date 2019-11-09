@@ -47,7 +47,7 @@ class SproutUI(QtWidgets.QMainWindow):
         self.densities = []
         self.measurement_data = []
 
-        # self.ui()
+        self.error_message = ""
 
     def ui(self):
         """
@@ -492,7 +492,7 @@ class SproutUI(QtWidgets.QMainWindow):
         :param message: Message to be displayed in the popup message
         :return:
         """
-        mbox = QMessageBox.information(self, "Warning!", message)
+        mbox = QMessageBox.information(self, "Warning!!", message)
         if mbox == QMessageBox.Ok:
             self.lineEdit_numMeasurements.setFocus(0)
 
@@ -507,10 +507,14 @@ class SproutUI(QtWidgets.QMainWindow):
 
     def progress_change(self):
         """
-        Signals the user interface when process is completed.
+        Signals the user interface when process is completed or wen error occurs.
         :return: None
         """
-        if self.progressBar.value() == 99:
+        if self.progressBar.value() == 2:
+            self.terminate_thread()
+            self.start_button_func()
+            self.warning_message_box(str(self.error_message))
+        elif self.progressBar.value() == 99:
             self.myThread.wait()
             self.densities = Sprout.get_fiber_density()
             self.measurement_data = Sprout.get_dimensional_measurements()
@@ -553,7 +557,8 @@ class SaveWindow(QtWidgets.QMainWindow):
             QMessageBox.information(self, "Warning!", "Please make sure to have at least   \n"
                                                              " one checkbox selected.")
         elif self.lineEdit_fileName.text().strip() is "":
-            QMessageBox.information(self, "Warning!", "Please make sure to provide a valid file name.   ")
+            QMessageBox.information(self, "Warning!", "Please make sure to provide a valid file name.   \n"
+                                                      "No spaces or any special character.  ")
         elif self.lineEdit_filePath.text() is "":
             QMessageBox.information(self, "Warning!", "Please make sure to provide a folder path.   ")
         else:
