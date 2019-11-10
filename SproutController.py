@@ -83,13 +83,13 @@ class SproutController():
 
 if __name__ == '__main__':
 
-    parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/R_1.1.1.jpg',
+    parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/R_0.0.0.jpg',
                   'intermediate_path': "Run1",
                   'num_measurement': 12,
                   'num_wedges': 12,
                   'units': 'cm',
                   'num_rings': 3,
-                  'img_dpi': 1800,
+                  'img_dpi': 1200,
                   'enhance': 1
                   }
     startt = time.process_time()

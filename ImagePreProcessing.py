@@ -1,44 +1,12 @@
 import cv2 as cv
 import os
-import time
 import numpy as np
+import Data_Management_Module
+
 
 # Global variables for testing purposes
 TESTING = 0
 outer_units = ""
-
-
-def set_dimensional_measurements(measurements_list: list):
-    """
-    Simulate sending the measurement data to the Data Management Module
-    :param measurements_list: list containing all the measurements made by the pre-processing module in the following
-            order:  area, outer diameter, inner diameter, x coordinate of centroid, y coordinate of centroid,
-                    X moment of inertia, y moment of inertia
-    """
-    print()
-    print("Data Management module received:")
-    print(measurements_list)
-    print()
-    if TESTING:
-        print("Area: " + str(measurements_list[0]) + " " + outer_units + "2")
-        print("Outer Diameter: " + str(measurements_list[1]) + " " + outer_units)
-        print("Inner Diameter: " + str(measurements_list[2]) + " " + outer_units)
-        print("Centroid: " + str(measurements_list[3]) + " " + outer_units + ", "
-              + str(measurements_list[4]) + " " + outer_units)
-        print("X-axis moment: " + str(measurements_list[5]) + " " + outer_units + "4")
-        print("Y-axis moment: " + str(measurements_list[6]) + " " + outer_units + "4")
-        print("Product of inertia: " + str(measurements_list[7]) + " " + outer_units + "4")
-
-
-def set_diameters(diameter_list: list):
-    """
-    Simulate sending individual diameter measurements to the Data Management Module
-    :param diameter_list: list with two columns, one for outer diameter measurements and one for inner diameter measurements.
-    """
-    print()
-    print("Data Management module received:")
-    print(diameter_list)
-    print()
 
 
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
@@ -270,8 +238,9 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     try:
         # Find contours of the image and make dimensional measurements
         image, binarized_image, measurements_list, diameters_list = image_contours(binarized_image)
-        set_dimensional_measurements(measurements_list)
-        set_diameters(diameters_list)
+        Data_Management_Module.set_dimensional_measurements(measurements_list)
+        print(diameters_list)
+        Data_Management_Module.set_diameters(diameters_list)
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 
@@ -285,6 +254,4 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
 
 if __name__ == "__main__":
-    startt = time.process_time()
     bounded_binarized_image, bounded_input_image = pre_process_image(12, 1200, 'cm', image_path='Images/R_0.0.0.jpg')
-    print("Total time: " + str(time.process_time() - startt))

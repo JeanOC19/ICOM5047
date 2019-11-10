@@ -143,12 +143,12 @@ def validate_diameter_list(list):
     # If list is empty raise an exception
     if not list:
         raise InvalidInput('Exception: dimensional measurement list is empty')
-    columns = len(list[0])
+    columns = len(list)
     # If number of columns is not 2 raise an exception since there should be a column for inner diameters
     # and a second one for outer diameters
     if columns != 2:
         raise InvalidInput('Exception: number of columns in the list is incorrect')
-    rows = len(list)
+    rows = len(list[0])
     # If number of rows is not a multiple of 4 raise exception
     if not(rows % 4 == 0):
         raise InvalidInput('Exception: number of rows in the list is incorrect')
