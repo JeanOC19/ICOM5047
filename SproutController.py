@@ -71,7 +71,8 @@ class SproutController():
         self.update_progress_bar()
 
         # Run Fiber Density and Distribution Module
-        Fiber_Density_Calculation.fiber_density_calculation(self.in_data['num_rings'], self.in_data['num_wedges'], dictionary)
+        Fiber_Density_Calculation.fiber_density_and_distribution(self.in_data['num_rings'], self.in_data['num_wedges'], dictionary)
+        # Fiber_Density_Calculation.fiber_density_calculation(self.in_data['num_rings'], self.in_data['num_wedges'], dictionary)
         self.update_progress_bar()
 
         print("\n * Sprout Controller: Finished Successfully * ")
