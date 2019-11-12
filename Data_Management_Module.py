@@ -200,7 +200,7 @@ def save_diameter_csv(path, units):
     inner_diameter = 'Inner Diameter ' + '(' + units + ')'
     column_titles = ['Measurement', outer_diameter, inner_diameter]
     counter_diameter = 1
-    number_rows = len(diameters)
+    number_rows = len(diameters[0])
     # Set row titles
     for j in range(number_rows):
         row = str(counter_diameter)

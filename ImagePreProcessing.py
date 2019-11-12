@@ -35,7 +35,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Use Gaussian Blur to remove noise from the image
         blurred_image = gray_image
         if blur_intensity is not 0:
-            blurred_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), 0)
+            blurred_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), 1)
 
         # Calculate the global threshold value and binarize the image
         ret, new_image = cv.threshold(blurred_image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
@@ -231,7 +231,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
     # Binarize the input image
     try:
-        binarized_image = binarize_image(img, 7)
+        binarized_image = binarize_image(img, 5)
     except:
         raise Exception("Unable to binarize input image.")
 
@@ -239,7 +239,6 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Find contours of the image and make dimensional measurements
         image, binarized_image, measurements_list, diameters_list = image_contours(binarized_image)
         Data_Management_Module.set_dimensional_measurements(measurements_list)
-        print(diameters_list)
         Data_Management_Module.set_diameters(diameters_list)
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")

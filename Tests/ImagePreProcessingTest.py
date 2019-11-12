@@ -8,19 +8,18 @@ class MyTestCase(unittest.TestCase):
     def test_dimensional_measurements_1(self):
         print("Testing measurements with sample 0.0.0")
         ImagePreProcessing.TESTING = 1
-        new_img = Image_Enhancement.image_enhancement('../Images/1200dpi.jpg')
+        new_img = Image_Enhancement.image_enhancement('../Images/R_0.0.0.jpg')
 
         image, binarized_image, area, outer_diameter, inner_diameter, centroid_x, centroid_y, moment_of_x, moment_of_y,\
             moment_product, outer_measurements, inner_measurements = \
             ImagePreProcessing.pre_process_image(16, 1200, 'cm', image_path='../Images/R_0.0.0.jpg', enhanced_image= new_img)
-
         # Compare measurements with actual values
         self.assertLessEqual(calculate_error(area, 16.2273), 3.5, "Area calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(outer_diameter, 6.6696), 3.5, "Inner diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(inner_diameter, 4.8683), 3.5, "Outer diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(centroid_x, 3.2406), 3.5, "Centroid X axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(centroid_y, 3.4100), 3.5, "Centroid Y axis has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(moment_of_x, 25.9764), 3.5, "X-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(moment_of_x, 24.9764), 3.5, "X-axis moment calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(moment_of_y, 34.5381), 3.5, "Y-axis moment calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(moment_product, -1.2249), 3.5, "Product of inertia calculation has more than 3.5% of error")
 
