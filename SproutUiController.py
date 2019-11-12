@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt5.QtChart import QChart, QLineSeries, QChartView
 
 import SproutController as Sprout
+import Data_Management_Module as DM
 
 # User input data
 in_data = {'img_path': "",
@@ -150,7 +151,7 @@ class SproutUI(QtWidgets.QMainWindow):
         if self.is_int_inbound(temp, 1, 25):
             self.label_numRingsFeedback.setText(str(temp))
             self.label_numRegionsFeedback.setText(str(int(temp) * int(in_data['num_wedges'])))
-            in_data['num_rings'] = temp
+            in_data['num_rings'] = int(temp)
         else:
             self.lineEdit_numRings.clear()
 
@@ -317,6 +318,9 @@ class SproutUI(QtWidgets.QMainWindow):
             if x >= default_comboBox_graph_item_count:
                 self.comboBox_wedges.removeItem(default_comboBox_graph_item_count)
 
+        self.comboBox_rings.setCurrentIndex(0)
+        self.comboBox_wedges.setCurrentIndex(0)
+
         # Ring Graph
         self.ring_chart = QChart()
 
@@ -459,14 +463,17 @@ class SproutUI(QtWidgets.QMainWindow):
         Manages all output data related to the measurement data that is presented in the dashboard Measurement Data.
         :return: None
         """
-        self.lineEdit_area.setText(str(self.measurement_data[0]) + " " + in_data['units'] + "^2")
-        self.lineEdit_avgOuterDiameter.setText(str(self.measurement_data[1]) + " " + in_data['units'])
-        self.lineEdit_avgInnerDiameter.setText(str(self.measurement_data[2]) + " " + in_data['units'])
-        self.lineEdit_centroid_x.setText(str(self.measurement_data[3]) + " " + in_data['units'])
-        self.lineEdit_centroid_y.setText(str(self.measurement_data[4]) + " " + in_data['units'])
-        self.lineEdit_momentOfInertia_x.setText(str(self.measurement_data[5]) + " " + in_data['units'] + "^4")
-        self.lineEdit_momentOfInertia_y.setText(str(self.measurement_data[6]) + " " + in_data['units'] + "^4")
-        self.lineEdit_productOfInertia.setText(str(self.measurement_data[7]) + " " + in_data['units'] + "^4")
+        self.lineEdit_area.setText(str("{:.4f}".format(self.measurement_data[0])) + " " + in_data['units'] + "^2")
+        self.lineEdit_avgOuterDiameter.setText(str("{:.4f}".format(self.measurement_data[1])) + " " + in_data['units'])
+        self.lineEdit_avgInnerDiameter.setText(str("{:.4f}".format(self.measurement_data[2])) + " " + in_data['units'])
+        self.lineEdit_centroid_x.setText(str("{:.4f}".format(self.measurement_data[3])) + " " + in_data['units'])
+        self.lineEdit_centroid_y.setText(str("{:.4f}".format(self.measurement_data[4])) + " " + in_data['units'])
+        self.lineEdit_momentOfInertia_x.setText(str("{:.4f}".format(self.measurement_data[5])) + " " +
+                                                in_data['units'] + "^4")
+        self.lineEdit_momentOfInertia_y.setText(str("{:.4f}".format(self.measurement_data[6])) + " " +
+                                                in_data['units'] + "^4")
+        self.lineEdit_productOfInertia.setText(str("{:.4f}".format(self.measurement_data[7])) + " " +
+                                               (in_data['units']) + "^4")
 
     def is_int_inbound(self, ui_in: str, lower: int, upper: int, ui_in_name: str = None):
         """
@@ -516,8 +523,8 @@ class SproutUI(QtWidgets.QMainWindow):
             self.warning_message_box(str(self.error_message))
         elif self.progressBar.value() == 99:
             self.myThread.wait()
-            self.densities = Sprout.get_fiber_density()
-            self.measurement_data = Sprout.get_dimensional_measurements()
+            self.densities = DM.get_fiber_density_average()
+            self.measurement_data = DM.get_dimensional_measurements()
             self.start_button_func()
 
 
@@ -565,10 +572,10 @@ class SaveWindow(QtWidgets.QMainWindow):
             save_folder_file_path = self.lineEdit_filePath.text()
             save_file_name = self.lineEdit_fileName.text().strip()
             if self.checkBox_graphs.isChecked():
-                Sprout.save_graphs(save_file_name, save_folder_file_path)
+                DM.save_graphs(save_file_name, save_folder_file_path)
             if self.checkBox_data.isChecked():
-                Sprout.save_fiber_density_csv(save_file_name, save_folder_file_path)
-                Sprout.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
+                DM.save_fiber_density_csv(save_file_name, save_folder_file_path)
+                DM.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
             self.close()
 
     def cancel_save_graph_data(self):

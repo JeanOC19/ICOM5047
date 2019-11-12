@@ -108,7 +108,8 @@ class SproutController (QThread):
         # Run Fiber Density and Distribution Module
         try:
             Fiber_Density_Calculation.fiber_density_and_distribution(self.in_data['num_rings'],
-                                                                     self.in_data['num_wedges'], dictionary)
+                                                                     self.in_data['num_wedges'],
+                                                                     dictionary)
         except Exception as e:
             self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)

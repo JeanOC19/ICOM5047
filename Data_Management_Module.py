@@ -21,6 +21,7 @@ def get_fiber_density():
     Getter or the fiber density list (without averages)
     :return: two dimensional list that contains the fiber density of each region.
     """
+    # Todo why no average?
     return Global_Module.global_fiber_density
 
 
@@ -143,6 +144,7 @@ def save_dimensional_measurements_csv(name, path, units):
     :param units: units in which the data will be reported in the csv
     :return: None
     """
+    # Todo mostrar data verticalmente no horizontal
     # Validate that the file name given does not contain special characters
     Utils.validate_name(name)
     # Validate that the directory path exists
@@ -172,6 +174,7 @@ def save_dimensional_measurements_csv(name, path, units):
         writer.writerow(dimensional_measurements)
     # Validate that created csv was successfully saved
     Utils.validate_path(file_path)
+    save_diameter_csv(path, units)
 
 
 def save_diameter_csv(path, units):
@@ -181,6 +184,7 @@ def save_diameter_csv(path, units):
     :param units: units in which the data will be reported in the csv
     :return: None
     """
+    # Todo mostrar data verticalmente no horizontal
     # Validate that the directory path exists
     Utils.validate_path(path)
     # Validate that the units received are supported

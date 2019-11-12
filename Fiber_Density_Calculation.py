@@ -116,15 +116,16 @@ def fiber_density_averages(fiber_density):
     return fiber_density_with_average
 
 
-def fiber_density_and_distribution(number_rings, number_wedges):
+def fiber_density_and_distribution(number_rings, number_wedges, dictionary):
     """
     Main Fiber Density Module function to be called by the UI controller. This function will generate the fiber density
     list, with the averages, and send them to the Data Management Module.
     :param number_rings: the number of rings, specified by the user, for the sample cross-section analysis.
     :param number_wedges: the number of wedges, specified by the user, for the sample cross-section analysis.
+    :param dictionary: dictionary containing raw image data TODO: isra revisa
     :return: None
     """
-    fiber_density_list = fiber_density_calculation(number_rings, number_wedges)
+    fiber_density_list = fiber_density_calculation(number_rings, number_wedges, dictionary)
     Data_Management_Module.set_fiber_density(fiber_density_list)
     fiber_density_with_average = fiber_density_averages(fiber_density_list)
     Data_Management_Module.set_fiber_density_average(fiber_density_with_average)
