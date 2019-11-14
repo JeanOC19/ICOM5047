@@ -76,7 +76,7 @@ def set_diameters(diameters):
     :return: None
     """
     # Validate that the received list is not empty and has appropriate dimensions
-    Utils.validate_diameter_list(diameters)
+   # Utils.validate_diameter_list(diameters)
     Global_Module.global_diameters = diameters
 
 
@@ -144,7 +144,6 @@ def save_dimensional_measurements_csv(name, path, units):
     :param units: units in which the data will be reported in the csv
     :return: None
     """
-    # Todo mostrar data verticalmente no horizontal
     # Validate that the file name given does not contain special characters
     Utils.validate_name(name)
     # Validate that the directory path exists
@@ -157,7 +156,6 @@ def save_dimensional_measurements_csv(name, path, units):
     dimensional_measurements_og = get_dimensional_measurements()
     Utils.validate_dimension_list(dimensional_measurements_og)
     # Initialize variables
-    dimensional_measurements = copy.deepcopy(dimensional_measurements_og)
     area = 'Area ' + '(' + units + '^2' + ')'
     outer_diameter = 'Outer Diameter ' + '(' + units + ')'
     inner_diameter = 'Inner Diameter ' + '(' + units + ')'
@@ -167,11 +165,14 @@ def save_dimensional_measurements_csv(name, path, units):
     y_moment = 'Y Moment of Inertia ' + '(' + units + '^4' + ')'
     product_inertia = 'Product of Inertia ' + '(' + units + '^4' + ')'
     column_titles = [area, outer_diameter, inner_diameter, x_centroid, y_centroid, x_moment, y_moment, product_inertia]
+    dimension_new = []
+    for index in range(len(dimensional_measurements_og)):
+        temporary = [column_titles[index], dimensional_measurements_og[index]]
+        dimension_new.append(temporary)
     # Create csv and save to local file system
     with open(file_path, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(column_titles)
-        writer.writerow(dimensional_measurements)
+        writer.writerows(dimension_new)
     # Validate that created csv was successfully saved
     Utils.validate_path(file_path)
     save_diameter_csv(path, units)
@@ -184,7 +185,7 @@ def save_diameter_csv(path, units):
     :param units: units in which the data will be reported in the csv
     :return: None
     """
-    # Todo mostrar data verticalmente no horizontal
+
     # Validate that the directory path exists
     Utils.validate_path(path)
     # Validate that the units received are supported
@@ -195,12 +196,15 @@ def save_diameter_csv(path, units):
     diameters_og = get_diameters()
     Utils.validate_diameter_list(diameters_og)
     # Initialize variables
-    diameters = copy.deepcopy(diameters_og)
+    diameters = []
+    for index in range(len(diameters_og[0])):
+        temp = [diameters_og[0][index], diameters_og[1][index]]
+        diameters.append(temp)
     outer_diameter = 'Outer Diameter ' + '(' + units + ')'
     inner_diameter = 'Inner Diameter ' + '(' + units + ')'
     column_titles = ['Measurement', outer_diameter, inner_diameter]
     counter_diameter = 1
-    number_rows = len(diameters[0])
+    number_rows = len(diameters)
     # Set row titles
     for j in range(number_rows):
         row = str(counter_diameter)
