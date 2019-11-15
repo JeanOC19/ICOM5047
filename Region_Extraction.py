@@ -24,6 +24,23 @@ def resize_image(img, scale):
     return cv2.resize(img, (int(new_x), int(new_y))), img_scale
 
 
+def enlarge_image(img, scale):
+    """
+    Resize an image
+    :param img: Input image
+    :param scale:
+    :return:
+    """
+
+    # Obtain parameters for scaling
+    height, width = img.shape[0], img.shape[1]
+    img_scale = scale * width
+    new_x, new_y = img.shape[1] * img_scale, img.shape[0] * img_scale
+
+    # Rescale the image
+    return cv2.resize(img, (int(new_x), int(new_y))), img_scale
+
+
 def rescale_coordinates(coordinates, scale):
     """
     Resize the coordinates with the given scale
@@ -31,7 +48,7 @@ def rescale_coordinates(coordinates, scale):
     :param scale: Number that resizes the coordinates
     :return: List containing the resized coodinates
     """
-    return [int(item / scale) for item in coordinates]
+    return [int(item/scale) for item in coordinates]
 
 
 def binarize_image(img):
@@ -78,24 +95,26 @@ def generate_wedge_mask(img, c_x, c_y, angle):
     """
 
     # Creating a right triangle with the given angle and coordinates
-    op_side = math.tan(math.radians(angle)) * c_x
-    c = [c_x, c_x * 2, c_x * 2]
+    # op_side = math.tan(math.radians(angle)) * c_x
+    op_side = math.tan(math.radians(angle)) * img.shape[1]
+    # c = [c_x, c_x * 2, c_x * 2]
+    c = [0, img.shape[1], img.shape[1]]
     r = [c_y, c_y, int(c_y - op_side)]
 
     # Generate map of three points that compose the right triangle
     rc = np.array((c, r)).T
 
     # Create a mask
-    img = np.zeros_like(img)
+    mask = np.zeros_like(img)
 
     # Draw wedge on the mask
-    cv2.drawContours(img, [rc], 0, 255, -1)
+    cv2.drawContours(mask, [rc], 0, 255, -1)
 
     # return mask
-    return img
+    return mask
 
 
-def extract_wedge(img, m_img, angle):
+def extract_wedge(img, angle):
     """
     Extract a wedge of a given angle from the input image
     :param img: Input image
@@ -105,33 +124,28 @@ def extract_wedge(img, m_img, angle):
     """
 
     # Get the center coordinate (cX, cY) of the image
-    cX, cY = get_centroid(img)
-
-    # # Generate the mask for the wedge
-    # wedge_mask = generate_wedge_mask(img, cX, cY, angle)
-
-    wedge = m_img[:, :, 0]
-    m_img = m_img[:, :, 0]
+    # cX, cY = get_centroid(s_img)
+    c_x, c_y = 0, img.shape[0]
 
     # Generate the mask for the wedge
-    m_img = generate_wedge_mask(m_img, cX, cY, angle)
+    mask = generate_wedge_mask(img, c_x, c_y, angle)
+
+    # Create two canvas
+    wedge = np.zeros_like(img)
 
     # Create a blank canvas and extract Wedge from main image
-    # wedge = np.zeros_like(wedge)
-    wedge.fill(0)
-    wedge[m_img == 255] = img[m_img == 255]
-    img = wedge.copy()
+    wedge[mask == 255] = img[mask == 255]
 
     # At this point we have extracted the wedge from the main image.
     # Now we proceed to isolate the area that contains only the wedge
 
+    n_iterations = int((30 / 3600) * img.shape[1])
     # Create a mask of the extracted wedge
-    _, img = cv2.threshold(cv2.erode(cv2.dilate(img, None, iterations=18), None, iterations=20), 150, 255,
-                           cv2.THRESH_BINARY)
+    _, mask = cv2.threshold(cv2.erode(cv2.dilate(wedge, None, iterations=n_iterations),
+                                      None, iterations=n_iterations+2), 150, 255, cv2.THRESH_BINARY)
 
-    # show_image(img)
     # Find contours for the wedge
-    contours, _ = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     # Find the contour with the best area that covers the wedge.
     areas = [cv2.contourArea(c) for c in contours]
@@ -141,10 +155,13 @@ def extract_wedge(img, m_img, angle):
     # Get the coordinates of the bounding rectangle of the wedge.
     x, y, w, h = cv2.boundingRect(cnt)
 
-    return wedge[y:y + h, x:x + w], img[y:y + h, x:x + w]
+    wedge = wedge[y:y + h, x:x + w]
+    mask = mask[y:y + h, x:x + w]
+
+    return wedge, mask
 
 
-def find_max_ins_rect(img):
+def find_max_ins_rect(data):
     """
     Find the largest inscribed rectangle of a given image map
     :param img: Input image
@@ -152,10 +169,9 @@ def find_max_ins_rect(img):
     """
 
     # Resize the image mask(This is to speed up the calculations of largest inscribed rectangle)
-    r_img, r_scale = resize_image(img, 125)
+    data, r_scale = resize_image(data, 125)
 
     # Extract a channel from the input image(RGB will be the same since image is binarized)
-    data = r_img
     nrows, ncols = data.shape[0], data.shape[1]
     w = np.zeros(dtype=int, shape=data.shape)
     h = np.zeros(dtype=int, shape=data.shape)
@@ -190,32 +206,19 @@ def find_max_ins_rect(img):
     return rescale_coordinates(rect_coor, r_scale)
 
 
-def rotate_bound(image, angle):
+def rotate_cuadrant(image, angle):
     """Given an image, make a rotation including its boundaries"""
+
+    h, w = image.shape[0], image.shape[1]
+    extra = np.zeros_like(image)
+    extra = extra[:, int(w * .95):]
+    image = np.append(image, extra, axis=1)
 
     # If input angle is 0, there is no need of rotating the image
     if angle != 0:
-        # grab the dimensions of the image and then determine the center
-        (h, w) = image.shape[:2]
-        (cX, cY) = (w // 2, h // 2)
-
-        # grab the rotation matrix (applying the negative of the
-        # angle to rotate clockwise), then grab the sine and cosine
-        # (i.e., the rotation components of the matrix)
-        M = cv2.getRotationMatrix2D((cX, cY), angle, 1.0)
-        cos = np.abs(M[0, 0])
-        sin = np.abs(M[0, 1])
-
-        # compute the new bounding dimensions of the image
-        nW = int((h * sin) + (w * cos))
-        nH = int((h * cos) + (w * sin))
-
-        # adjust the rotation matrix to take into account translation
-        M[0, 2] += (nW / 2) - cX
-        M[1, 2] += (nH / 2) - cY
-
-        # perform the actual rotation and return the image
-        return cv2.warpAffine(image, M, (nW, nH))
+        M = cv2.getRotationMatrix2D((0, h), -1 * angle, 1)
+        dst = cv2.warpAffine(image, M, (0, h))
+        return dst
     else:
         return image
 
@@ -230,10 +233,17 @@ def extract_rectangle(img, img_mask):
 
     # Get coordinates of the largest inscribed rectangle a given wedge.
     coord = find_max_ins_rect(img_mask)
+    x, y, w, h = coord[0], coord[1], coord[2], coord[3]
+
+    # For Visual Testing
+    # img2 = img.copy()
+    # cv2.rectangle(img2, (x, y), (w, h), (0, 255, 0), 2)
+    # show_image(img2)
+
     # With coordinates of rectangle obtain the rectangle from the wedge.
-    img = img[coord[1]:coord[3], coord[0]:coord[2]]
+    img = img[y:h, x:w]
     # Rotate image 90 degrees
-    return rotate_bound(img, 90)
+    return np.rot90(img).copy()
 
 
 def extract_regions(img, n_rings, wedge_num):
@@ -248,7 +258,7 @@ def extract_regions(img, n_rings, wedge_num):
     # Extract image shape properties
     height, width = img.shape[0], img.shape[1]
     # Calculate region height based on number rings
-    region_height = int(height / n_rings)
+    region_height = int(height/n_rings)
     # Define starting points
     x, y = 0, height
     # Variable that will store regions path
@@ -259,13 +269,15 @@ def extract_regions(img, n_rings, wedge_num):
     # For each region number, extract it's corresponding region.
     for region in range(n_rings):
         # Generate region name
+        r_name = "R" + str(region + 1) + "W" + str(wedge_num)
         region_name = "R" + str(region + 1) + "W" + str(wedge_num) + "." + str(image_type)
         # Extract region from input image
         extracted_region = img[y - region_height:y, x:x + width]
+
         # Change coordinate for new region to extract
-        y = y - region_height
+        y = y-region_height
         # Store region on dictionary
-        append_regions_dict(region_name, extracted_region)
+        append_regions_dict(r_name, extracted_region)
         # Store region on directory
         regions_path = store_region(extracted_region, region_name)
 
@@ -280,9 +292,7 @@ def append_regions_dict(region_name, region):
     :return:None
     """
     global regions_list
-    file_type_split = (region_name.split('.'))
-    file_key = file_type_split[0]
-    regions_list.update({file_key: region})
+    regions_list.update({region_name: region})
 
 
 def store_region(img, img_name):
@@ -348,7 +358,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     assert isinstance(bounded_binarized_input_image, np.ndarray), "bounded_binarized_input_image is wrong type"
 
     # Calculate the angle of the wedge given the number of wedges per quadrant
-    wedge_angle = (lambda wedges: 360 / wedges)(number_wedges)
+    wedge_angle = (lambda wedges: 360/wedges)(number_wedges)
 
     # Initialize variables
     current_angle = 0
@@ -356,20 +366,33 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     wedge_number = 1
 
     # Iterate
-    while wedge_number <= number_wedges:
-        # Rotate the image to the current calculated angle
-        rotated_rgb_image = rotate_bound(bounded_input_image, current_angle)
-        rotated_bin_image = rotate_bound(bounded_binarized_input_image, current_angle)
-        # Extract wedge and the wedge's mask from the rotated image
-        wedge, wedge_mask = extract_wedge(rotated_bin_image, rotated_rgb_image, wedge_angle)
-        # Extract the largest inscribed rectangle from wedge.
-        wedge_rectangle = extract_rectangle(wedge, wedge_mask)
-        # Extract regions from the extracted rectangle
-        regions_path = extract_regions(wedge_rectangle, number_rings, wedge_number)
-        # Increment the current angle for the next iteration
-        current_angle = current_angle + wedge_angle
-        # Increment the wedge number
-        wedge_number = wedge_number + 1
+    for cuadrant_num in range(4):
+
+        image = np.rot90(bounded_binarized_input_image, 4-cuadrant_num).copy()
+
+        # Extract Cuadrant
+        height, width = image.shape[0], image.shape[1]
+        image = image[:int(height/2), int(width/2):]
+
+        for cuadrant_wedge_num in range(int(number_wedges/4)):
+
+            # Rotate the image to the current calculated angle
+            wedge = rotate_cuadrant(image, int(current_angle % 90))
+
+            # Extract wedge and the wedge's mask from the rotated image
+            wedge, wedge_mask = extract_wedge(wedge, wedge_angle)
+
+            # Extract the largest inscribed rectangle from wedge.
+            wedge = extract_rectangle(wedge, wedge_mask)
+
+            # Extract regions from the extracted rectangle
+            regions_path = extract_regions(wedge, number_rings, wedge_number)
+
+            # Increment the current angle for the next iteration
+            current_angle = current_angle + wedge_angle
+
+            # Increment the wedge number
+            wedge_number = wedge_number + 1
 
     # Print path where regions are stored
     print("Stored Regions at: " + regions_path)
@@ -379,24 +402,27 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
 
 def region_extraction_module(num_wedges, num_of_rings):
     # Simulating User Inputs
-    rgb_image = cv2.imread('control_rgb.jpg')
-    bin_image = cv2.imread('control.png')
+    bin_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\Sprout_Unofficial\\control.jpg')
     bin_img = binarize_image(bin_image)
-    dir_path = "C:\\Users\\israe\\Desktop\\Capstone\\Sprout_Images"
+    dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
     os.chdir(dir_path)
 
     # Calling Region Extraction
-    return region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
+    return region_extraction(bin_image, bin_img, num_wedges, num_of_rings)
 
 # if __name__ == "__main__":
 #     # Simulating User Inputs
 #     num_wedges = 12
 #     num_of_rings = 3
-#     rgb_image = cv2.imread('control_rgb.jpg')
-#     bin_image = cv2.imread('control.jpg')
+#     # bin_image = cv2.imread('bamboo_4800_LI.jpg')
+#     bin_image = cv2.imread('control.png')
+#     # bin_image = cv2.imread('angle_test.jpg')
 #     bin_img = binarize_image(bin_image)
 #     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
 #     os.chdir(dir_path)
 #
+#
 #     # Calling Region Extraction
-#     region_extraction(rgb_image, bin_img, num_wedges, num_of_rings)
+#     region_extraction(bin_img, num_wedges, num_of_rings)
+#
+
