@@ -21,25 +21,30 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     :return: bounded input image and bounded binarized input image
     """
 
-    def binarize_image(source_image: object, blur_intensity: int) -> object:
+    def binarize_image(source_image: object, blur_intensity: int, save_images = False, kernel_type = 1) -> object:
         """
         Converts the input image into a binary image
+        :param save_images:
         :param blur_intensity: size of the kernel for blurring the image
         :param source_image: image to be binarized
         :return: binarized image data
         """
         # Convert RGB image to grayscale
         gray_image = cv.cvtColor(source_image, cv.COLOR_BGR2GRAY)
-        cv.imwrite(path + '/grayscale_image.jpg', gray_image)
+        if save_images:
+            cv.imwrite(path + '/grayscale_image.jpg', gray_image)
 
         # Use Gaussian Blur to remove noise from the image
-        blurred_image = gray_image
+        # blurred_image = gray_image
         if blur_intensity is not 0:
-            blurred_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), 1)
+            blurred_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), kernel_type)
+        else:
+            blurred_image = cv.GaussianBlur(gray_image, (1, 1), 0.5, 0.5, kernel_type)
 
         # Calculate the global threshold value and binarize the image
         ret, new_image = cv.threshold(blurred_image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-        cv.imwrite(path + '/binarized_image.jpg', new_image)
+        if save_images:
+            cv.imwrite(path + '/binarized_image.jpg', new_image)
 
         return new_image
 
@@ -231,7 +236,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
     # Binarize the input image
     try:
-        binarized_image = binarize_image(img, 5)
+        binarized_image = binarize_image(img, 5, True)
     except:
         raise Exception("Unable to binarize input image.")
 
@@ -240,6 +245,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         image, binarized_image, measurements_list, diameters_list = image_contours(binarized_image)
         Data_Management_Module.set_dimensional_measurements(measurements_list)
         Data_Management_Module.set_diameters(diameters_list)
+        binarized_image = binarize_image(image.copy(), 0, kernel_type=cv.BORDER_ISOLATED)
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 

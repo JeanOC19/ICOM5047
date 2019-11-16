@@ -61,7 +61,7 @@ def binarize_image(img):
     #   - src: image source
     #   - threshold_value: The thresh value with respect to which the thresholding operation is made
     #   - max_BINARY_value: The value used with the Binary thresholding operations (to set the chosen pixels)
-    _, thresh = cv2.threshold(gray_image, 127, 255, 0)
+    _, thresh = cv2.threshold(gray_image, 127, (255,255,255), 0)
 
     return thresh
 
@@ -114,7 +114,7 @@ def generate_wedge_mask(img, c_x, c_y, angle):
     return mask
 
 
-def extract_wedge(img, angle):
+def extract_wedge(img, filled, angle):
     """
     Extract a wedge of a given angle from the input image
     :param img: Input image
@@ -126,26 +126,20 @@ def extract_wedge(img, angle):
     # Get the center coordinate (cX, cY) of the image
     # cX, cY = get_centroid(s_img)
     c_x, c_y = 0, img.shape[0]
-
     # Generate the mask for the wedge
     mask = generate_wedge_mask(img, c_x, c_y, angle)
 
-    # Create two canvas
-    wedge = np.zeros_like(img)
-
     # Create a blank canvas and extract Wedge from main image
-    wedge[mask == 255] = img[mask == 255]
+    wedge = filled & mask[:, :, 0]
+    img[wedge == 0] = 0
 
     # At this point we have extracted the wedge from the main image.
     # Now we proceed to isolate the area that contains only the wedge
-
-    n_iterations = int((30 / 3600) * img.shape[1])
-    # Create a mask of the extracted wedge
-    _, mask = cv2.threshold(cv2.erode(cv2.dilate(wedge, None, iterations=n_iterations),
-                                      None, iterations=n_iterations+2), 150, 255, cv2.THRESH_BINARY)
-
+    wedge = rotate_cuadrant(wedge, int(angle/2 % 90))
+    img = rotate_cuadrant(img.copy(), int(angle/2 % 90))
+    # Binarize wedge rectangle
     # Find contours for the wedge
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(wedge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     # Find the contour with the best area that covers the wedge.
     areas = [cv2.contourArea(c) for c in contours]
@@ -155,8 +149,8 @@ def extract_wedge(img, angle):
     # Get the coordinates of the bounding rectangle of the wedge.
     x, y, w, h = cv2.boundingRect(cnt)
 
-    wedge = wedge[y:y + h, x:x + w]
-    mask = mask[y:y + h, x:x + w]
+    mask = wedge[y:y + h, x:x + w]
+    wedge = img[y:y + h, x:x + w]
 
     return wedge, mask
 
@@ -180,7 +174,7 @@ def find_max_ins_rect(data):
 
     # Iterate through each pixel and mark on w and h
     for r in range(nrows):
-        for c in range(ncols):
+        for c in range(int(ncols*0.15), ncols):
             if data[r][c] == skip:
                 continue
             if r == 255:
@@ -211,7 +205,7 @@ def rotate_cuadrant(image, angle):
 
     h, w = image.shape[0], image.shape[1]
     extra = np.zeros_like(image)
-    extra = extra[:, int(w * .95):]
+    extra = extra[:, int(w * .9):]
     image = np.append(image, extra, axis=1)
 
     # If input angle is 0, there is no need of rotating the image
@@ -232,6 +226,7 @@ def extract_rectangle(img, img_mask):
     """
 
     # Get coordinates of the largest inscribed rectangle a given wedge.
+    # Create a mask of the extracted wedge
     coord = find_max_ins_rect(img_mask)
     x, y, w, h = coord[0], coord[1], coord[2], coord[3]
 
@@ -242,6 +237,9 @@ def extract_rectangle(img, img_mask):
 
     # With coordinates of rectangle obtain the rectangle from the wedge.
     img = img[y:h, x:w]
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
     # Rotate image 90 degrees
     return np.rot90(img).copy()
 
@@ -326,6 +324,23 @@ def store_region(img, img_name):
         return full_path
 
 
+def extract_cuadrant(image, cuadrant_num):
+    height, width = image.shape[0], image.shape[1]
+
+    if cuadrant_num == 0:
+        return image[:int(height / 2), int(width / 2):]
+    elif cuadrant_num == 1:
+        image = image[:int(height / 2), :int(width / 2)]
+    elif cuadrant_num == 2:
+        image = image[int(height / 2):, :int(width / 2)]
+    elif cuadrant_num == 3:
+        image = image[int(height / 2):, int(width / 2):]
+    else:
+        return Exception("Cannot extract cuadrant greater than 4")
+
+    return np.rot90(image, 4 - cuadrant_num).copy()
+
+
 def show_image(img):
     """
     Show on the screen a given image
@@ -365,26 +380,32 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     regions_path = str()
     wedge_number = 1
 
+    n_iterations = int((30 / 3600) * bounded_binarized_input_image.shape[1]/2)
+    # Create a mask of the extracted wedge
+    bounded_binarized_input_image = cv2.erode(cv2.dilate(bounded_binarized_input_image, None, iterations=n_iterations),
+                                      None, iterations=n_iterations+2)
+    bounded_input_image[bounded_binarized_input_image == 0] = 0
+
     # Iterate
     for cuadrant_num in range(4):
 
-        image = np.rot90(bounded_binarized_input_image, 4-cuadrant_num).copy()
-
-        # Extract Cuadrant
-        height, width = image.shape[0], image.shape[1]
-        image = image[:int(height/2), int(width/2):]
+        image = extract_cuadrant(bounded_input_image, cuadrant_num)
+        filled_ring = extract_cuadrant(bounded_binarized_input_image, cuadrant_num)
 
         for cuadrant_wedge_num in range(int(number_wedges/4)):
 
             # Rotate the image to the current calculated angle
             wedge = rotate_cuadrant(image, int(current_angle % 90))
+            filled_wedge = rotate_cuadrant(filled_ring, int(current_angle % 90))
 
             # Extract wedge and the wedge's mask from the rotated image
-            wedge, wedge_mask = extract_wedge(wedge, wedge_angle)
+            wedge, wedge_mask = extract_wedge(wedge, filled_wedge, wedge_angle)
 
+            # show_image(wedge)
+            # show_image(wedge_mask)
             # Extract the largest inscribed rectangle from wedge.
             wedge = extract_rectangle(wedge, wedge_mask)
-
+            # show_image(wedge)
             # Extract regions from the extracted rectangle
             regions_path = extract_regions(wedge, number_rings, wedge_number)
 
