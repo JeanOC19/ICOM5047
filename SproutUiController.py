@@ -1,6 +1,8 @@
 import os
 import sys
 
+import cv2 as cv
+
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtCore
 from PyQt5.Qt import Qt
@@ -95,11 +97,37 @@ class SproutUI(QtWidgets.QMainWindow):
         calculate the fiber density of a bamboo cross-section.
         :return: None
         """
-        url = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files(*);;*.jpg; *jpeg;; *bmp;; *tiff")
-        self.lineEdit_imagePath.setText(url[0])
-        cross_section = QPixmap(url[0])
-        self.label_bamboo.setPixmap(cross_section)
-        in_data['img_path'] = url[0]
+        url = QFileDialog.getOpenFileName(self, "Open a file", "", "*.jpg; *jpeg;; *bmp;; *tif")
+
+        if url[0] is not '':
+            try:
+                self.lineEdit_imagePath.setText(url[0])
+
+                print("ok - 0")
+                img = cv.imread(url[0])
+                print("ok - 1-imread")
+                resized_img = cv.resize(img, (450, 450))
+                print("ok - 2-resized")
+                cv.imwrite(os.getcwd() + '/Images/risized_input_image.jpg', resized_img)
+                print("ok - 3-imwrite")
+
+                #get display image
+                cross_section = QPixmap(os.getcwd() + '/Images/risized_input_image.jpg')
+                # cross_section = QPixmap(url[0])
+                # cross_section = cross_section.scaled(900, 900)
+
+                self.label_bamboo.setPixmap(cross_section)
+
+                in_data['img_path'] = url[0]
+                print(in_data['img_path'])
+
+                img = None
+
+                if cross_section.physicalDpiX() is 0:
+                    self.warning_message_box("Unable to display input image. \nImage file path saved.\n\n")
+            except Exception as e:
+                self.warning_message_box("Unable to open input image, verify  \n file path or image file type.\n\n"
+                                         + str(e))
 
     def browse_folder(self):
         """
