@@ -39,7 +39,8 @@ class SproutUI(QtWidgets.QMainWindow):
         self.setWindowTitle("Sprout")
         self.setWindowIcon(QIcon('./Images/SproutIcon.ico'))
 
-        self.save_window_ui = SaveWindow()
+        self.save_window_ui = SaveWindow(self)
+
         self.chartView = None
 
         self.is_running = False
@@ -260,7 +261,7 @@ class SproutUI(QtWidgets.QMainWindow):
             try:
                 os.chdir(in_data['intermediate_path'])
             except OSError:
-                QMessageBox.information(self, "Warning!", "File path not found for intermediate steps. ")
+                QMessageBox.critical(self, "Warning!", "File path not found for intermediate steps. ")
                 return
 
             # Save input data in in_data dictionary
@@ -511,7 +512,7 @@ class SproutUI(QtWidgets.QMainWindow):
         :param message: Message to be displayed in the popup message
         :return:
         """
-        mbox = QMessageBox.information(self, "Warning!!", message)
+        mbox = QMessageBox.critical(self, "Warning!!", message)
         if mbox == QMessageBox.Ok:
             self.lineEdit_numMeasurements.setFocus(0)
 
@@ -541,10 +542,11 @@ class SproutUI(QtWidgets.QMainWindow):
 
 
 class SaveWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super(SaveWindow, self).__init__()
+    def __init__(self, parent=None):
+        super(SaveWindow, self).__init__(parent)
         uic.loadUi('SproutSave.ui', self)
         self.setWindowTitle("Save Files")
+        self.setWindowIcon(QIcon('./Images/SproutIcon.ico'))
 
         self.ui()
 
@@ -573,13 +575,13 @@ class SaveWindow(QtWidgets.QMainWindow):
         :return: None
         """
         if not (self.checkBox_graphs.isChecked() or self.checkBox_data.isChecked()):
-            QMessageBox.information(self, "Warning!", "Please make sure to have at least   \n"
+            QMessageBox.critical(self, "Warning!", "Please make sure to have at least   \n"
                                                              " one checkbox selected.")
         elif self.lineEdit_fileName.text().strip() is "":
-            QMessageBox.information(self, "Warning!", "Please make sure to provide a valid file name.   \n"
+            QMessageBox.critical(self, "Warning!", "Please make sure to provide a valid file name.   \n"
                                                       "No spaces or any special character.  ")
         elif self.lineEdit_filePath.text() is "":
-            QMessageBox.information(self, "Warning!", "Please make sure to provide a folder path.   ")
+            QMessageBox.critical(self, "Warning!", "Please make sure to provide a folder path.   ")
         else:
             save_folder_file_path = self.lineEdit_filePath.text()
             save_file_name = self.lineEdit_fileName.text().strip()

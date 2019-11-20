@@ -36,10 +36,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">QFrame{
+    <string notr="true">QFrame {
 	background-color: #EDFFE3;
-}
-</string>
+}</string>
    </property>
    <widget class="QFrame" name="frame">
     <property name="geometry">
