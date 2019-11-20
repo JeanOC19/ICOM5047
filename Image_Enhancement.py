@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+import shutil
 
 
 def adjust_gamma(image, gamma=1.0):
@@ -36,12 +37,23 @@ def store_image(img):
 
     # Check if path exists, if not then create the path
     if not os.path.exists(full_path):
+        print("Didn't found directory: %s. Proceeding to create directory." % full_path)
         try:
             os.mkdir(img_enhacement_path)
         except OSError:
             print("Creation of the directory %s failed" % img_enhacement_path)
         else:
             print("Successfully created the directory: %s " % img_enhacement_path)
+    # Check if path is empty , if not then delete contents
+    elif os.listdir(full_path):
+        print("Found directory: %s with content. Proceeding to delete contents" % full_path)
+        try:
+            shutil.rmtree(full_path)
+            os.mkdir(img_enhacement_path)
+        except OSError:
+            print("Could not delete contents of directory: %s" % full_path)
+        else:
+            print("Successfully deleted contents of the directory: %s " % full_path)
 
     # Store region image
     try:
