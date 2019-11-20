@@ -1,12 +1,10 @@
 import os
 import sys
 
-import cv2 as cv
-
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtCore
 from PyQt5.Qt import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt5.QtChart import QChart, QLineSeries, QChartView
 
@@ -39,6 +37,7 @@ class SproutUI(QtWidgets.QMainWindow):
         super(SproutUI, self).__init__()
         uic.loadUi('Sprout.ui', self)
         self.setWindowTitle("Sprout")
+        self.setWindowIcon(QIcon('./Images/SproutIcon.ico'))
 
         self.save_window_ui = SaveWindow()
         self.chartView = None
@@ -97,37 +96,22 @@ class SproutUI(QtWidgets.QMainWindow):
         calculate the fiber density of a bamboo cross-section.
         :return: None
         """
-        url = QFileDialog.getOpenFileName(self, "Open a file", "", "*.jpg; *jpeg;; *bmp;; *tif")
+        url = QFileDialog.getOpenFileName(self, "Open a file", "", "*jpg; *jpeg;; *bmp;; *tif")
 
         if url[0] is not '':
             try:
-                self.lineEdit_imagePath.setText(url[0])
+                cross_section = QPixmap(url[0])
+                cross_section = cross_section.scaled(500, 500)
 
-                print("ok - 0")
-                img = cv.imread(url[0])
-                print("ok - 1-imread")
-                resized_img = cv.resize(img, (450, 450))
-                print("ok - 2-resized")
-                cv.imwrite(os.getcwd() + '/Images/risized_input_image.jpg', resized_img)
-                print("ok - 3-imwrite")
-
-                #get display image
-                cross_section = QPixmap(os.getcwd() + '/Images/risized_input_image.jpg')
-                # cross_section = QPixmap(url[0])
-                # cross_section = cross_section.scaled(900, 900)
-
-                self.label_bamboo.setPixmap(cross_section)
-
-                in_data['img_path'] = url[0]
-                print(in_data['img_path'])
-
-                img = None
-
-                if cross_section.physicalDpiX() is 0:
-                    self.warning_message_box("Unable to display input image. \nImage file path saved.\n\n")
+                if cross_section.isNull():
+                    self.warning_message_box("Insufficient memory space please select a lower  \n"
+                                             " resolution image before starting the process.")
+                else:
+                    self.label_bamboo.setPixmap(cross_section)
+                    self.lineEdit_imagePath.setText(url[0])
+                    in_data['img_path'] = url[0]
             except Exception as e:
-                self.warning_message_box("Unable to open input image, verify  \n file path or image file type.\n\n"
-                                         + str(e))
+                self.warning_message_box("Unable to open input image, verify  \n file path or image file type.\n\n")
 
     def browse_folder(self):
         """
