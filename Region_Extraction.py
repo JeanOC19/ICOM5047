@@ -294,20 +294,11 @@ def store_region(img, img_name):
     # Name of file that will be used to store region
     file_name = img_name + "." + str(image_type)
 
-    # Check if regions_path exists, if not then create the path
-    if not os.path.exists(full_path):
-        try:
-            os.mkdir(regions_path)
-        except OSError:
-            print("Creation of the directory %s failed" % regions_path)
-        else:
-            print("Successfully created the directory: %s " % regions_path)
-
     # Store region image
     try:
         cv2.imwrite(os.path.join(full_path, str(file_name)), img)
     except OSError:
-        print("Storage of %s failed on path %s" % file_name % regions_path)
+        raise print("Storage of %s failed on path %s" % file_name % regions_path)
     else:
         print("Stored: ", os.path.join(full_path, str(file_name)))
         return full_path
@@ -376,7 +367,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
 
     # Initialize variables
     current_angle = 0
-    regions_path = str()
+    regions_path = 'regions'
     wedge_number = 1
 
     # Name of the path where regions will be stored.
@@ -388,7 +379,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         try:
             os.mkdir(regions_path)
         except OSError:
-            print("Creation of the directory %s failed" % regions_path)
+            raise print("Creation of the directory %s failed" % regions_path)
         else:
             print("Successfully created the directory: %s " % regions_path)
     # Check if path is empty , if not then delete contents
@@ -396,8 +387,9 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         print("Found directory: %s with content. Proceeding to delete contents" % full_path)
         try:
             shutil.rmtree(full_path)
+            os.mkdir(regions_path)
         except OSError:
-            print("Could not delete contents of directory: %s" % full_path)
+            raise print("Could not delete contents of directory: %s" % full_path)
         else:
             print("Successfully deleted contents of the directory: %s " % full_path)
 
