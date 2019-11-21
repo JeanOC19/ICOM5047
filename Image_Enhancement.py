@@ -41,7 +41,7 @@ def store_image(img):
         try:
             os.mkdir(img_enhacement_path)
         except OSError:
-            print("Creation of the directory %s failed" % img_enhacement_path)
+            raise print("Creation of the directory %s failed" % img_enhacement_path)
         else:
             print("Successfully created the directory: %s " % img_enhacement_path)
     # Check if path is empty , if not then delete contents
@@ -51,7 +51,7 @@ def store_image(img):
             shutil.rmtree(full_path)
             os.mkdir(img_enhacement_path)
         except OSError:
-            print("Could not delete contents of directory: %s" % full_path)
+            raise print("Could not delete contents of directory: %s" % full_path)
         else:
             print("Successfully deleted contents of the directory: %s " % full_path)
 
@@ -59,7 +59,7 @@ def store_image(img):
     try:
         cv2.imwrite(os.path.join(full_path, str(img_name)), img)
     except OSError:
-        print("Storage of %s failed on path" % img_name % img_enhacement_path)
+        raise print("Storage of %s failed on path" % img_name % img_enhacement_path)
     else:
         print("Stored: ", os.path.join(full_path, str(img_name)))
 
