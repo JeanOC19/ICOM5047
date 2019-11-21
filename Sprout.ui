@@ -78,6 +78,9 @@ border-top-style: inset;</string>
     <property name="cursor">
      <cursorShape>ArrowCursor</cursorShape>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
     <property name="styleSheet">
      <string notr="true">QTabBar::tab {
 	background-color: #7EE868;
@@ -200,6 +203,9 @@ border-style: inset;
       <property name="cursor">
        <cursorShape>PointingHandCursor</cursorShape>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="toolTip">
        <string>Start the fiber density
  calculation proces.</string>
@@ -244,6 +250,9 @@ border-style: inset;
       </property>
       <property name="cursor">
        <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
       </property>
       <property name="toolTip">
        <string>Units for measurement calculatios.</string>
@@ -527,6 +536,9 @@ border-width:0px;</string>
       <property name="cursor">
        <cursorShape>PointingHandCursor</cursorShape>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="toolTip">
        <string/>
       </property>
@@ -758,6 +770,9 @@ QPushButton:disabled{
       <property name="cursor">
        <cursorShape>PointingHandCursor</cursorShape>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="toolTip">
        <string/>
       </property>
@@ -781,31 +796,34 @@ QPushButton:disabled{
        <string>Browse ...</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_numWedges">
+     <widget class="QLineEdit" name="lineEdit_numRings">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>425</y>
-        <width>80</width>
+        <x>150</x>
+        <y>480</y>
+        <width>100</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
       <property name="toolTip">
-       <string>Number of Wedges per Quadrant:
-min: 3
-max: 100</string>
+       <string>Number of Rings:
+min: 1
+max: 25</string>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color:white;</string>
       </property>
       <property name="inputMask">
-       <string>000</string>
+       <string>00</string>
       </property>
       <property name="maxLength">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="placeholderText">
-       <string>3 to 100</string>
+       <string>1 to 25</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_intermediateStepPath">
@@ -819,6 +837,9 @@ max: 100</string>
         <width>290</width>
         <height>22</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="toolTip">
        <string>Path were data of intermediate
@@ -843,6 +864,9 @@ max: 100</string>
         <height>22</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="toolTip">
        <string>Path for image that will be used to determined
  the fiber density of a bamboo cross-section.</string>
@@ -857,19 +881,22 @@ max: 100</string>
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_numRings">
+     <widget class="QLineEdit" name="lineEdit_imageDPI">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>300</x>
         <y>480</y>
         <width>100</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
       <property name="toolTip">
-       <string>Number of Rings:
-min: 1
-max: 25</string>
+       <string>Image Dots Per Inch:
+min: 1200
+max: 4800</string>
       </property>
       <property name="toolTipDuration">
        <number>-1</number>
@@ -878,16 +905,16 @@ max: 25</string>
        <string notr="true">background-color:white;</string>
       </property>
       <property name="inputMask">
-       <string>00</string>
+       <string>0000</string>
       </property>
       <property name="text">
        <string/>
       </property>
       <property name="maxLength">
-       <number>2</number>
+       <number>4</number>
       </property>
       <property name="placeholderText">
-       <string>1 to 25</string>
+       <string>1200 to 4800</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_units">
@@ -930,6 +957,9 @@ max: 25</string>
         <width>200</width>
         <height>20</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="toolTip">
        <string>Check if image enhancement is requiered.</string>
@@ -985,6 +1015,9 @@ max: 25</string>
         <height>22</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
       <property name="toolTip">
        <string>Number of Diameter Measurements per Quadrant:
 min: 3
@@ -1012,34 +1045,37 @@ QLineEdit:clicked{
        <string>3 to 100</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_imageDPI">
+     <widget class="QLineEdit" name="lineEdit_numWedges">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>480</y>
-        <width>100</width>
+        <x>360</x>
+        <y>425</y>
+        <width>80</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
       <property name="toolTip">
-       <string>Image Dots Per Inch:
-min: 1200
-max: 4800</string>
+       <string>Number of Wedges per Quadrant:
+min: 3
+max: 100</string>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color:white;</string>
       </property>
       <property name="inputMask">
-       <string>0000</string>
+       <string>000</string>
       </property>
       <property name="maxLength">
-       <number>4</number>
+       <number>3</number>
       </property>
       <property name="frame">
        <bool>true</bool>
       </property>
       <property name="placeholderText">
-       <string>1200 to 4800</string>
+       <string>3 to 100</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_numMeasurements">
@@ -1249,6 +1285,37 @@ font: bold 16px;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
+     <zorder>label_intermediateStepPath</zorder>
+     <zorder>label_progressBar</zorder>
+     <zorder>progressBar</zorder>
+     <zorder>start_button</zorder>
+     <zorder>label_imageDPI</zorder>
+     <zorder>comboBox_units</zorder>
+     <zorder>frame_4</zorder>
+     <zorder>browse_button_2</zorder>
+     <zorder>browse_button_1</zorder>
+     <zorder>lineEdit_intermediateStepPath</zorder>
+     <zorder>lineEdit_imagePath</zorder>
+     <zorder>label_units</zorder>
+     <zorder>label_numRings</zorder>
+     <zorder>checkBox_imageEnhancement</zorder>
+     <zorder>label_numWedges</zorder>
+     <zorder>label_imagePath</zorder>
+     <zorder>label_numMeasurements</zorder>
+     <zorder>frame_5</zorder>
+     <zorder>label_10</zorder>
+     <zorder>label_bamboo</zorder>
+     <zorder>label_12</zorder>
+     <zorder>label_13</zorder>
+     <zorder>label_numWedgesFeedback</zorder>
+     <zorder>label_numRingsFeedback</zorder>
+     <zorder>label_numRegionsFeedback</zorder>
+     <zorder>label_imageDPIFeedback</zorder>
+     <zorder>label_numMeasurementsFeedback</zorder>
+     <zorder>lineEdit_numWedges</zorder>
+     <zorder>lineEdit_imageDPI</zorder>
+     <zorder>lineEdit_numRings</zorder>
+     <zorder>lineEdit_numMeasurements</zorder>
     </widget>
     <widget class="QWidget" name="dashboard_tab">
      <property name="enabled">
@@ -1275,6 +1342,9 @@ font: bold 16px;</string>
       <property name="cursor">
        <cursorShape>ArrowCursor</cursorShape>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="styleSheet">
        <string notr="true">QTabBar::tab {
 	background-color: #EDFFE3;
@@ -1298,7 +1368,7 @@ QTabBar::tab:selected {
 </string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="graphs_tab">
        <property name="enabled">

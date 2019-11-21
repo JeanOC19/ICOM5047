@@ -1,3 +1,4 @@
+import gc
 
 import Image_Enhancement
 import ImagePreProcessing
@@ -30,6 +31,7 @@ class SproutController (QThread):
         self.percent_count = 0
 
     def __del__(self):
+        print("*()()()*(*(*)(*)*(*(*(*)*)(*")
         self.wait()
 
     def run(self):
@@ -39,7 +41,7 @@ class SproutController (QThread):
         :return: None
         """
 
-        global step_enhanced_image, step_bounded_input_image, num_rings, num_wedges
+        global step_enhanced_image, step_bounded_input_image, num_rings, num_wedges, bounded_binarized_input_image
 
         print("--------------------------------------------")
         print("Sprout Controller: Acquired Input Parameters")
@@ -54,6 +56,8 @@ class SproutController (QThread):
         print(" num_rings = " + str(self.in_data['num_rings']))
         print(" img_dpi = " + str(self.in_data['img_dpi']))
         print(" enhance = " + str(self.in_data['enhance']))
+
+        time_start = time.time()
 
         if not os.path.exists(self.in_data['intermediate_path']):
             try:
@@ -70,15 +74,23 @@ class SproutController (QThread):
         num_rings = self.in_data['num_rings']
         num_wedges = self.in_data['num_wedges']
 
+        if self.isInterruptionRequested():
+            return
+
         # If image enhancement is required run Image Enhancement Module
         if self.in_data['enhance']:
             try:
                 step_enhanced_image = Image_Enhancement.image_enhancement(self.in_data['img_path'])
+                print("** Javier01 termino")
             except Exception as e:
                 self.sprout_ui.error_message = "Error in Image Enhancement:\n " + str(e)
                 self.sprout_ui.progressBar.setValue(2)
                 return
-            self.update_progress_bar()
+            # self.update_progress_bar()
+            self.sprout_ui.progressBar.setValue(15)
+
+        if self.isInterruptionRequested():
+            return
 
         # Run Image Pre-processing Module
         try:
@@ -87,38 +99,56 @@ class SproutController (QThread):
                 self.in_data['img_dpi'],
                 self.in_data['units'],
                 self.in_data['img_path'],
-                step_enhanced_image)
+                step_enhanced_image,
+                self)
+            print("** Jean termino")
         except Exception as e:
             self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        self.update_progress_bar()
+        # self.update_progress_bar()
+        self.sprout_ui.progressBar.setValue(33)
+
+        if self.isInterruptionRequested():
+            return
 
         # Run Region Extraction Module
         try:
             dictionary = Region_Extraction.region_extraction(step_bounded_input_image, bounded_binarized_input_image,
-                                                             self.in_data['num_wedges'],
-                                                             self.in_data['num_rings'])
+                                                             self.in_data['num_wedges'], self.in_data['num_rings'],
+                                                             self)
+            print("** Javier02 termino")
         except Exception as e:
             self.sprout_ui.error_message = "Error in Region Extraction:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        self.update_progress_bar()
+        # self.update_progress_bar()
+        self.sprout_ui.progressBar.setValue(66)
+
+        if self.isInterruptionRequested():
+            return
 
         # Run Fiber Density and Distribution Module
         try:
             Fiber_Density_Calculation.fiber_density_and_distribution(self.in_data['num_rings'],
                                                                      self.in_data['num_wedges'],
                                                                      dictionary)
+            print("** Isra termino")
         except Exception as e:
             self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-
-        self.update_progress_bar()
+        # self.update_progress_bar()
+        self.sprout_ui.progressBar.setValue(99)
 
         print("\n * Sprout Controller: Finished Successfully * ")
+        print("      Total time: " + str(time.time() - time_start) + " sec")
         return
+
+    def clear_mem(self):
+        gc.collect()
+        self.terminate()
+        self.__del__()
 
     def update_progress_bar(self):
         """

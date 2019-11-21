@@ -3,14 +3,13 @@ import os
 import numpy as np
 import Data_Management_Module
 
-
 # Global variables for testing purposes
 TESTING = 0
 outer_units = ""
 
 
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
-                      enhanced_image: object = None):
+                      enhanced_image: object = None, t = None):
     """
     Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters, centroid coordinates, and moment of inertia with respect to the x and y axes
     :param num_of_measurements: number of measurements to use for determining average inner and outer diameters
@@ -195,6 +194,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
                                                         moment_product], [outer_diameter_measurements,
                                                                           inner_diameter_measurements]
 
+    print("* entered jean module")
     # Validate inputs
     assert image_path is not None, "Image path must be given as input."
     assert type(num_of_measurements) is int, "Dimensional measurements number is not an integer."
@@ -205,6 +205,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     assert units in ('cm', 'in', 'mm'), "Supported units are only inches(in), centimeters(cm), and milimeters(mm)"
     assert os.path.exists(image_path), "Input image was not found."
     assert image_path[-4:] in ('.bmp', '.jpg', 'jpeg', '.tif'), "Image format is not supported."
+    print("* pass assert")
 
     path = "Pre_Processing"
     global TESTING
@@ -218,6 +219,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             os.makedirs(path)
         except:
             raise Exception("Unable to create Pre-Processing sub-directory")
+    print("* Created folder for images if it does not exist")
 
     # Dictionary to store the conversion value of each unit of measurement
     units_dict = {'cm': 2.54,
@@ -226,19 +228,26 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     units_multiplier = units_dict[units]
 
     # Check if input is the image path or the image data
+    img = None
     if enhanced_image is None:
         try:
+            print("* getting img")
             img = cv.imread(image_path)
+            print("* got img")
         except Exception:
             raise Exception("Unable to open input image")
     else:
         img = enhanced_image
+    print("* Check if input is the image path or the image data")
+    if t is not None and t.isInterruptionRequested():
+        return
 
     # Binarize the input image
     try:
         binarized_image = binarize_image(img, 5, True)
     except:
         raise Exception("Unable to binarize input image.")
+    print("* Binarized input img")
 
     try:
         # Find contours of the image and make dimensional measurements
@@ -248,6 +257,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         binarized_image = binarize_image(image.copy(), 0, kernel_type=cv.BORDER_ISOLATED)
     except:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
+    print("* Contours of the image and make dimensional measurements")
 
     # If user is testing module, send all the parameters
     if TESTING:

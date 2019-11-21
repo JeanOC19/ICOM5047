@@ -126,6 +126,10 @@ def fiber_density_and_distribution(number_rings, number_wedges, dictionary):
     :return: None
     """
     fiber_density_list = fiber_density_calculation(number_rings, number_wedges, dictionary)
+    print("* calculated fiber density")
     Data_Management_Module.set_fiber_density(fiber_density_list)
+    print("* set fiber density")
     fiber_density_with_average = fiber_density_averages(fiber_density_list)
+    print("* calculate fiber density average")
     Data_Management_Module.set_fiber_density_average(fiber_density_with_average)
+    print("* set fiber density averages")

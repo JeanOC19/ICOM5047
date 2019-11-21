@@ -188,8 +188,15 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         if self.myThread is not None:
+            print("2) T finished?")
+            print(self.myThread.isFinished())
+            # self.myThread.clear_mem()
+            # self.myThread.quit()
             self.myThread.terminate()
+            print(self.myThread.isFinished())
             self.myThread.wait()
+            print(self.myThread.isFinished())
+            # del self.myThread
 
     def start_button_func(self):
         """
@@ -205,7 +212,18 @@ class SproutUI(QtWidgets.QMainWindow):
         if self.is_running:
             # if program is currently in progress
 
-            self.terminate_thread()
+            self.start_button.setEnabled(False)
+            print("1) T finished?")
+            print(self.myThread.isFinished())
+            if not self.myThread.isFinished():
+                # <old way>
+                # self.terminate_thread()
+                # <old way/>
+                # <new way>
+                self.myThread.requestInterruption()
+                self.myThread.wait()
+                # <new way/>
+
             if self.progressBar.value() == 99:
                 # if finished successfully
 
@@ -226,7 +244,9 @@ class SproutUI(QtWidgets.QMainWindow):
 
                 self.tabWidget_1.setCurrentIndex(1)
                 self.tabWidget_2.setCurrentIndex(0)
-
+                print("- finished")
+            else:
+                print("- not finished")
             self.inputs_set_enabled(True)
 
             self.start_button.setStyleSheet("QPushButton{\nbackground-color: #539844;\nborder: 2px solid #444444;\n"
@@ -237,6 +257,8 @@ class SproutUI(QtWidgets.QMainWindow):
             self.progressBar.setValue(0)
 
             self.is_running = False
+
+            self.start_button.setEnabled(True)
         else:
             # if program has not started
 
@@ -290,6 +312,10 @@ class SproutUI(QtWidgets.QMainWindow):
                 self.myThread.start()
             except :
                 print("** qthread fail **")
+
+
+    def testet(self):
+        print("works")
 
     def inputs_set_enabled(self, val: bool):
         """
@@ -531,7 +557,8 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         if self.progressBar.value() == 2:
-            self.terminate_thread()
+            if not self.myThread.isFinished():
+                self.terminate_thread()
             self.start_button_func()
             self.warning_message_box(str(self.error_message))
         elif self.progressBar.value() == 99:

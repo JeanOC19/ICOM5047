@@ -284,7 +284,7 @@ def store_region(img, img_name):
     """
 
     # Name of the path where regions will be stored.
-    regions_path = 'regions'
+    regions_path = 'Regions'
     # Get intermediate path
     intermediate_path = os.getcwd()
     # Name of complete path with regions_path
@@ -346,7 +346,7 @@ def show_image(img):
 
 
 def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_image: np.ndarray,
-                      number_wedges: int, number_rings: int):
+                      number_wedges: int, number_rings: int, t = None):
     """
     Extract regions from an input bamboo cross-section image.
     :param bounded_input_image: Input image bounded
@@ -410,6 +410,8 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         filled_image = extract_cuadrant(bounded_binarized_input_image, cuadrant_num)
 
         for cuadrant_wedge_num in range(int(number_wedges / 4)):
+            if t is not None and t.isInterruptionRequested():
+                return
             # Rotate the image to the current calculated angle
             wedge = rotate_cuadrant(image, int(current_angle % 90))
             filled_wedge = rotate_cuadrant(filled_image, int(current_angle % 90))
