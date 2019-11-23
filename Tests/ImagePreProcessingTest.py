@@ -31,8 +31,8 @@ class MyTestCase(unittest.TestCase):
 
         # Compare measurements with actual values
         self.assertLessEqual(calculate_error(area, 3.9020), 3.5, "Area calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(outer_diameter, 2.9550), 3.5, "Inner diam. has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(inner_diameter, 1.9560), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(outer_diameter, 2.9550), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(inner_diameter, 1.9560), 3.5, "Inner diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(centroid_x, 1.5011), 3.5, "Centroid X axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(centroid_y, 1.4572), 3.5, "Centroid Y axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(moment_of_x, 2.3856), 3.5, "X-axis moment calculation has more than 3.5% of error")
