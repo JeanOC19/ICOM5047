@@ -6,6 +6,8 @@ import shutil
 
 # List generated after separating image into regions
 regions_list = dict()
+regions_path_name = str('Regions')
+full_regions_path = str()
 
 
 def resize_image(img, scale):
@@ -214,7 +216,7 @@ def extract_rectangle(img, img_mask):
     area_y = h - y
 
     # With coordinates of rectangle obtain the rectangle from the wedge.
-    img = img[y + int(area_y * 0.1): h - int(area_y * 0), x + int(area_x * 0.125): w - int(area_x * 0)]
+    img = img[y + int(area_y * 0.1): h - int(area_y * 0), x + int(area_x * 0.075): w - int(area_x * 0)]
 
     # Binarize iamge
     img = binarize_image(img)
@@ -274,6 +276,33 @@ def append_regions_dict(region_name, region):
     global regions_list
     regions_list.update({region_name: region})
 
+def get_regions_path_name():
+    """
+    Returns the regions_path global variable value
+    :return: regions_path variable value
+    """
+    global regions_path_name
+    return regions_path_name
+
+
+def set_full_regions_path(intermediate_path):
+    """
+    Sets the full_path global variable value
+    :param intermediate_path: Absolute path where regions_path_name will be located at
+    :return: None
+    """
+    global full_regions_path
+    full_regions_path = os.path.join(intermediate_path, get_regions_path_name())
+
+
+def get_full_regions_path():
+    """
+    Returns the full_path global variable value
+    :return: full_path variable value
+    """
+    global full_regions_path
+    return full_regions_path
+
 
 def store_region(img, img_name):
     """
@@ -283,12 +312,8 @@ def store_region(img, img_name):
     :return: Path where the region is stored
     """
 
-    # Name of the path where regions will be stored.
-    regions_path = 'Regions'
-    # Get intermediate path
-    intermediate_path = os.getcwd()
     # Name of complete path with regions_path
-    full_path = os.path.join(intermediate_path, regions_path)
+    full_path = get_full_regions_path()
     # Defining type of image that will be used to store
     image_type = 'jpg'
     # Name of file that will be used to store region
@@ -298,7 +323,7 @@ def store_region(img, img_name):
     try:
         cv2.imwrite(os.path.join(full_path, str(file_name)), img)
     except OSError:
-        raise print("Storage of %s failed on path %s" % file_name % regions_path)
+        raise print("Storage of %s failed on path %s" %(file_name, full_path))
     else:
         print("Stored: ", os.path.join(full_path, str(file_name)))
         return full_path
@@ -346,7 +371,7 @@ def show_image(img):
 
 
 def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_image: np.ndarray,
-                      number_wedges: int, number_rings: int, t = None):
+                      number_wedges: int, number_rings: int):
     """
     Extract regions from an input bamboo cross-section image.
     :param bounded_input_image: Input image bounded
@@ -367,11 +392,12 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
 
     # Initialize variables
     current_angle = 0
-    regions_path = 'Regions'
+    regions_path = get_regions_path_name()
     wedge_number = 1
 
     # Name of the path where regions will be stored.
-    full_path = os.path.join(os.getcwd(), 'Regions')
+    set_full_regions_path(os.getcwd())
+    full_path = get_full_regions_path()
 
     # Check if path exists, if not then create the path
     if not os.path.exists(full_path):
@@ -410,8 +436,6 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         filled_image = extract_cuadrant(bounded_binarized_input_image, cuadrant_num)
 
         for cuadrant_wedge_num in range(int(number_wedges / 4)):
-            if t is not None and t.isInterruptionRequested():
-                return
             # Rotate the image to the current calculated angle
             wedge = rotate_cuadrant(image, int(current_angle % 90))
             filled_wedge = rotate_cuadrant(filled_image, int(current_angle % 90))
@@ -435,3 +459,29 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     print("Stored Regions at: " + regions_path)
 
     return regions_list
+
+
+# def region_extraction_module(num_wedges, num_of_rings):
+#     # Simulating User Inputs
+#     bin_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\Sprout_Unofficial\\control.jpg')
+#     bin_img = binarize_image(bin_image)
+#     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+#     os.chdir(dir_path)
+#
+#     # Calling Region Extraction
+#     return region_extraction(bin_image, bin_img, num_wedges, num_of_rings)
+#
+#
+# if __name__ == "__main__":
+#     # Simulating User Inputs
+#     num_wedges = 12
+#     num_of_rings = 7
+#     # bin_image = cv2.imread('bamboo_4800.jpg')
+#     bin_image = cv2.imread('control.jpg')
+#     # bin_image = cv2.imread('angle_test.jpg')
+#     bin_img = binarize_image(bin_image)
+#     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+#     os.chdir(dir_path)
+#
+#     # Calling Region Extraction
+#     region_extraction(bin_image, bin_img, num_wedges, num_of_rings)
