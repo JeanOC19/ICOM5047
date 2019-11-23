@@ -5,6 +5,7 @@ import Fiber_Density_Calculation
 import Data_Management_Module
 import unittest
 import os
+import psutil
 
 # sample for time delay of modules
 test_delay = 1
@@ -38,8 +39,8 @@ class MyTestCase(unittest.TestCase):
         print(density)
         measurements = Data_Management_Module.get_dimensional_measurements()
         self.assertLessEqual(calculate_error(measurements[0], 16.2273), 3.5, "Area calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[1], 6.6696), 3.5, "Inner diam. has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[2], 4.8683), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 6.6696), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 4.8683), 3.5, "Inner diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[3], 3.2406), 3.5, "Centroid X axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[4], 3.4100), 3.5, "Centroid Y axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[5], 25.9764), 3.5, "X-axis moment calculation has more than 3.5% of error")
@@ -48,8 +49,40 @@ class MyTestCase(unittest.TestCase):
         self.assertLessEqual(calculate_error(density, 0.56394), 3.5, "Area calculation has more than 3.5% of error")
 
     def test_sample_1(self):
-        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/2400dpi.jpg',
+        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/R_1.1.1.jpg',
                       'intermediate_path': "Run2",
+                      'num_measurement': 12,
+                      'num_wedges': 12,
+                      'units': 'in',
+                      'num_rings': 3,
+                      'img_dpi': 1800,
+                      'enhance': 0
+                      }
+
+        controller = SproutController(parameters)
+        controller.run()
+        density = Data_Management_Module.get_fiber_density_average()[-1][-1]
+        print(density)
+        measurements = Data_Management_Module.get_dimensional_measurements()
+        self.assertLessEqual(calculate_error(measurements[0], 3.9020), 3.5,
+                             "Area calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 2.9550), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 1.9560), 3.5, "Inner diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[3], 1.5011), 3.5,
+                             "Centroid X axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[4], 1.4572), 3.5,
+                             "Centroid Y axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[5], 2.3856), 3.5,
+                             "X-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[6], 2.2770), 3.5,
+                             "Y-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[7], 0.13438), 3.5,
+                             "Product of inertia calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(density, 0.4491), 3.5, "Area calculation has more than 3.5% of error")
+
+    def test_sample_2(self):
+        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/2400dpi.jpg',
+                      'intermediate_path': "Run3",
                       'num_measurement': 12,
                       'num_wedges': 24,
                       'units': 'cm',
@@ -63,9 +96,53 @@ class MyTestCase(unittest.TestCase):
         density = Data_Management_Module.get_fiber_density_average()[-1][-1]
         print(density)
         measurements = Data_Management_Module.get_dimensional_measurements()
-
+        self.assertLessEqual(calculate_error(measurements[0], 10.7366), 3.5,
+                             "Area calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 6.3156), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 5.1202), 3.5, "Inner diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[3], 3.1771), 3.5,
+                             "Centroid X axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[4], 3.1654), 3.5,
+                             "Centroid Y axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[5], 27.5068), 3.5,
+                             "X-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[6], 29.5814), 3.5,
+                             "Y-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[7], 0.5871), 3.5,
+                             "Product of inertia calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(density, 0.53688), 3.5, "Area calculation has more than 3.5% of error")
 
+    def test_sample_3(self):
+        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/4800dpi.jpg',
+                      'intermediate_path': "Run4",
+                      'num_measurement': 12,
+                      'num_wedges': 24,
+                      'units': 'cm',
+                      'num_rings': 3,
+                      'img_dpi': 4800,
+                      'enhance': 0
+                      }
+
+        controller = SproutController(parameters)
+        controller.run()
+        density = Data_Management_Module.get_fiber_density_average()[-1][-1]
+        print(density)
+        measurements = Data_Management_Module.get_dimensional_measurements()
+        self.assertLessEqual(calculate_error(measurements[0], 10.8041), 3.5,
+                             "Area calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 6.3167), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 5.1197), 3.5, "Inner diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[3], 3.1689), 3.5,
+                             "Centroid X axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[4], 3.1572), 3.5,
+                             "Centroid Y axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[5], 30.7145), 3.5,
+                             "X-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[6], 33.2111), 3.5,
+                             "Y-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[7], 0.6567), 3.5,
+                             "Product of inertia calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(density, 0.53688), 3.5, "Area calculation has more than 3.5% of error")
 
 class SproutController ():
     def __init__(self, in_data):
@@ -127,6 +204,8 @@ class SproutController ():
                 self.in_data['units'],
                 self.in_data['img_path'],
                 step_enhanced_image)
+            process = psutil.Process(os.getpid())
+            print(process.memory_info().rss / 1000000, "MB")
         except Exception as e:
             print("Error in Image Pre-processing:\n " + str(e))
             return
@@ -174,6 +253,7 @@ class SproutController ():
 
 def calculate_error(measure, actual):
     return (abs(actual - measure)/actual) * 100
+
 
 if __name__ == '__main__':
     unittest.main()

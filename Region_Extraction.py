@@ -214,7 +214,7 @@ def extract_rectangle(img, img_mask):
     area_y = h - y
 
     # With coordinates of rectangle obtain the rectangle from the wedge.
-    img = img[y + int(area_y * 0.1): h - int(area_y * 0), x + int(area_x * 0.075): w - int(area_x * 0)]
+    img = img[y + int(area_y * 0.1): h - int(area_y * 0), x + int(area_x * 0.125): w - int(area_x * 0)]
 
     # Binarize iamge
     img = binarize_image(img)

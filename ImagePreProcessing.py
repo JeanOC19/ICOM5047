@@ -20,7 +20,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     :return: bounded input image and bounded binarized input image
     """
 
-    def binarize_image(source_image: object, blur_intensity: int, save_images = False, kernel_type = 1) -> object:
+    def binarize_image(source_image: object, blur_intensity: int, save_images = False, kernel_type = 0) -> object:
         """
         Converts the input image into a binary image
         :param save_images:
@@ -34,18 +34,15 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             cv.imwrite(path + '/grayscale_image.jpg', gray_image)
 
         # Use Gaussian Blur to remove noise from the image
-        # blurred_image = gray_image
         if blur_intensity is not 0:
-            blurred_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), kernel_type)
-        else:
-            blurred_image = cv.GaussianBlur(gray_image, (1, 1), 0.5, 0.5, kernel_type)
+            gray_image = cv.GaussianBlur(gray_image, (blur_intensity, blur_intensity), kernel_type)
 
         # Calculate the global threshold value and binarize the image
-        ret, new_image = cv.threshold(blurred_image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+        ret, gray_image = cv.threshold(gray_image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
         if save_images:
-            cv.imwrite(path + '/binarized_image.jpg', new_image)
+            cv.imwrite(path + '/binarized_image.jpg', gray_image)
 
-        return new_image
+        return gray_image
 
     def find_largest_contours(contour_list: list) -> object:
 
