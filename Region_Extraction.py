@@ -367,11 +367,11 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
 
     # Initialize variables
     current_angle = 0
-    regions_path = 'regions'
+    regions_path = 'Regions'
     wedge_number = 1
 
     # Name of the path where regions will be stored.
-    full_path = os.path.join(os.getcwd(), 'regions')
+    full_path = os.path.join(os.getcwd(), 'Regions')
 
     # Check if path exists, if not then create the path
     if not os.path.exists(full_path):
@@ -435,29 +435,3 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     print("Stored Regions at: " + regions_path)
 
     return regions_list
-
-
-# def region_extraction_module(num_wedges, num_of_rings):
-#     # Simulating User Inputs
-#     bin_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\Sprout_Unofficial\\control.jpg')
-#     bin_img = binarize_image(bin_image)
-#     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
-#     os.chdir(dir_path)
-#
-#     # Calling Region Extraction
-#     return region_extraction(bin_image, bin_img, num_wedges, num_of_rings)
-#
-#
-# if __name__ == "__main__":
-#     # Simulating User Inputs
-#     num_wedges = 12
-#     num_of_rings = 3
-#     # bin_image = cv2.imread('bamboo_4800.jpg')
-#     bin_image = cv2.imread('control.jpg')
-#     # bin_image = cv2.imread('angle_test.jpg')
-#     bin_img = binarize_image(bin_image)
-#     dir_path = "C:/Users/Caloj/Desktop/Sprout_Images"
-#     os.chdir(dir_path)
-#
-#     # Calling Region Extraction
-#     region_extraction(bin_image, bin_img, num_wedges, num_of_rings)

@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtCore
@@ -13,7 +14,7 @@ import Data_Management_Module as DM
 
 # User input data
 in_data = {'img_path': "",
-           'intermediate_path': "",
+           'intermediate_path': "C:/Users/Abdias/Documents/Sprout",
            'units': "",
            'num_measurement': 0,
            'num_wedges': 0,
@@ -31,6 +32,8 @@ wedges_messageBox_flag = False
 rings_messageBox_flag = False
 dpi_messageBox_flag = False
 
+debounce = 0
+
 
 class SproutUI(QtWidgets.QMainWindow):
     def __init__(self):
@@ -42,8 +45,6 @@ class SproutUI(QtWidgets.QMainWindow):
         self.save_window_ui = SaveWindow(self)
 
         self.chartView = None
-
-        self.is_running = False
 
         self.myThread = None
         # columns: wedges, rows: rings (r1(w1,w2,...,w7,wAvg),r2(...),r3(...),rAvg(...))
@@ -64,6 +65,7 @@ class SproutUI(QtWidgets.QMainWindow):
         # Main Screen and save button
         self.browse_button_1.clicked.connect(self.browse_file)
         self.browse_button_2.clicked.connect(self.browse_folder)
+        self.lineEdit_intermediateStepPath.setText(in_data['intermediate_path'])
 
         self.lineEdit_numMeasurements.editingFinished.connect(self.update_num_diameter_measurements)
         self.lineEdit_numWedges.editingFinished.connect(self.update_num_wedges)
@@ -71,6 +73,7 @@ class SproutUI(QtWidgets.QMainWindow):
         self.lineEdit_imageDPI.editingFinished.connect(self.update_image_dpi)
 
         self.start_button.clicked.connect(self.start_button_func)
+        self.stop_button.clicked.connect(self.stop_button_func)
         self.save_button.clicked.connect(self.show_save_files)
 
         # Graphs View
@@ -182,140 +185,105 @@ class SproutUI(QtWidgets.QMainWindow):
         else:
             self.lineEdit_imageDPI.clear()
 
-    def terminate_thread(self):
-        """
-        Terminate the thread in which the SproutController will be running.
-        :return: None
-        """
-        if self.myThread is not None:
-            print("2) T finished?")
-            print(self.myThread.isFinished())
-            # self.myThread.clear_mem()
-            # self.myThread.quit()
-            self.myThread.terminate()
-            print(self.myThread.isFinished())
-            self.myThread.wait()
-            print(self.myThread.isFinished())
-            # del self.myThread
-
     def start_button_func(self):
         """
-        Sets what the start button will do when it is pressed or is called when the fiber density calculation
-        is completed. If currently the fiber density calculation is in progress it cancels the running session
-        and enables user input. If running session is completed it enables the user input, and proceeds to
-        display the dashboard (graphs, region density table, and measurement data). Other ways it starts the fiber
-        density calculation and disables user input.
+        Sets what the start button will do when it is pressed. It starts the fiber density calculation and
+        disables user input. The button is replaced by the stop button.
         :return: None
         """
-        global in_data
-
-        if self.is_running:
-            # if program is currently in progress
-
-            self.start_button.setEnabled(False)
-            print("1) T finished?")
-            print(self.myThread.isFinished())
-            if not self.myThread.isFinished():
-                # <old way>
-                # self.terminate_thread()
-                # <old way/>
-                # <new way>
-                self.myThread.requestInterruption()
-                self.myThread.wait()
-                # <new way/>
-
-            if self.progressBar.value() == 99:
-                # if finished successfully
-
-                self.progressBar.setValue(100)
-                self.dashboard_tab.setEnabled(True)
-                self.tabWidget_2.setEnabled(True)
-                self.graphs_tab.setEnabled(True)
-                self.region_density_tab.setEnabled(True)
-
-                # create graphs
-                self.create_graphs()
-
-                # create table
-                self.create_table()
-
-                # set measurement data
-                self.display_measurement_data()
-
-                self.tabWidget_1.setCurrentIndex(1)
-                self.tabWidget_2.setCurrentIndex(0)
-                print("- finished")
-            else:
-                print("- not finished")
-            self.inputs_set_enabled(True)
-
-            self.start_button.setStyleSheet("QPushButton{\nbackground-color: #539844;\nborder: 2px solid #444444;\n"
-                                            "border-radius: 8px;\ncolor:white;\nfont: bold;\n}")
-            self.start_button.setText("Start")
-            self.progressBar.hide()
-            self.label_progressBar.hide()
-            self.progressBar.setValue(0)
-
-            self.is_running = False
-
-            self.start_button.setEnabled(True)
-        else:
-            # if program has not started
-
-            # Test input data for being empty
-            if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
-                    self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
-                    self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
-                self.warning_message_box("Make sure all inputs are filled in.")
+        global in_data, debounce
+        # if program has not started
+        if debounce is not 0:
+            if (time.time() - debounce) < .30:
                 return
+            debounce = 0
 
-            # Test numeric input
-            if not self.is_int_inbound(self.lineEdit_numMeasurements.text(), 3, 100, self.label_numMeasurements.text()):
-                return
-            if not self.is_int_inbound(self.lineEdit_numWedges.text(), 3, 100, self.label_numWedges.text()):
-                return
-            if not self.is_int_inbound(self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text()):
-                return
-            if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 1200, 4800, self.label_imageDPI.text()):
-                return
+        # Test input data for being empty
+        if(self.lineEdit_imagePath.text() is "" or self.lineEdit_intermediateStepPath.text() is "" or
+                self.lineEdit_numWedges.text() is "" or self.lineEdit_numRings.text() is "" or
+                self.lineEdit_numMeasurements.text() is "" or self.lineEdit_imageDPI.text() is ""):
+            self.warning_message_box("Make sure all inputs are filled in.")
+            return
 
-            # Change current working directory
-            try:
-                os.chdir(in_data['intermediate_path'])
-            except OSError:
-                QMessageBox.critical(self, "Warning!", "File path not found for intermediate steps. ")
-                return
+        # Test numeric input
+        if not self.is_int_inbound(self.lineEdit_numMeasurements.text(), 3, 100, self.label_numMeasurements.text()):
+            return
+        if not self.is_int_inbound(self.lineEdit_numWedges.text(), 3, 100, self.label_numWedges.text()):
+            return
+        if not self.is_int_inbound(self.lineEdit_numRings.text(), 1, 25, self.label_numRings.text()):
+            return
+        if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 1200, 4800, self.label_imageDPI.text()):
+            return
 
-            # Save input data in in_data dictionary
-            in_data['units'] = self.comboBox_units.currentText()
-            in_data['num_measurement'] = int(self.lineEdit_numMeasurements.text())*4
-            in_data['img_dpi'] = int(self.lineEdit_imageDPI.text())
-            in_data['enhance'] = bool(self.checkBox_imageEnhancement.isChecked())
+        # Save input data in in_data dictionary
+        in_data['units'] = self.comboBox_units.currentText()
+        in_data['num_measurement'] = int(self.lineEdit_numMeasurements.text())*4
+        in_data['img_dpi'] = int(self.lineEdit_imageDPI.text())
+        in_data['enhance'] = bool(self.checkBox_imageEnhancement.isChecked())
 
-            self.inputs_set_enabled(False)
+        self.inputs_set_enabled(False)
 
-            self.start_button.setStyleSheet("QPushButton{\nbackground-color: #da2a2a;\nborder: 2px solid #444444;\n"
-                                            "border-radius: 8px;\ncolor:white;\nfont: bold;\n}")
-            self.start_button.setText("Stop")
-            self.progressBar.show()
-            self.label_progressBar.show()
-            self.progressBar.setValue(1)
+        self.progressBar.show()
+        self.label_progressBar.show()
+        self.progressBar.setValue(1)
 
-            self.is_running = True
+        self.stop_button.setEnabled(True)
+        self.start_button.hide()
 
-            # Start Sprout Controller for fiber density calculation
-            try:
-                self.myThread = Sprout.SproutController(self, in_data)
-            except:
-                print("** myThread create failed **")
-            try:
-                self.myThread.start()
-            except :
-                print("** qthread fail **")
+        # Start Sprout Controller for fiber density calculation
+        self.myThread = Sprout.SproutController(self, in_data)
+        try:
+            self.myThread.start()
+        except:
+            self.warning_message_box("Error while starting process.")
 
+    def stop_button_func(self):
+        """
+        Sets what the stop button will do when it is pressed or is called when the fiber density calculation
+        is completed. It cancels the running session and enables user input. If running session is completed it
+        enables the user input, and proceeds to display the dashboard (graphs, region density table, and measurement
+         data). The button is replaced by the start button.
+        :return: None
+        """
+        global debounce
+        # if program is currently in progress
 
-    def testet(self):
-        print("works")
+        self.stop_button.setEnabled(False)
+        self.repaint()
+
+        if not self.myThread.isFinished():
+            self.myThread.requestInterruption()
+            self.myThread.wait()
+
+        if self.progressBar.value() == 99:
+            # if finished successfully
+
+            self.progressBar.setValue(100)
+            self.dashboard_tab.setEnabled(True)
+            self.tabWidget_2.setEnabled(True)
+            self.graphs_tab.setEnabled(True)
+            self.region_density_tab.setEnabled(True)
+
+            # create graphs
+            self.create_graphs()
+
+            # create table
+            self.create_table()
+
+            # set measurement data
+            self.display_measurement_data()
+
+            self.tabWidget_1.setCurrentIndex(1)
+            self.tabWidget_2.setCurrentIndex(0)
+
+        self.inputs_set_enabled(True)
+
+        self.progressBar.hide()
+        self.label_progressBar.hide()
+        self.progressBar.setValue(0)
+
+        self.start_button.show()
+        debounce = time.time()
 
     def inputs_set_enabled(self, val: bool):
         """
@@ -557,15 +525,12 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         if self.progressBar.value() == 2:
-            if not self.myThread.isFinished():
-                self.terminate_thread()
-            self.start_button_func()
+            self.stop_button_func()
             self.warning_message_box(str(self.error_message))
         elif self.progressBar.value() == 99:
-            self.myThread.wait()
             self.densities = DM.get_fiber_density_average()
             self.measurement_data = DM.get_dimensional_measurements()
-            self.start_button_func()
+            self.stop_button_func()
 
 
 class SaveWindow(QtWidgets.QMainWindow):

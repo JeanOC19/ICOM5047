@@ -31,7 +31,6 @@ class SproutController (QThread):
         self.percent_count = 0
 
     def __del__(self):
-        print("*()()()*(*(*)(*)*(*(*(*)*)(*")
         self.wait()
 
     def run(self):
@@ -62,7 +61,7 @@ class SproutController (QThread):
         if not os.path.exists(self.in_data['intermediate_path']):
             try:
                 os.makedirs(self.in_data['intermediate_path'])
-            except:
+            except OSError:
                 raise Exception("Unable to create intermediate path folder")
 
         os.chdir(self.in_data['intermediate_path'])
@@ -81,7 +80,6 @@ class SproutController (QThread):
         if self.in_data['enhance']:
             try:
                 step_enhanced_image = Image_Enhancement.image_enhancement(self.in_data['img_path'])
-                print("** Javier01 termino")
             except Exception as e:
                 self.sprout_ui.error_message = "Error in Image Enhancement:\n " + str(e)
                 self.sprout_ui.progressBar.setValue(2)
@@ -101,7 +99,6 @@ class SproutController (QThread):
                 self.in_data['img_path'],
                 step_enhanced_image,
                 self)
-            print("** Jean termino")
         except Exception as e:
             self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
@@ -117,7 +114,6 @@ class SproutController (QThread):
             dictionary = Region_Extraction.region_extraction(step_bounded_input_image, bounded_binarized_input_image,
                                                              self.in_data['num_wedges'], self.in_data['num_rings'],
                                                              self)
-            print("** Javier02 termino")
         except Exception as e:
             self.sprout_ui.error_message = "Error in Region Extraction:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
@@ -133,7 +129,6 @@ class SproutController (QThread):
             Fiber_Density_Calculation.fiber_density_and_distribution(self.in_data['num_rings'],
                                                                      self.in_data['num_wedges'],
                                                                      dictionary)
-            print("** Isra termino")
         except Exception as e:
             self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
@@ -143,6 +138,7 @@ class SproutController (QThread):
 
         print("\n * Sprout Controller: Finished Successfully * ")
         print("      Total time: " + str(time.time() - time_start) + " sec")
+        print("        Equal to: " + str((time.time() - time_start)/60) + " min")
         return
 
     def clear_mem(self):
