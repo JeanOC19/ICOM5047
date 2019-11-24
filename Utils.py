@@ -56,7 +56,7 @@ def validate_parameters(parameter, param_type):
     # Parameter is a ring
     if param_type == 0:
         # If ring number is less than three or larger than 25 raise an exception
-        if parameter < 3 or parameter > 25:
+        if parameter < 1 or parameter > 25:
             raise InvalidInput('Exception: Invalid number of rings')
     # Parameter is a wedge
     elif param_type == 1:
@@ -87,8 +87,8 @@ def validate_fiber_list(list):
     if not list:
         raise InvalidInput('Exception: fiber density list is empty')
     rows = len(list)
-    # If rows are less than 3 or larger than 25 raise an exception since it does not match rings max. and min.
-    if rows < 3 or rows > 25:
+    # If rows are less than 1 or larger than 25 raise an exception since it does not match rings max. and min.
+    if rows < 1 or rows > 25:
         raise InvalidInput('Exception: fiber density list has less than three rings')
     columns = len(list[0])
     # If columns are less than 12 or larger than 400 raise an exception since it does not match wedges max. and min.
@@ -107,8 +107,8 @@ def validate_fiber_list_average(list):
         raise InvalidInput('Exception: fiber density list is empty')
     rows = len(list)
     # If rows are less than 4 or larger than 26 raise an exception since it does not match rings max. and min.
-    # min. is 3 ring rows + 1 average row and max. is 25 ring rows + 1 average row
-    if rows < 4 or rows > 26:
+    # min. is 1 ring rows + 1 average row and max. is 25 ring rows + 1 average row
+    if rows < 2 or rows > 26:
         raise InvalidInput('Exception: fiber density list has less than three rings')
     columns = len(list[0])
     # If columns are less than 13 or larger than 401 raise an exception since it does not match wedges max. and min.
