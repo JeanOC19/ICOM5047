@@ -14,7 +14,7 @@ import Data_Management_Module as DM
 
 # User input data
 in_data = {'img_path': "",
-           'intermediate_path': "C:/Users/Abdias/Documents/Sprout",
+           'intermediate_path': "",
            'units': "",
            'num_measurement': 0,
            'num_wedges': 0,
@@ -41,6 +41,8 @@ class SproutUI(QtWidgets.QMainWindow):
         uic.loadUi('Sprout.ui', self)
         self.setWindowTitle("Sprout")
         self.setWindowIcon(QIcon('./Images/SproutIcon.ico'))
+
+        self.get_default_path()
 
         self.save_window_ui = SaveWindow(self)
 
@@ -93,6 +95,12 @@ class SproutUI(QtWidgets.QMainWindow):
         self.tabWidget_2.tabBar().setCursor(QtCore.Qt.PointingHandCursor)
 
         self.show()
+
+    def get_default_path(self):
+        temp = str(os.path.expanduser("~"))
+        split = temp.split("\\")
+        temp = str(split[0] + "/" + split[1] + "/" + split[2] + "/" + "Documents/Sprout")
+        in_data['intermediate_path'] = temp
 
     def browse_file(self):
         """
@@ -597,6 +605,7 @@ def main():
     window = SproutUI()
     window.ui()
     sys.exit(app.exec_())
+
 
 
 if __name__ == '__main__':
