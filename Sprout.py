@@ -7,7 +7,7 @@ from PyQt5 import QtCore
 from PyQt5.Qt import Qt
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
-from PyQt5.QtChart import QChart, QLineSeries, QChartView
+from PyQt5.QtChart import QChart, QLineSeries, QScatterSeries, QChartView
 
 import SproutController as Sprout
 import Data_Management_Module as DM
@@ -97,6 +97,10 @@ class SproutUI(QtWidgets.QMainWindow):
         self.show()
 
     def get_default_path(self):
+        """
+        Gets the "Documents" directory of the user of the local computer.
+        :return: None
+        """
         temp = str(os.path.expanduser("~"))
         split = temp.split("\\")
         temp = str(split[0] + "/" + split[1] + "/" + split[2] + "/" + "Documents/Sprout")
@@ -104,7 +108,7 @@ class SproutUI(QtWidgets.QMainWindow):
 
     def browse_file(self):
         """
-        Function mapped to the brows button used to select the file path of the image that will be used to
+        Function mapped to the browse button used to select the file path of the image that will be used to
         calculate the fiber density of a bamboo cross-section.
         :return: None
         """
@@ -127,7 +131,7 @@ class SproutUI(QtWidgets.QMainWindow):
 
     def browse_folder(self):
         """
-        Function mapped to the brows button used to select the folder path that will be used to
+        Function mapped to the browse button used to select the folder path that will be used to
         save the intermediate step for the fiber density calculation.
         :return: None
         """
@@ -362,7 +366,11 @@ class SproutUI(QtWidgets.QMainWindow):
         self.wedge_chart = QChart()
 
         for y in range(len(self.densities[0])):
-            ring_series = QLineSeries()
+            print(range(len(self.densities[0])))
+            if in_data['num_rings'] == 1:
+                ring_series = QScatterSeries()
+            else:
+                ring_series = QLineSeries()
             for x in range(len(self.densities)-1):
                 ring_series.append(x+1, self.densities[x][y])
             self.wedge_chart.addSeries(ring_series)
