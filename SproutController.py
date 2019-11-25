@@ -84,8 +84,8 @@ class SproutController (QThread):
                 self.sprout_ui.error_message = "Error in Image Enhancement:\n " + str(e)
                 self.sprout_ui.progressBar.setValue(2)
                 return
-            # self.update_progress_bar()
-            self.sprout_ui.progressBar.setValue(15)
+            self.update_progress_bar()
+            # self.sprout_ui.progressBar.setValue(15)
 
         if self.isInterruptionRequested():
             return
@@ -103,8 +103,8 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        # self.update_progress_bar()
-        self.sprout_ui.progressBar.setValue(33)
+        self.update_progress_bar()
+        # self.sprout_ui.progressBar.setValue(33)
 
         if self.isInterruptionRequested():
             return
@@ -118,8 +118,8 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Region Extraction:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        # self.update_progress_bar()
-        self.sprout_ui.progressBar.setValue(66)
+        self.update_progress_bar()
+        # self.sprout_ui.progressBar.setValue(66)
 
         if self.isInterruptionRequested():
             return
@@ -133,8 +133,8 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        # self.update_progress_bar()
-        self.sprout_ui.progressBar.setValue(99)
+        self.update_progress_bar()
+        # self.sprout_ui.progressBar.setValue(99)
 
         print("\n * Sprout Controller: Finished Successfully * ")
         print("      Total time: " + str(time.time() - time_start) + " sec")

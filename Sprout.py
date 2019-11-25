@@ -120,14 +120,13 @@ class SproutUI(QtWidgets.QMainWindow):
                 cross_section = cross_section.scaled(500, 500)
 
                 if cross_section.isNull():
-                    self.warning_message_box("Insufficient memory space please select a lower  \n"
-                                             " resolution image before starting the process.")
+                    self.warning_message_box("Unable to open input file.  \n\n")
                 else:
                     self.label_bamboo.setPixmap(cross_section)
                     self.lineEdit_imagePath.setText(url[0])
                     in_data['img_path'] = url[0]
             except Exception as e:
-                self.warning_message_box("Unable to open input image, verify  \n file path or image file type.\n\n")
+                self.warning_message_box("Unable to open input file, verify  \n file path or image file type.\n\n")
 
     def browse_folder(self):
         """
@@ -366,7 +365,6 @@ class SproutUI(QtWidgets.QMainWindow):
         self.wedge_chart = QChart()
 
         for y in range(len(self.densities[0])):
-            print(range(len(self.densities[0])))
             if in_data['num_rings'] == 1:
                 ring_series = QScatterSeries()
             else:
