@@ -24,33 +24,17 @@ def fiber_density_calculation(number_rings, number_wedges, raw_dictionary):
     column_wedges = []
     row_rings = []
     regions = number_rings * number_wedges
-    image_path = 'regions'
-    # Validates that the directory regions exists,
-    Utils.validate_path(image_path)
-
-    # Retrieve the path for every png file found in the directory 'regions'
-    files = Utils.get_files_path(image_path, '.jpg')
     # Validates that the number of files matches the expected number of regions
-    Utils.validate_number_regions(len(files), regions)
-    # create a dictionary where the key is the regions (i.e R1W1) name and the value is its path.
-    dictionary = Utils.sort_files(files)
-
+    Utils.validate_number_regions(len(raw_dictionary), regions)
     # Main loop that iterates through every region
     for i in range(regions):
 
         key = 'R' + str(ring_counter + 1) + 'W' + str(wedge_counter + 1)
         # Get region image path from dictionary
         try:
-            # file_path = dictionary.get(key)
             image = raw_dictionary.get(key)
         except:
             raise Exception("Unable to open region image")
-
-        # try:
-        #     # read the image into the system
-        #     image = cv2.imread(file_path, 0)
-        # except:
-        #     raise Exception("Unable to open region image")
 
         try:
             # Invert the image's black and white pixels
