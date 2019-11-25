@@ -103,7 +103,7 @@ class SproutUI(QtWidgets.QMainWindow):
         """
         temp = str(os.path.expanduser("~"))
         split = temp.split("\\")
-        temp = str(split[0] + "/" + split[1] + "/" + split[2] + "/" + "Documents/Sprout")
+        temp = str(split[0] + "/" + split[1] + "/" + split[2] + "/" + "Documents/Sprout/Run")
         in_data['intermediate_path'] = temp
 
     def browse_file(self):

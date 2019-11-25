@@ -380,6 +380,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     :param number_rings: Integer with the number of rings, specified by the user
     :return: None
     """
+    global regions_list
 
     # Validate Inputs
     assert type(number_wedges) is int, "Number of wedges has to be int."
@@ -428,6 +429,8 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     # Create a mask of the extracted wedge
     bounded_binarized_input_image = cv2.erode(cv2.dilate(bounded_binarized_input_image, None, iterations=n_iterations),
                                               None, iterations=n_iterations + 2)
+
+    regions_list.clear() # Todo: Javier make the function you mentioned
 
     for cuadrant_num in range(4):
         # Extract the cuadrant of the image
