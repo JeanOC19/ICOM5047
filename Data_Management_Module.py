@@ -231,7 +231,7 @@ def save_graph_fiber_vs_wedges(name, path):
     # Validate that the directory path exists
     Utils.validate_path(path)
     # Generate full path to store image
-    graph_path = Utils.get_path('_WedgeGraph.jpg', name, path)
+    graph_path = Utils.get_path('_RingGraph.jpg', name, path)
     # Get fiber density list (without averages) and validate its dimensions
     fiber_density = get_fiber_density()
     Utils.validate_fiber_list(fiber_density)
@@ -277,7 +277,7 @@ def save_graph_fiber_vs_rings(name, path):
     # Validate that the directory path exists
     Utils.validate_path(path)
     # Generate full path to store image
-    graph_path = Utils.get_path('_RingGraph.jpg', name, path)
+    graph_path = Utils.get_path('_WedgeGraph.jpg', name, path)
     # Get fiber density list (without averages) and validate its dimensions
     fiber_density = get_fiber_density()
     Utils.validate_fiber_list(fiber_density)
