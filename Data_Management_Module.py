@@ -290,19 +290,27 @@ def save_graph_fiber_vs_rings(name, path):
     plt.clf()
     # Change font size to 14pt
     plt.rcParams.update({'font.size': 14})
-    # Graph lines, each line represents the fiber densities of the rings across a wedge.
-    # Points in the graph: (Number of ring, Fiber Density)
-    for columns in wedges:
-        y = columns
-        # Graph title
-        plt.title('Fiber Density vs. Rings')
-        # Y axis title
-        plt.ylabel('Fiber Density')
-        # X axis title
-        plt.xlabel("Rings")
-        # Plot line
-        plt.plot(x, y)
-    # Show every value in the x axis
+    # Graph title
+    plt.title('Fiber Density vs. Rings')
+    # Y axis title
+    plt.ylabel('Fiber Density')
+    # X axis title
+    plt.xlabel("Rings")
+
+    if len(x) == 1:
+        for columns in wedges:
+            for value in columns:
+                #Plot points
+                plt.plot(1, value, 'o')
+    else:
+        # Graph lines, each line represents the fiber densities of the rings across a wedge.
+        # Points in the graph: (Number of ring, Fiber Density)
+        for columns in wedges:
+            y = columns
+            # Plot line
+            plt.plot(x, y)
+
+    #Show every value in the x axis
     plt.xticks(x)
     fig = plt.gcf()
     # Increase image size
