@@ -21,6 +21,7 @@ in_data = {'img_path': "",
            'num_rings': 0,
            'img_dpi': 0,
            'enhance': False}
+wedge_degree = 0
 
 # Default values for the number of items that are present in the filter
 # for the rings and wedges graphs (All, All Rings/Wedges, Average)
@@ -157,11 +158,12 @@ class SproutUI(QtWidgets.QMainWindow):
         Update the value for number of wedges in the user interface main screen that serves as feedback.
         :return: None
         """
-        global in_data
+        global in_data, wedge_degree
 
         if self.is_int_inbound(self.lineEdit_numWedges.text(), 3, 100):
             temp = int(self.lineEdit_numWedges.text()) * 4
-            self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(360 / temp))
+            wedge_degree = 360 / temp
+            self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(wedge_degree))
             self.label_numRegionsFeedback.setText(str(temp * int(in_data['num_rings'])))
             in_data['num_wedges'] = temp
         else:
@@ -324,7 +326,7 @@ class SproutUI(QtWidgets.QMainWindow):
         Creates the graphs that will be displayed int the dashboard's Graphs tab.
         :return: None
         """
-        global default_comboBox_graph_item_count
+        global default_comboBox_graph_item_count, wedge_degree
 
         # Set Ring ComboBox
         for x in range(self.comboBox_rings.count()):
@@ -345,7 +347,8 @@ class SproutUI(QtWidgets.QMainWindow):
         for x in range(len(self.densities)):
             ring_series = QLineSeries()
             for y in range(len(self.densities[x])-1):
-                ring_series.append(y+1, self.densities[x][y])
+                # ring_series.append(y+1, self.densities[x][y])
+                ring_series.append((y+1)*wedge_degree, self.densities[x][y])
             self.ring_chart.addSeries(ring_series)
             if x < len(self.densities)-1:
                 self.comboBox_rings.addItem("Ring " + str(x+1))
@@ -353,7 +356,8 @@ class SproutUI(QtWidgets.QMainWindow):
         self.ring_chart.setTitle('Fiber Density VS Wedges')
         self.ring_chart.legend().hide()
         self.ring_chart.createDefaultAxes()
-        self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(self.densities[0])-1)
+        # self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(self.densities[0])-1)
+        self.ring_chart.axes(Qt.Horizontal)[0].setRange(0, 360)
         self.ring_chart.axes(Qt.Vertical)[0].setRange(0, 1)
         self.ring_chart.axes(Qt.Horizontal)[0].setTitleText("Wedge Number")
         self.ring_chart.axes(Qt.Vertical)[0].setTitleText("Fiber Density")
@@ -459,7 +463,9 @@ class SproutUI(QtWidgets.QMainWindow):
 
         for ring in self.densities:
             for wedge in ring:
-                self.tableWidget.setItem(i, j, QTableWidgetItem("{:.4f}".format(wedge)))
+                item = QTableWidgetItem("{:.4f}".format(wedge))
+                item.setTextAlignment(Qt.AlignCenter)
+                self.tableWidget.setItem(i, j, item)
                 j += 1
             j = 0
             i += 1
@@ -591,12 +597,22 @@ class SaveWindow(QtWidgets.QMainWindow):
         else:
             save_folder_file_path = self.lineEdit_filePath.text()
             save_file_name = self.lineEdit_fileName.text().strip()
-            if self.checkBox_graphs.isChecked():
-                DM.save_graphs(save_file_name, save_folder_file_path)
-            if self.checkBox_data.isChecked():
-                DM.save_fiber_density_csv(save_file_name, save_folder_file_path)
-                DM.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
-            self.close()
+
+            special_characters = ['<', '>', ':', '/', '\\', '|', '?', '*', '"']
+            for c in special_characters:
+                if c in save_file_name:
+                    QMessageBox.critical(self, "Warning!", "Do not use special character for "
+                                                           "\nFile Name: <, >, :, /, , |, ?, *, \"")
+                    return
+            try:
+                if self.checkBox_graphs.isChecked():
+                    DM.save_graphs(save_file_name, save_folder_file_path)
+                if self.checkBox_data.isChecked():
+                    DM.save_fiber_density_csv(save_file_name, save_folder_file_path)
+                    DM.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
+                self.close()
+            except Exception as e:
+                QMessageBox.critical(self, "Warning!", str(e))
 
     def cancel_save_graph_data(self):
         """

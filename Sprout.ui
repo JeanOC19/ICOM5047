@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1400</width>
-    <height>800</height>
+    <width>1200</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1400</width>
-    <height>800</height>
+    <width>1200</width>
+    <height>680</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1400</width>
-    <height>800</height>
+    <width>1200</width>
+    <height>680</height>
    </size>
   </property>
   <property name="sizeIncrement">
@@ -44,14 +44,14 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>720</y>
-      <width>1400</width>
-      <height>80</height>
+      <y>650</y>
+      <width>1200</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #7EE868;
-border-top-width: 8px;
+border-top-width: 6px;
 border-color: #4F8A70;
 border-bottom-style: outset;
 border-top-style: inset;</string>
@@ -71,8 +71,8 @@ border-top-style: inset;</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1400</width>
-      <height>720</height>
+      <width>1200</width>
+      <height>651</height>
      </rect>
     </property>
     <property name="cursor">
@@ -97,10 +97,10 @@ QTabBar::tab:hover {
 	background-color: #B6E9AC;
 	font: bold 15px;
 }
-QTabWidget::pane { 
-    border-top: 8px solid #4F8A70;
+QTabWidget::pane {
+    border-top: 6px solid #4F8A70;
 }
-QTabBar::tab:selected {    
+QTabBar::tab:selected {
 	text-decoration: underline;
 }
 </string>
@@ -121,8 +121,8 @@ QTabBar::tab:selected {
      <widget class="QLabel" name="label_intermediateStepPath">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>330</y>
+        <x>100</x>
+        <y>300</y>
         <width>290</width>
         <height>16</height>
        </rect>
@@ -137,8 +137,8 @@ QTabBar::tab:selected {
      <widget class="QLabel" name="label_progressBar">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>570</y>
+        <x>100</x>
+        <y>530</y>
         <width>55</width>
         <height>16</height>
        </rect>
@@ -156,8 +156,8 @@ QTabBar::tab:selected {
       </property>
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>590</y>
+        <x>100</x>
+        <y>550</y>
         <width>400</width>
         <height>25</height>
        </rect>
@@ -194,8 +194,8 @@ border-style: inset;
      <widget class="QPushButton" name="start_button">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>525</y>
+        <x>400</x>
+        <y>490</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -226,8 +226,8 @@ border-style: inset;
      <widget class="QLabel" name="label_imageDPI">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>460</y>
+        <x>250</x>
+        <y>430</y>
         <width>100</width>
         <height>16</height>
        </rect>
@@ -242,8 +242,8 @@ border-style: inset;
      <widget class="QComboBox" name="comboBox_units">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>480</y>
+        <x>400</x>
+        <y>450</y>
         <width>100</width>
         <height>22</height>
        </rect>
@@ -282,8 +282,8 @@ border-style: inset;
      <widget class="QFrame" name="frame_4">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>40</y>
+        <x>100</x>
+        <y>20</y>
         <width>400</width>
         <height>200</height>
        </rect>
@@ -328,8 +328,8 @@ border-width:0px;</string>
      <widget class="QPushButton" name="browse_button_2">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>346</y>
+        <x>400</x>
+        <y>316</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -562,8 +562,8 @@ QPushButton:disabled{
      <widget class="QPushButton" name="browse_button_1">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>291</y>
+        <x>400</x>
+        <y>261</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -799,8 +799,8 @@ QPushButton:disabled{
      <widget class="QLineEdit" name="lineEdit_numRings">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>480</y>
+        <x>100</x>
+        <y>450</y>
         <width>100</width>
         <height>22</height>
        </rect>
@@ -817,7 +817,7 @@ max: 25</string>
        <string notr="true">background-color:white;</string>
       </property>
       <property name="inputMask">
-       <string>00</string>
+       <string/>
       </property>
       <property name="maxLength">
        <number>2</number>
@@ -832,8 +832,8 @@ max: 25</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>350</y>
+        <x>100</x>
+        <y>320</y>
         <width>290</width>
         <height>22</height>
        </rect>
@@ -858,8 +858,8 @@ max: 25</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>295</y>
+        <x>100</x>
+        <y>265</y>
         <width>290</width>
         <height>22</height>
        </rect>
@@ -884,8 +884,8 @@ max: 25</string>
      <widget class="QLineEdit" name="lineEdit_imageDPI">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>480</y>
+        <x>250</x>
+        <y>450</y>
         <width>100</width>
         <height>22</height>
        </rect>
@@ -905,7 +905,7 @@ max: 4800</string>
        <string notr="true">background-color:white;</string>
       </property>
       <property name="inputMask">
-       <string>0000</string>
+       <string/>
       </property>
       <property name="text">
        <string/>
@@ -920,8 +920,8 @@ max: 4800</string>
      <widget class="QLabel" name="label_units">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>460</y>
+        <x>400</x>
+        <y>430</y>
         <width>100</width>
         <height>16</height>
        </rect>
@@ -936,8 +936,8 @@ max: 4800</string>
      <widget class="QLabel" name="label_numRings">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>460</y>
+        <x>100</x>
+        <y>430</y>
         <width>100</width>
         <height>16</height>
        </rect>
@@ -952,8 +952,8 @@ max: 4800</string>
      <widget class="QCheckBox" name="checkBox_imageEnhancement">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>530</y>
+        <x>100</x>
+        <y>490</y>
         <width>200</width>
         <height>20</height>
        </rect>
@@ -977,8 +977,8 @@ max: 4800</string>
      <widget class="QLabel" name="label_numWedges">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>425</y>
+        <x>100</x>
+        <y>395</y>
         <width>200</width>
         <height>22</height>
        </rect>
@@ -993,8 +993,8 @@ max: 4800</string>
      <widget class="QLabel" name="label_imagePath">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>275</y>
+        <x>100</x>
+        <y>245</y>
         <width>290</width>
         <height>16</height>
        </rect>
@@ -1009,8 +1009,8 @@ max: 4800</string>
      <widget class="QLineEdit" name="lineEdit_numMeasurements">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>390</y>
+        <x>310</x>
+        <y>360</y>
         <width>80</width>
         <height>22</height>
        </rect>
@@ -1033,7 +1033,7 @@ QLineEdit:clicked{
 }</string>
       </property>
       <property name="inputMask">
-       <string>000</string>
+       <string/>
       </property>
       <property name="maxLength">
        <number>3</number>
@@ -1044,12 +1044,15 @@ QLineEdit:clicked{
       <property name="placeholderText">
        <string>3 to 100</string>
       </property>
+      <property name="cursorMoveStyle">
+       <enum>Qt::LogicalMoveStyle</enum>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_numWedges">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>425</y>
+        <x>310</x>
+        <y>395</y>
         <width>80</width>
         <height>22</height>
        </rect>
@@ -1066,7 +1069,7 @@ max: 100</string>
        <string notr="true">background-color:white;</string>
       </property>
       <property name="inputMask">
-       <string>000</string>
+       <string/>
       </property>
       <property name="maxLength">
        <number>3</number>
@@ -1081,8 +1084,8 @@ max: 100</string>
      <widget class="QLabel" name="label_numMeasurements">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>390</y>
+        <x>100</x>
+        <y>360</y>
         <width>200</width>
         <height>22</height>
        </rect>
@@ -1097,7 +1100,7 @@ max: 100</string>
      <widget class="QFrame" name="frame_5">
       <property name="geometry">
        <rect>
-        <x>697</x>
+        <x>597</x>
         <y>0</y>
         <width>6</width>
         <height>700</height>
@@ -1116,8 +1119,8 @@ max: 100</string>
      <widget class="QLabel" name="label_10">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>70</y>
+        <x>755</x>
+        <y>20</y>
         <width>300</width>
         <height>22</height>
        </rect>
@@ -1136,8 +1139,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_bamboo">
       <property name="geometry">
        <rect>
-        <x>825</x>
-        <y>125</y>
+        <x>680</x>
+        <y>75</y>
         <width>450</width>
         <height>450</height>
        </rect>
@@ -1155,8 +1158,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_12">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>600</y>
+        <x>755</x>
+        <y>550</y>
         <width>300</width>
         <height>22</height>
        </rect>
@@ -1174,8 +1177,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_13">
       <property name="geometry">
        <rect>
-        <x>825</x>
-        <y>100</y>
+        <x>680</x>
+        <y>50</y>
         <width>200</width>
         <height>22</height>
        </rect>
@@ -1193,8 +1196,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_numWedgesFeedback">
       <property name="geometry">
        <rect>
-        <x>1075</x>
-        <y>100</y>
+        <x>930</x>
+        <y>50</y>
         <width>200</width>
         <height>22</height>
        </rect>
@@ -1212,8 +1215,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_numRingsFeedback">
       <property name="geometry">
        <rect>
-        <x>898</x>
-        <y>100</y>
+        <x>753</x>
+        <y>50</y>
         <width>50</width>
         <height>22</height>
        </rect>
@@ -1231,8 +1234,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_numRegionsFeedback">
       <property name="geometry">
        <rect>
-        <x>1088</x>
-        <y>600</y>
+        <x>943</x>
+        <y>550</y>
         <width>50</width>
         <height>22</height>
        </rect>
@@ -1250,8 +1253,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_imageDPIFeedback">
       <property name="geometry">
        <rect>
-        <x>1055</x>
-        <y>580</y>
+        <x>910</x>
+        <y>530</y>
         <width>220</width>
         <height>22</height>
        </rect>
@@ -1269,8 +1272,8 @@ font: bold 16px;</string>
      <widget class="QLabel" name="label_numMeasurementsFeedback">
       <property name="geometry">
        <rect>
-        <x>825</x>
-        <y>580</y>
+        <x>680</x>
+        <y>530</y>
         <width>220</width>
         <height>22</height>
        </rect>
@@ -1291,8 +1294,8 @@ font: bold 16px;</string>
       </property>
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>525</y>
+        <x>400</x>
+        <y>490</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -1575,7 +1578,7 @@ QPushButton:disabled{
         <x>0</x>
         <y>0</y>
         <width>1400</width>
-        <height>670</height>
+        <height>601</height>
        </rect>
       </property>
       <property name="cursor">
@@ -1597,10 +1600,10 @@ QPushButton:disabled{
 QTabBar::tab:hover {
 	font: bold 13px;
 }
-QTabWidget::pane { 
+QTabWidget::pane {
     border-top: 3px solid #4F8A70;
 }
-QTabBar::tab:selected {    
+QTabBar::tab:selected {
 	text-decoration: underline;
 }
 
@@ -1621,8 +1624,8 @@ QTabBar::tab:selected {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1400</width>
-          <height>630</height>
+          <width>1200</width>
+          <height>550</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1643,9 +1646,9 @@ QComboBox{
         <widget class="QWidget" name="widget_rings" native="true">
          <property name="geometry">
           <rect>
-           <x>75</x>
-           <y>75</y>
-           <width>600</width>
+           <x>36</x>
+           <y>40</y>
+           <width>550</width>
            <height>450</height>
           </rect>
          </property>
@@ -1656,9 +1659,9 @@ QComboBox{
         <widget class="QWidget" name="widget_wedges" native="true">
          <property name="geometry">
           <rect>
-           <x>725</x>
-           <y>75</y>
-           <width>600</width>
+           <x>614</x>
+           <y>40</y>
+           <width>550</width>
            <height>450</height>
           </rect>
          </property>
@@ -1669,8 +1672,8 @@ QComboBox{
         <widget class="QComboBox" name="comboBox_rings">
          <property name="geometry">
           <rect>
-           <x>325</x>
-           <y>530</y>
+           <x>261</x>
+           <y>500</y>
            <width>100</width>
            <height>22</height>
           </rect>
@@ -1706,8 +1709,8 @@ QComboBox{
         <widget class="QComboBox" name="comboBox_wedges">
          <property name="geometry">
           <rect>
-           <x>975</x>
-           <y>530</y>
+           <x>839</x>
+           <y>500</y>
            <width>100</width>
            <height>22</height>
           </rect>
@@ -1771,8 +1774,8 @@ QComboBox{
           <rect>
            <x>0</x>
            <y>30</y>
-           <width>1400</width>
-           <height>595</height>
+           <width>1200</width>
+           <height>525</height>
           </rect>
          </property>
          <property name="focusPolicy">
@@ -1845,7 +1848,7 @@ QScrollBar:horizontal{
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>1400</width>
+           <width>1200</width>
            <height>631</height>
           </rect>
          </property>
@@ -2360,7 +2363,7 @@ QPushButton:hover {
       <widget class="QLabel" name="label_15">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>50</x>
          <y>22</y>
          <width>90</width>
          <height>30</height>
@@ -2393,7 +2396,7 @@ font: 10pt;</string>
 }
 QTextEdit{
 	border: 0px;
-	padding-left: 90px;
+	padding-left: 50px;
 }
 QScrollBar:vertical{
 	background-color:light;
@@ -2406,19 +2409,28 @@ QScrollBar:vertical{
        <enum>QFrame::Raised</enum>
       </property>
       <widget class="QTextEdit" name="textEdit_2">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1400</width>
-         <height>600</height>
+         <width>1200</width>
+         <height>529</height>
         </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
        </property>
        <property name="lineWrapMode">
         <enum>QTextEdit::FixedPixelWidth</enum>
        </property>
        <property name="lineWrapColumnOrWidth">
-        <number>640</number>
+        <number>560</number>
        </property>
        <property name="readOnly">
         <bool>true</bool>
@@ -2462,14 +2474,17 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;5. Region Density Table&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - presents the rings by number in the rows and the wedges by number in the columns. The cells represent the fiber density. The last column is the average for each ring and the last row is the average for each wedge.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
+       <property name="tabStopWidth">
+        <number>80</number>
+       </property>
       </widget>
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
-         <x>800</x>
-         <y>50</y>
-         <width>500</width>
-         <height>500</height>
+         <x>669</x>
+         <y>30</y>
+         <width>481</width>
+         <height>471</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -2494,7 +2509,7 @@ border-width:0px;</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1400</width>
+      <width>1200</width>
       <height>50</height>
      </rect>
     </property>
@@ -2517,7 +2532,7 @@ border-top-style: inset;</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1400</width>
+      <width>1200</width>
       <height>4</height>
      </rect>
     </property>
@@ -2535,19 +2550,6 @@ border-top-style: inset;</string>
    <zorder>frame</zorder>
    <zorder>tabWidget_1</zorder>
    <zorder>frame_3</zorder>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1400</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="cursor">
-    <cursorShape>ArrowCursor</cursorShape>
-   </property>
   </widget>
  </widget>
  <resources/>

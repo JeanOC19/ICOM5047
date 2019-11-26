@@ -100,16 +100,17 @@ font: bold;</string>
      </rect>
     </property>
     <property name="toolTip">
-     <string>Enter file name.</string>
+     <string>Enter file name. Do not use special 
+characters: &lt;, &gt;, :, /, , |, ?, *, &quot;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color:white;</string>
     </property>
     <property name="inputMask">
-     <string>nnnnnnnnnnnnnnnnnnnnnnnnn</string>
+     <string/>
     </property>
     <property name="maxLength">
-     <number>25</number>
+     <number>50</number>
     </property>
     <property name="cursorPosition">
      <number>0</number>
