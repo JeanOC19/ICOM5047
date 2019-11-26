@@ -35,8 +35,8 @@ class SproutController (QThread):
 
     def run(self):
         """
-        Start the process thread that will run the Sprout Controller that calls Image Enhancement Moduel,
-        Image Pre-Processing Moduel, Region Extraction Module, and  Fiber Density and Distribution Moduel.
+        Start the process thread that will run the Sprout Controller that calls Image Enhancement Module,
+        Image Pre-Processing Module, Region Extraction Module, and  Fiber Density and Distribution Module.
         :return: None
         """
 

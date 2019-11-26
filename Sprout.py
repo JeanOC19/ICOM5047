@@ -164,7 +164,7 @@ class SproutUI(QtWidgets.QMainWindow):
             temp = int(self.lineEdit_numWedges.text()) * 4
             wedge_degree = 360 / temp
             self.label_numWedgesFeedback.setText("Num. Wedges: " + str(temp) + " @ {:.1f}º".format(wedge_degree))
-            self.label_numRegionsFeedback.setText(str(temp * int(in_data['num_rings'])))
+            self.label_numRegionsFeedback.setText("Num. Regions: " + str(temp * int(in_data['num_rings'])))
             in_data['num_wedges'] = temp
         else:
             self.lineEdit_numWedges.clear()
@@ -178,8 +178,8 @@ class SproutUI(QtWidgets.QMainWindow):
 
         temp = self.lineEdit_numRings.text()
         if self.is_int_inbound(temp, 1, 25):
-            self.label_numRingsFeedback.setText(str(temp))
-            self.label_numRegionsFeedback.setText(str(int(temp) * int(in_data['num_wedges'])))
+            self.label_numRingsFeedback.setText("Num. Rings: " + str(temp))
+            self.label_numRegionsFeedback.setText("Num. Regions: " + str(int(temp) * int(in_data['num_wedges'])))
             in_data['num_rings'] = int(temp)
         else:
             self.lineEdit_numRings.clear()
@@ -348,7 +348,7 @@ class SproutUI(QtWidgets.QMainWindow):
             ring_series = QLineSeries()
             for y in range(len(self.densities[x])-1):
                 # ring_series.append(y+1, self.densities[x][y])
-                ring_series.append((y+1)*wedge_degree, self.densities[x][y])
+                ring_series.append((y)*wedge_degree, self.densities[x][y])
             self.ring_chart.addSeries(ring_series)
             if x < len(self.densities)-1:
                 self.comboBox_rings.addItem("Ring " + str(x+1))
