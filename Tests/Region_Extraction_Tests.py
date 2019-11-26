@@ -23,8 +23,8 @@ class MyTestCase(unittest.TestCase):
 
     def test_input_validation(self):
         print("Testing validation of input parameters")
-        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control_rgb.jpg')
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control_rgb.jpg')
+        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control.png')
         bin_image = re.binarize_image(bw_image)
 
         self.assertRaises(AssertionError, re.region_extraction, 0, bin_image, 12, 3)
@@ -39,20 +39,20 @@ class MyTestCase(unittest.TestCase):
     def test_region_storage(self):
         print("Testing region storage")
 
-        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control_rgb.jpg')
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control_rgb.jpg')
+        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control.png')
         bin_image = re.binarize_image(bw_image)
         number_wedges = 12
         number_rings = 3
         int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
-        regions_path = os.path.join(int_path, 'regions')
+        regions_path = os.path.join(int_path, 'Regions')
         os.chdir(int_path)
 
         # Run Region Extraction
         re.region_extraction(rgb_image, bin_image, number_wedges, number_rings)
 
         # Check if 'regions' directory is created in intermediate path
-        self.assertTrue(os.path.exists(regions_path), "'regions' directory does not exist in intermediate path")
+        self.assertTrue(os.path.exists(regions_path), "'Regions' directory does not exist in intermediate path")
 
         # Check if all files are being created in the 'regions' directory.
         expected_regions = calculate_num_of_expected_regions(number_wedges, number_rings)

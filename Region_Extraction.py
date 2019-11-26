@@ -74,8 +74,6 @@ def generate_wedge_mask(img, angle):
     Given an an input image, its center coordinates and an angle, calculate it's correspondent wedge and generate
     an image mask.
     :param img: Input image.
-    :param c_x: Center X coordinate of the input image.
-    :param c_y: Center Y coordinate of the input image.
     :param angle: Angle of the desired wedge.
     :return: Image containing the generated mask of the wedge.
     """
@@ -105,7 +103,7 @@ def extract_wedge(img, filled_img, angle):
     """
     Extract a wedge of a given angle from the input image
     :param img: Input image
-    :param filled_img: copy of originall image with filled ring
+    :param filled_img: copy of original image with filled ring
     :param angle: Angle of the wedge
     :return: Image of wedge and image of wedge's mask
     """
@@ -140,7 +138,7 @@ def extract_wedge(img, filled_img, angle):
 def find_max_ins_rect(data):
     """
     Find the largest inscribed rectangle of a given image map
-    :param img: Input image
+    :param data: Input image
     :return: Largest Inscribed Rectangle Coordinates
     """
 
@@ -266,6 +264,31 @@ def extract_regions(img, n_rings, wedge_num):
     return regions_path
 
 
+def store_region(img, img_name):
+    """
+    Store the given image on the file system
+    :param img: Input image
+    :param img_name: Name of the image
+    :return: Path where the region is stored
+    """
+
+    # Name of complete path with regions_path
+    full_path = get_full_regions_path()
+    # Defining type of image that will be used to store
+    image_type = 'jpg'
+    # Name of file that will be used to store region
+    file_name = img_name + "." + str(image_type)
+
+    # Store region image
+    try:
+        cv2.imwrite(os.path.join(full_path, str(file_name)), img)
+    except OSError:
+        raise Exception("Storage of %s failed on path %s" % (file_name, full_path))
+    else:
+        print("Stored: ", os.path.join(full_path, str(file_name)))
+        return full_path
+
+
 def append_regions_dict(region_name, region):
     """
     Store a region image on a dictionary
@@ -275,6 +298,16 @@ def append_regions_dict(region_name, region):
     """
     global regions_list
     regions_list.update({region_name: region})
+
+
+def clear_regions_dict():
+    """
+    Clear regions_list
+    :return: None
+    """
+    global regions_list
+    regions_list.clear()
+
 
 def get_regions_path_name():
     """
@@ -302,31 +335,6 @@ def get_full_regions_path():
     """
     global full_regions_path
     return full_regions_path
-
-
-def store_region(img, img_name):
-    """
-    Store the given image on the file system
-    :param img: Input image
-    :param img_name: Name of the image
-    :return: Path where the region is stored
-    """
-
-    # Name of complete path with regions_path
-    full_path = get_full_regions_path()
-    # Defining type of image that will be used to store
-    image_type = 'jpg'
-    # Name of file that will be used to store region
-    file_name = img_name + "." + str(image_type)
-
-    # Store region image
-    try:
-        cv2.imwrite(os.path.join(full_path, str(file_name)), img)
-    except OSError:
-        raise print("Storage of %s failed on path %s" %(file_name, full_path))
-    else:
-        print("Stored: ", os.path.join(full_path, str(file_name)))
-        return full_path
 
 
 def extract_cuadrant(image, cuadrant_num):
@@ -371,16 +379,16 @@ def show_image(img):
 
 
 def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_image: np.ndarray,
-                      number_wedges: int, number_rings: int, t = None):
+                      number_wedges: int, number_rings: int, t=None):
     """
     Extract regions from an input bamboo cross-section image.
     :param bounded_input_image: Input image bounded
     :param bounded_binarized_input_image: Input image binarized and bounded
     :param number_wedges: Integer with the number of wedges, specified by the user
     :param number_rings: Integer with the number of rings, specified by the user
+    :param t: Thread object. Default is None
     :return: None
     """
-    global regions_list
 
     # Validate Inputs
     assert type(number_wedges) is int, "Number of wedges has to be int."
@@ -395,6 +403,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     current_angle = 0
     regions_path = get_regions_path_name()
     wedge_number = 1
+    clear_regions_dict()
 
     # Name of the path where regions will be stored.
     set_full_regions_path(os.getcwd())
@@ -406,9 +415,10 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         try:
             os.mkdir(regions_path)
         except OSError:
-            raise print("Creation of the directory %s failed" % regions_path)
+            raise Exception("Creation of the directory %s failed" % regions_path)
         else:
             print("Successfully created the directory: %s " % regions_path)
+
     # Check if path is empty , if not then delete contents
     elif os.listdir(full_path):
         print("Found directory: %s with content. Proceeding to delete contents" % full_path)
@@ -416,7 +426,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
             shutil.rmtree(full_path)
             os.mkdir(regions_path)
         except OSError:
-            raise print("Could not delete contents of directory: %s" % full_path)
+            raise Exception("Could not delete contents of directory: %s" % full_path)
         else:
             print("Successfully deleted contents of the directory: %s " % full_path)
 
@@ -430,8 +440,6 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     bounded_binarized_input_image = cv2.erode(cv2.dilate(bounded_binarized_input_image, None, iterations=n_iterations),
                                               None, iterations=n_iterations + 2)
 
-    regions_list.clear() # Todo: Javier make the function you mentioned
-
     for cuadrant_num in range(4):
         # Extract the cuadrant of the image
         image = extract_cuadrant(bounded_input_image, cuadrant_num)
@@ -439,8 +447,11 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
         filled_image = extract_cuadrant(bounded_binarized_input_image, cuadrant_num)
 
         for cuadrant_wedge_num in range(int(number_wedges / 4)):
+
+            # Check if has an interrupt request
             if t is not None and t.isInterruptionRequested():
                 return
+
             # Rotate the image to the current calculated angle
             wedge = rotate_cuadrant(image, int(current_angle % 90))
             filled_wedge = rotate_cuadrant(filled_image, int(current_angle % 90))
@@ -464,4 +475,3 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     print("Stored Regions at: " + regions_path)
 
     return regions_list
-

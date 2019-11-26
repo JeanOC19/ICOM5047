@@ -83,7 +83,7 @@ class MyTestCase(unittest.TestCase):
     def test_image_storage(self):
         print("Testing image storage")
 
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/bamboo.jpg"
+        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/Images/bamboo.jpg"
         int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
         img_enhancement_path = os.path.join(int_path, 'image_enhancement')
         os.chdir(int_path)
