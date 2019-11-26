@@ -11,7 +11,8 @@ class MyTestCase(unittest.TestCase):
 
         print("Test Measurements")
 
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
         bin_image = re.binarize_image(bw_image)
 
         c_x, c_y = re.get_centroid(bin_image)
@@ -23,8 +24,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_input_validation(self):
         print("Testing validation of input parameters")
-        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control_rgb.jpg')
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control.png')
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'control_rgb.jpg'))
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
         bin_image = re.binarize_image(bw_image)
 
         self.assertRaises(AssertionError, re.region_extraction, 0, bin_image, 12, 3)
@@ -39,12 +41,13 @@ class MyTestCase(unittest.TestCase):
     def test_region_storage(self):
         print("Testing region storage")
 
-        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control_rgb.jpg')
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\Images\\control.png')
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'control_rgb.jpg'))
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
         bin_image = re.binarize_image(bw_image)
         number_wedges = 12
         number_rings = 3
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         regions_path = os.path.join(int_path, 'Regions')
         os.chdir(int_path)
 
@@ -66,10 +69,11 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(str(f).find("W") != -1, "%s does not contain W in its name" % f)
 
     def test_execution_time(self):
-        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control_rgb.jpg')
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'control_rgb.jpg'))
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
         bin_image = re.binarize_image(bw_image)
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
         start_time = time.time()
@@ -82,10 +86,11 @@ class MyTestCase(unittest.TestCase):
     def test_edges(self):
         print("Test all possibilities")
 
-        rgb_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control_rgb.jpg')
-        bw_image = cv2.imread('C:\\Users\\Caloj\\PycharmProjects\\ICOM5047\\control.png')
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'control_rgb.jpg'))
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
         bin_image = re.binarize_image(bw_image)
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
         try:

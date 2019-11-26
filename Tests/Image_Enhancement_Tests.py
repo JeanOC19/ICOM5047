@@ -8,21 +8,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_visual_1(self):
         print("Visual Test 1")
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/bamboo.jpg"
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
-        os.chdir(int_path)
-
-        orig_image = cv2.imread(img_path)
-        show_image(resize_image(orig_image))
-
-        # Run Image_Enhancement
-        enhanced_image = ie.image_enhancement(img_path)
-        show_image(resize_image(enhanced_image))
-
-    def test_visual_2(self):
-        print("Visual Test 1")
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/bamboo_wedge.jpg"
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        img_path = cv2.imread(os.path.join(image_path, 'bamboo.jpg'))
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
         orig_image = cv2.imread(img_path)
@@ -34,8 +22,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_visual_3(self):
         print("Visual Test 1")
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/1.5.05.tiff"
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        img_path = cv2.imread(os.path.join(image_path, '1.5.05.tiff'))
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
         orig_image = cv2.imread(img_path)
@@ -47,8 +36,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_visual_4(self):
         print("Visual Test 1")
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/5.1.10.tiff"
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        img_path = cv2.imread(os.path.join(image_path, '5.1.10.tiff'))
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
         orig_image = cv2.imread(img_path)
@@ -60,8 +50,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_visual_5(self):
         print("Visual Test 1")
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/bamboo_img.jpg"
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        img_path = cv2.imread(os.path.join(image_path, 'R_1.1.1.jpg'))
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
         orig_image = cv2.imread(img_path)
@@ -83,8 +74,9 @@ class MyTestCase(unittest.TestCase):
     def test_image_storage(self):
         print("Testing image storage")
 
-        img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/Images/bamboo.jpg"
-        int_path = "C:/Users/Caloj/Desktop/Sprout_Images"
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        img_path = cv2.imread(os.path.join(image_path, 'bamboo.jpg'))
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         img_enhancement_path = os.path.join(int_path, 'image_enhancement')
         os.chdir(int_path)
 

@@ -74,7 +74,9 @@ def image_enhancement(image_path: str):
     # Validate Input
     assert type(image_path) is not None, "Image path cannot be none"
     assert type(image_path) is str, "Image path input must be a string"
+    assert os.path.exists(img_path), "Input image not found"
 
+    image = None
     # Load image
     try:
         image = cv2.imread(image_path)
@@ -101,11 +103,3 @@ def image_enhancement(image_path: str):
 
     return enhanced_img
 
-
-if __name__ == "__main__":
-
-    os.chdir("C:/Users/Caloj/Desktop/Sprout_Images")
-
-    img_path = "C:/Users/Caloj/PycharmProjects/ICOM5047/bamboo.jpg"
-
-    Enhanced_Image = image_enhancement(img_path)
