@@ -9,9 +9,10 @@ outer_units = ""
 
 
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
-                      enhanced_image: object = None, t = None):
+                      enhanced_image: object = None, t: object = None):
     """
     Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters, centroid coordinates, and moment of inertia with respect to the x and y axes
+    :param t: Qt thread
     :param num_of_measurements: number of measurements to use for determining average inner and outer diameters
     :param image_dpi: DPI of the input image
     :param units: units used for displaying measurements (cm, in, or mm)
@@ -245,7 +246,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         Data_Management_Module.set_dimensional_measurements(measurements_list)
         Data_Management_Module.set_diameters(diameters_list)
         binarized_image = binarize_image(image.copy(), 0, kernel_type=cv.BORDER_ISOLATED)
-    except:
+    except Exception:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 
     # If user is testing module, send all the parameters
@@ -255,7 +256,3 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
                measurements_list[7], diameters_list[0], diameters_list[1]
     else:
         return binarized_image, image
-
-
-if __name__ == "__main__":
-    bounded_binarized_image, bounded_input_image = pre_process_image(12, 1200, 'cm', image_path='Images/R_0.0.0.jpg')

@@ -6,6 +6,7 @@ import Data_Management_Module
 import unittest
 import os
 import psutil
+import Sprout
 
 # sample for time delay of modules
 test_delay = 1
@@ -38,6 +39,7 @@ class MyTestCase(unittest.TestCase):
         density = Data_Management_Module.get_fiber_density_average()[-1][-1]
         print(density)
         measurements = Data_Management_Module.get_dimensional_measurements()
+        print(measurements)
         self.assertLessEqual(calculate_error(measurements[0], 16.2273), 3.5, "Area calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[1], 6.6696), 3.5, "Outer diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[2], 4.8683), 3.5, "Inner diam. has more than 3.5% of error")
@@ -64,10 +66,11 @@ class MyTestCase(unittest.TestCase):
         density = Data_Management_Module.get_fiber_density_average()[-1][-1]
         print(density)
         measurements = Data_Management_Module.get_dimensional_measurements()
-        self.assertLessEqual(calculate_error(measurements[0], 3.9020), 3.5,
+        print(measurements)
+        self.assertLessEqual(calculate_error(measurements[0], 3.902), 3.5,
                              "Area calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[1], 2.9550), 3.5, "Outer diam. has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[2], 1.9560), 3.5, "Inner diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 2.955), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 1.956), 3.5, "Inner diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[3], 1.5011), 3.5,
                              "Centroid X axis has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[4], 1.4572), 3.5,
@@ -143,6 +146,7 @@ class MyTestCase(unittest.TestCase):
         self.assertLessEqual(calculate_error(measurements[7], 0.6567), 3.5,
                              "Product of inertia calculation has more than 3.5% of error")
         self.assertLessEqual(calculate_error(density, 0.53688), 3.5, "Area calculation has more than 3.5% of error")
+
 
 class SproutController ():
     def __init__(self, in_data):

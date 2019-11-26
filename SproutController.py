@@ -119,7 +119,6 @@ class SproutController (QThread):
             self.sprout_ui.progressBar.setValue(2)
             return
         self.update_progress_bar()
-        # self.sprout_ui.progressBar.setValue(33)
 
         if self.isInterruptionRequested():
             return
@@ -178,21 +177,3 @@ class SproutController (QThread):
 
         self.sprout_ui.progressBar.setValue(self.percent_count)
         return
-
-
-if __name__ == '__main__':
-
-    parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/R_0.0.0.jpg',
-                  'intermediate_path': "Run1",
-                  'num_measurement': 12,
-                  'num_wedges': 12,
-                  'units': 'cm',
-                  'num_rings': 3,
-                  'img_dpi': 1200,
-                  'enhance': 1
-                  }
-    startt = time.process_time()
-    controller = SproutController(None, parameters)
-    controller.run()
-
-    print("Total time: " + str(time.process_time() - startt))

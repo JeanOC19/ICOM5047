@@ -91,20 +91,12 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(AssertionError,
                           ImagePreProcessing.pre_process_image, 16, 4800, 'cm', image_path='Non_existing.jpg')
 
-    def test_edge_cases(self):
+    def test_edge_cases_and_output(self):
         print("Testing file creation")
 
         # View if all files are being created in the respective directory
-        ImagePreProcessing.pre_process_image(12, 4800, 'cm', image_path='../Images/4800dpi.tif')
-        self.assertTrue(os.path.exists('Pre_Processing/binarized_image.jpg'), "Binarized image was not saved")
-        self.assertTrue(os.path.exists('Pre_Processing/grayscale_image.jpg'), "Grayscale image was not saved")
-        self.assertTrue(os.path.exists('Pre_Processing/binarized_bounded_image.jpg'), "Binarized bounded image was not saved")
-        self.assertTrue(os.path.exists('Pre_Processing/bounded_image.jpg'), "Bounded input image was not saved")
-        self.assertTrue(os.path.exists('Pre_Processing/centroid.jpg'), "Centroid image was not saved")
-        self.assertTrue(os.path.exists('Pre_Processing/contour_image.jpg'), "Contoured input image was not saved")
-        self.assertTrue(os.path.exists('Pre_Processing/filled_image.jpg'), "Filled image was not saved")
-
-        ImagePreProcessing.pre_process_image(400, 1200, 'cm', image_path='../Images/R_0.0.0.jpg')
+        ImagePreProcessing.TESTING = 1
+        print(ImagePreProcessing.pre_process_image(12, 1200, 'cm', image_path='../Images/R_0.0.0.jpg')[2:])
         self.assertTrue(os.path.exists('Pre_Processing/binarized_image.jpg'), "Binarized image was not saved")
         self.assertTrue(os.path.exists('Pre_Processing/grayscale_image.jpg'), "Grayscale image was not saved")
         self.assertTrue(os.path.exists('Pre_Processing/binarized_bounded_image.jpg'), "Binarized bounded image was not saved")
