@@ -74,7 +74,7 @@ def image_enhancement(image_path: str):
     # Validate Input
     assert type(image_path) is not None, "Image path cannot be none"
     assert type(image_path) is str, "Image path input must be a string"
-    assert os.path.exists(img_path), "Input image not found"
+    assert os.path.exists(image_path), "Input image not found"
 
     image = None
     # Load image

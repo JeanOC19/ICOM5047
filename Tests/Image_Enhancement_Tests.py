@@ -9,7 +9,7 @@ class MyTestCase(unittest.TestCase):
     def test_visual_1(self):
         print("Visual Test 1")
         image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
-        img_path = cv2.imread(os.path.join(image_path, 'bamboo.jpg'))
+        img_path = os.path.join(image_path, 'bamboo.jpg')
         int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
@@ -23,7 +23,7 @@ class MyTestCase(unittest.TestCase):
     def test_visual_3(self):
         print("Visual Test 1")
         image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
-        img_path = cv2.imread(os.path.join(image_path, '1.5.05.tiff'))
+        img_path = os.path.join(image_path, '1.5.05.tiff')
         int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
@@ -37,7 +37,7 @@ class MyTestCase(unittest.TestCase):
     def test_visual_4(self):
         print("Visual Test 1")
         image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
-        img_path = cv2.imread(os.path.join(image_path, '5.1.10.tiff'))
+        img_path = os.path.join(image_path, '5.1.10.tiff')
         int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
 
@@ -51,9 +51,11 @@ class MyTestCase(unittest.TestCase):
     def test_visual_5(self):
         print("Visual Test 1")
         image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
-        img_path = cv2.imread(os.path.join(image_path, 'R_1.1.1.jpg'))
+        img_path = os.path.join(image_path, 'R_1.1.1.jpg')
         int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         os.chdir(int_path)
+
+        print(img_path)
 
         orig_image = cv2.imread(img_path)
         show_image(resize_image(orig_image))
@@ -67,15 +69,18 @@ class MyTestCase(unittest.TestCase):
 
         img_path1 = 123
         img_path2 = None
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        img_path3 = cv2.imread(os.path.join(image_path, 'non_existing_photo.jpg'))
 
         self.assertRaises(AssertionError, ie.image_enhancement, img_path1)
         self.assertRaises(AssertionError, ie.image_enhancement, img_path2)
+        self.assertRaises(AssertionError, ie.image_enhancement, img_path3)
 
     def test_image_storage(self):
         print("Testing image storage")
 
         image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
-        img_path = cv2.imread(os.path.join(image_path, 'bamboo.jpg'))
+        img_path = os.path.join(image_path, 'bamboo.jpg')
         int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
         img_enhancement_path = os.path.join(int_path, 'image_enhancement')
         os.chdir(int_path)
