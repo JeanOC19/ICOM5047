@@ -58,14 +58,28 @@ class SproutController (QThread):
 
         time_start = time.time()
 
-        # Todo: Isra change it so that it does Run1 if Run exist and so on
         # Create and change current working directory
         if not os.path.exists(self.in_data['intermediate_path']):
             try:
                 os.makedirs(self.in_data['intermediate_path'])
+                os.chdir(self.in_data['intermediate_path'])
             except OSError:
                 raise Exception("Unable to create intermediate path folder")
-        os.chdir(self.in_data['intermediate_path'])
+        else:
+            counter = 1
+            # Verify if this path exists, if it does exist add a number after file name and verify again.
+            # Continue this loop, increasing the appended number, until the file path does not exist.
+            try:
+                new_path = self.in_data['intermediate_path'] + str(counter)
+                while os.path.exists(new_path):
+                    new_path = self.in_data['intermediate_path'] + str(counter)
+                    counter += 1
+
+                print("New path " + new_path)
+                os.makedirs(new_path)
+                os.chdir(new_path)
+            except Exception:
+                raise Exception("Unable to create new intermediate path folder")
 
         print("Current Working Directory:")
         print(" " + os.getcwd())
