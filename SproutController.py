@@ -64,7 +64,7 @@ class SproutController (QThread):
                 os.makedirs(self.in_data['intermediate_path'])
                 os.chdir(self.in_data['intermediate_path'])
             except OSError:
-                self.sprout_ui.error_message = "Unable to create new intermediate path folder"
+                self.sprout_ui.error_message = "Unable to create new intermediate path folder."
                 self.sprout_ui.progressBar.setValue(2)
                 return
         else:
@@ -81,7 +81,7 @@ class SproutController (QThread):
                 os.makedirs(new_path)
                 os.chdir(new_path)
             except Exception:
-                self.sprout_ui.error_message = "Unable to create new intermediate path folder"
+                self.sprout_ui.error_message = "Unable to create new intermediate path folder."
                 self.sprout_ui.progressBar.setValue(2)
                 return
 

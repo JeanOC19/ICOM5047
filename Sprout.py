@@ -326,7 +326,7 @@ class SproutUI(QtWidgets.QMainWindow):
         Creates the graphs that will be displayed int the dashboard's Graphs tab.
         :return: None
         """
-        global default_comboBox_graph_item_count, wedge_degree
+        global default_comboBox_graph_item_count
 
         # Set Ring ComboBox
         for x in range(self.comboBox_rings.count()):
@@ -347,8 +347,7 @@ class SproutUI(QtWidgets.QMainWindow):
         for x in range(len(self.densities)):
             ring_series = QLineSeries()
             for y in range(len(self.densities[x])-1):
-                # ring_series.append(y+1, self.densities[x][y])
-                ring_series.append((y)*wedge_degree, self.densities[x][y])
+                ring_series.append(y+1, self.densities[x][y])
             self.ring_chart.addSeries(ring_series)
             if x < len(self.densities)-1:
                 self.comboBox_rings.addItem("Ring " + str(x+1))
@@ -356,8 +355,7 @@ class SproutUI(QtWidgets.QMainWindow):
         self.ring_chart.setTitle('Fiber Density VS Wedges')
         self.ring_chart.legend().hide()
         self.ring_chart.createDefaultAxes()
-        # self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(self.densities[0])-1)
-        self.ring_chart.axes(Qt.Horizontal)[0].setRange(0, 360)
+        self.ring_chart.axes(Qt.Horizontal)[0].setRange(1, len(self.densities[0])-1)
         self.ring_chart.axes(Qt.Vertical)[0].setRange(0, 1)
         self.ring_chart.axes(Qt.Horizontal)[0].setTitleText("Wedge Number")
         self.ring_chart.axes(Qt.Vertical)[0].setTitleText("Fiber Density")
