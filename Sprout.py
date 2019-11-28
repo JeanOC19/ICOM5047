@@ -5,7 +5,7 @@ import time
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtCore
 from PyQt5.Qt import Qt
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QMovie
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt5.QtChart import QChart, QLineSeries, QScatterSeries, QChartView
 
@@ -87,8 +87,7 @@ class SproutUI(QtWidgets.QMainWindow):
         self.progressBar.hide()
         self.label_progressBar.hide()
 
-        self.comboBox_rings.hide()
-        self.comboBox_wedges.hide()
+        self.disable_dashboard()
 
         self.progressBar.valueChanged.connect(self.progress_change)
 
@@ -117,6 +116,13 @@ class SproutUI(QtWidgets.QMainWindow):
 
         if url[0] is not '':
             try:
+                cross_section = QPixmap("./Images/LoadingImage")
+                self.label_bamboo.setPixmap(cross_section)
+                self.label_bamboo.repaint()
+            except Exception:
+                self.warning_message_box("Missing loading image. ")
+
+            try:
                 cross_section = QPixmap(url[0])
                 cross_section = cross_section.scaled(500, 500)
 
@@ -136,8 +142,27 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
-        self.lineEdit_intermediateStepPath.setText(url)
-        in_data['intermediate_path'] = url
+        if url is not '':
+            self.lineEdit_intermediateStepPath.setText(url)
+            in_data['intermediate_path'] = url
+
+    def disable_dashboard(self):
+        """
+        Disables the dashboard and hides the graphs.
+        :return: None
+        """
+        self.dashboard_tab.setEnabled(False)
+        self.tabWidget_2.setEnabled(False)
+        self.graphs_tab.setEnabled(False)
+        self.region_density_tab.setEnabled(False)
+        self.measurement_data_tab.setEnabled(False)
+
+        self.tabWidget_2.setCurrentIndex(0)
+
+        self.widget_rings.hide()
+        self.widget_wedges.hide()
+        self.comboBox_rings.hide()
+        self.comboBox_wedges.hide()
 
     def update_num_diameter_measurements(self):
         """
@@ -261,8 +286,9 @@ class SproutUI(QtWidgets.QMainWindow):
         global debounce
         # if program is currently in progress
 
+        self.disable_dashboard()
         self.stop_button.setEnabled(False)
-        self.repaint()
+        self.stop_button.repaint()
 
         if not self.myThread.isFinished():
             self.myThread.requestInterruption()
@@ -276,6 +302,7 @@ class SproutUI(QtWidgets.QMainWindow):
             self.tabWidget_2.setEnabled(True)
             self.graphs_tab.setEnabled(True)
             self.region_density_tab.setEnabled(True)
+            self.measurement_data_tab.setEnabled(True)
 
             # create graphs
             self.create_graphs()
@@ -328,15 +355,12 @@ class SproutUI(QtWidgets.QMainWindow):
         """
         global default_comboBox_graph_item_count
 
-        # Set Ring ComboBox
+        # Set Graphs ComboBox
         for x in range(self.comboBox_rings.count()):
-            if x >= default_comboBox_graph_item_count:
-                self.comboBox_rings.removeItem(default_comboBox_graph_item_count)
+            self.comboBox_rings.removeItem(default_comboBox_graph_item_count)
 
-        # Set Wedges ComboBox
         for x in range(self.comboBox_wedges.count()):
-            if x >= default_comboBox_graph_item_count:
-                self.comboBox_wedges.removeItem(default_comboBox_graph_item_count)
+            self.comboBox_wedges.removeItem(default_comboBox_graph_item_count)
 
         self.comboBox_rings.setCurrentIndex(0)
         self.comboBox_wedges.setCurrentIndex(0)
@@ -394,7 +418,11 @@ class SproutUI(QtWidgets.QMainWindow):
         self.widget_rings.show()
         self.widget_wedges.show()
 
-        self.comboBox_rings.show()
+        if in_data['num_rings'] == 1:
+            self.comboBox_rings.hide()
+            self.wedge_chart.series()[1].hide()
+        else:
+            self.comboBox_rings.show()
         self.comboBox_wedges.show()
 
     def filter_rings_graph(self):
@@ -565,9 +593,12 @@ class SaveWindow(QtWidgets.QMainWindow):
         Sets the ui for the save popup window.
         :return: None
         """
+        # Set button function
         self.browse_button_3.clicked.connect(self.browse_folder)
         self.save_button.clicked.connect(self.save_graph_data)
         self.cancel_button.clicked.connect(self.cancel_save_graph_data)
+
+        # Set default values
         self.checkBox_data.setChecked(True)
 
     def browse_folder(self):
@@ -576,11 +607,12 @@ class SaveWindow(QtWidgets.QMainWindow):
         :return: None
         """
         url = QFileDialog.getExistingDirectory(self, "Open a directory", "", QFileDialog.ShowDirsOnly)
-        self.lineEdit_filePath.setText(url)
+        if url is not '':
+            self.lineEdit_filePath.setText(url)
 
     def save_graph_data(self):
         """
-        Starts the process of saving the graphs and data calling the respective function in the data
+        Starts the process of saving the graphs and/or data calling the respective function in the data
         management module.
         :return: None
         """
@@ -608,7 +640,16 @@ class SaveWindow(QtWidgets.QMainWindow):
                 if self.checkBox_data.isChecked():
                     DM.save_fiber_density_csv(save_file_name, save_folder_file_path)
                     DM.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
+
+                # Close save window
                 self.close()
+
+                # Open save location
+                try:
+                    os.startfile(save_folder_file_path)
+                except OSError:
+                    raise Exception("Unable to save \"File Path\" location.")
+
             except Exception as e:
                 QMessageBox.critical(self, "Warning!", str(e))
 

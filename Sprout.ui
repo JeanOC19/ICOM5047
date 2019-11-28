@@ -136,14 +136,14 @@ border-top:4px solid #4F8A70;</string>
 	border-right-style: outset;
 	border-width: 0px 3px 0px 0px;
 	border-color: #FFF6BD;
-	font: bold 14px;
+	font: bold 15px;
 	height: 30px;
 	width: 100px;
 	padding: 6px;
 }
 QTabBar::tab:hover {
 	background-color: #B6E9AC;
-	font: bold 15px;
+	font: bold 16px;
 }
 QTabWidget::pane {
     border-top: 4px solid #4F8A70;
@@ -154,7 +154,7 @@ QTabBar::tab:selected {
 </string>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <property name="elideMode">
             <enum>Qt::ElideNone</enum>
@@ -264,7 +264,8 @@ QTabBar::tab:selected {
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px;
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Total Diameter Measurements: 0</string>
@@ -289,7 +290,8 @@ QTabBar::tab:selected {
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px;
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Num. Wedges: 0 @ 0.0º</string>
@@ -314,7 +316,8 @@ QTabBar::tab:selected {
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px;
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Image DPI: 0</string>
@@ -339,7 +342,8 @@ QTabBar::tab:selected {
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px;
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Num. Rings: 0</string>
@@ -422,7 +426,8 @@ border:0px solid gray;</string>
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px;
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Num. Regions: 0</string>
@@ -523,6 +528,7 @@ QToolTip{
 	border: 1px solid #555555;
 }
 QWidget{
+	font: 9pt;
 	background-color:white;
 	border: 1px solid #555555;
 }</string>
@@ -563,8 +569,10 @@ QWidget{
  the fiber density of a bamboo cross-section.</string>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color:white;
-border: 1px solid #555555;</string>
+                   <string notr="true">background-color: #efefef;
+border: 1px solid #999999;
+color: #555555;
+font: 8pt;</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -577,7 +585,8 @@ border: 1px solid #555555;</string>
                 <item row="6" column="1" colspan="2">
                  <widget class="QLabel" name="label_numWedges">
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Num. Wedges per Quadrant:</string>
@@ -593,7 +602,8 @@ border: 1px solid #555555;</string>
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px; </string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Image Path: </string>
@@ -653,7 +663,7 @@ QWidget:toolTip{
 	border: 2px solid #444444;
 	border-radius: 8px;
 	color:white;
-	font: bold;
+	font: bold 9pt;
 }</string>
                    </property>
                    <property name="text">
@@ -1130,7 +1140,7 @@ QPushButton:disabled{
 	border: 2px solid #444444;
 	border-radius: 8px;
 	color:white;
-	font: bold;
+	font: bold 9pt;
 }
 QPushButton:disabled{
 	background-color: #A0B0A0;
@@ -1151,7 +1161,8 @@ QPushButton:disabled{
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Num. Rings:</string>
@@ -1160,8 +1171,15 @@ QPushButton:disabled{
                 </item>
                 <item row="5" column="1" colspan="2">
                  <widget class="QLabel" name="label_numMeasurements">
+                  <property name="minimumSize">
+                   <size>
+                    <width>250</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Num. of Diameter Measurements:</string>
@@ -1187,8 +1205,10 @@ QPushButton:disabled{
  steps will be save.</string>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color:white;
-border: 1px solid #555555;</string>
+                   <string notr="true">background-color: #efefef;
+border: 1px solid #999999;
+color: #555555;
+font: 8pt;</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -1221,16 +1241,16 @@ border-color:#333333;</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_5">
                    <property name="leftMargin">
-                    <number>20</number>
+                    <number>10</number>
                    </property>
                    <property name="topMargin">
-                    <number>20</number>
+                    <number>10</number>
                    </property>
                    <property name="rightMargin">
-                    <number>20</number>
+                    <number>10</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>20</number>
+                    <number>10</number>
                    </property>
                    <item row="0" column="0">
                     <widget class="QLabel" name="label_9">
@@ -1269,7 +1289,7 @@ border-width:0px;</string>
                   <property name="minimumSize">
                    <size>
                     <width>450</width>
-                    <height>50</height>
+                    <height>60</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -1288,7 +1308,7 @@ border-width:0px;</string>
                    <property name="geometry">
                     <rect>
                      <x>0</x>
-                     <y>20</y>
+                     <y>30</y>
                      <width>450</width>
                      <height>26</height>
                     </rect>
@@ -1307,6 +1327,7 @@ border-width:0px;</string>
 border-color: black;
 border-width: 1px 1px 1px 1px;
 border-style: inset;
+font: 9pt
 </string>
                    </property>
                    <property name="inputMethodHints">
@@ -1334,17 +1355,24 @@ border-style: inset;
                      <x>0</x>
                      <y>0</y>
                      <width>97</width>
-                     <height>16</height>
+                     <height>25</height>
                     </rect>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>25</height>
+                    </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
-                     <height>20</height>
+                     <height>30</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">border-width: 0px;</string>
+                    <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                    </property>
                    <property name="text">
                     <string>Progress</string>
@@ -1363,6 +1391,7 @@ border-style: inset;
                   <property name="styleSheet">
                    <string notr="true">QWidget{
 	background-color: #EDFFE3;
+	font: 9pt;
 	border: 0px
 }</string>
                   </property>
@@ -1386,7 +1415,8 @@ border-style: inset;
                    <enum>Qt::LeftToRight</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Image DPI:</string>
@@ -1618,7 +1648,7 @@ border-style: inset;
 	border: 2px solid #444444;
 	border-radius: 8px;
 	color:white;
-	font: bold;
+	font: bold 9pt;
 }
 QPushButton:disabled{
 	background-color: #A0B0A0;
@@ -1654,7 +1684,8 @@ max: 100</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color:white;
-border: 1px solid #555555;</string>
+border: 1px solid #555555;
+font: 8pt;</string>
                   </property>
                   <property name="inputMask">
                    <string/>
@@ -1679,7 +1710,8 @@ border: 1px solid #555555;</string>
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Units:</string>
@@ -1695,7 +1727,8 @@ border: 1px solid #555555;</string>
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">border-width: 0px;</string>
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Intermediate Steps Path: </string>
@@ -1726,7 +1759,8 @@ max: 100</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color:white;
-border: 1px solid #555555;</string>
+border: 1px solid #555555;
+font: 8pt;</string>
                   </property>
                   <property name="inputMask">
                    <string/>
@@ -1763,7 +1797,8 @@ max: 25</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color:white;
-border: 1px solid #555555;</string>
+border: 1px solid #555555;
+font: 8pt;</string>
                   </property>
                   <property name="inputMask">
                    <string/>
@@ -1803,7 +1838,8 @@ max: 4800</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color:white;
-border: 1px solid #555555;</string>
+border: 1px solid #555555;
+font: 8pt;</string>
                   </property>
                   <property name="inputMask">
                    <string/>
@@ -1870,7 +1906,7 @@ border: 0px;</string>
 	background-color: #EDFFE3;
 	border-right-style: outset;
 	border-width: 0px;
-	font: 14px;
+	font: 15px;
 	height: 30px;
 	width: 130px;
 	padding: 6px;
@@ -1888,7 +1924,7 @@ QTabBar::tab:selected {
 </string>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="graphs_tab">
                 <property name="enabled">
@@ -2233,11 +2269,13 @@ QComboBox{
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
-                        <height>20</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">background-color:white;</string>
+                       <string notr="true">background-color:white;
+font: 9pt;
+border-bottom: 2px solid #aaaaaa;</string>
                       </property>
                       <property name="text">
                        <string>  Fiber Density for Each Region (Regions identified by rings and wedges)</string>
@@ -2252,6 +2290,7 @@ QComboBox{
                       <property name="styleSheet">
                        <string notr="true">QTableWidget{
 	background-color:white;
+	font: 9pt;
 }
 
 QScrollBar:vertical{
@@ -2773,7 +2812,7 @@ border: 1px solid #444444;</string>
               <string notr="true">QPushButton{
 	background-color: #EDFFE3;
 	border: 0px;
-	font: 14px;
+	font: 15px;
 }
 
 QPushButton:hover {
@@ -2899,13 +2938,13 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;Dashboard Data:&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;1. The ring number &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- is the number used to identify the ring. The lower the number the closer the ring is to the center of the bamboo cross-section.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;1. The Ring Numbers &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- is the number used to identify the ring. The lower the number, the closer the ring is to the center of the bamboo cross-section.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;2. The wedge number&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - is the number used to identify the wedge. The lower the number the closer to 0º in a cartesian plane the wedge is in the bamboo cross-section.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;2. The Wedge Numbers&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - is the number used to identify the wedge. The lower the number, the closer the wedge is to 0º in a cartesian plane.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;3. The Fiber Density vs Wedges graph or Ring graph &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- presents the fiber density across the rings analyzed for the bamboo cross-section. In addition, an average of the fibers in the wedges is shown. Below the graph a filter can select what to see in the graph: all the rings with the average, all the rings without the average, the average alone or the ring by number.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;3. The Fiber Density vs Wedges Graph or Ring Graph &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- presents the fiber density across the rings analyzed for the bamboo cross-section. In addition, an average of the fibers in the wedges is shown. Below the graph a filter can select what to see in the graph: all the rings with the average, all the rings without the average, the average alone or the ring by number.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;4. The Fiber Density vs Rings graph or Wedge graph &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- presents the fiber density across the wedges analyzed for the bamboo cross-section. In addition, an average of the fibers in the rings is shown. Below the graph a filter can select what to see in the graph: all the wedges with the average, all the wedges without the average, the average alone or the wedges by number.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;4. The Fiber Density vs Rings Graph or Wedge Graph &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- presents the fiber density across the wedges analyzed for the bamboo cross-section. In addition, an average of the fibers in the rings is shown. Below the graph, a filter can select what to see in the graph: all the wedges with the average, all the wedges without the average, the average alone, or the wedges by number.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;5. Region Density Table&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - presents the rings by number in the rows and the wedges by number in the columns. The cells represent the fiber density. The last column is the average for each ring and the last row is the average for each wedge.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -3013,7 +3052,6 @@ font: 10pt;</string>
          <string notr="true">background-color: #7EE868;
 border-top-width: 6px;
 border-color: #4F8A70;
-border-bottom-style: outset;
 border-top-style: inset;</string>
         </property>
         <property name="frameShape">

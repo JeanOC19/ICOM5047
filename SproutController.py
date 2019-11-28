@@ -84,6 +84,7 @@ class SproutController (QThread):
                 self.sprout_ui.error_message = "Unable to create new intermediate path folder."
                 self.sprout_ui.progressBar.setValue(2)
                 return
+        self.sprout_ui.save_window_ui.lineEdit_filePath.setText(os.getcwd())
 
         print("Current Working Directory:")
         print(" " + os.getcwd())
@@ -104,6 +105,8 @@ class SproutController (QThread):
                 self.sprout_ui.progressBar.setValue(2)
                 return
             self.update_progress_bar()
+        else:
+            step_enhanced_image = None;
 
         if self.isInterruptionRequested():
             return
@@ -136,7 +139,6 @@ class SproutController (QThread):
             self.sprout_ui.progressBar.setValue(2)
             return
         self.update_progress_bar()
-        # self.sprout_ui.progressBar.setValue(66)
 
         if self.isInterruptionRequested():
             return
@@ -151,7 +153,6 @@ class SproutController (QThread):
             self.sprout_ui.progressBar.setValue(2)
             return
         self.update_progress_bar()
-        # self.sprout_ui.progressBar.setValue(99)
 
         print("\n * Sprout Controller: Finished Successfully * ")
         print("      Total time: " + str(time.time() - time_start) + " sec")

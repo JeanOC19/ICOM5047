@@ -55,7 +55,8 @@
  and rings graphs.</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-width: 0px;</string>
+     <string notr="true">border-width: 0px;
+font: 9pt;</string>
     </property>
     <property name="text">
      <string>Graphs</string>
@@ -67,9 +68,9 @@
    <widget class="QPushButton" name="browse_button_3">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>325</x>
       <y>103</y>
-      <width>90</width>
+      <width>95</width>
       <height>30</height>
      </rect>
     </property>
@@ -81,7 +82,7 @@
 border: 2px solid #444444;
 border-radius: 8px;
 color:white;
-font: bold;</string>
+font: bold 9pt;</string>
     </property>
     <property name="text">
      <string>Browse ...</string>
@@ -126,7 +127,8 @@ characters: &lt;, &gt;, :, /, , |, ?, *, &quot;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-width: 0px;</string>
+     <string notr="true">border-width: 0px;
+font: 9pt;</string>
     </property>
     <property name="text">
      <string>File Name: </string>
@@ -149,7 +151,7 @@ characters: &lt;, &gt;, :, /, , |, ?, *, &quot;</string>
 border: 2px solid #444444;
 border-radius: 8px;
 color:white;
-font: bold;</string>
+font: bold 9pt;</string>
     </property>
     <property name="text">
      <string>Cancel</string>
@@ -172,7 +174,7 @@ font: bold;</string>
 border: 2px solid #444444;
 border-radius: 8px;
 color:white;
-font: bold;</string>
+font: bold 9pt;</string>
     </property>
     <property name="text">
      <string>Save</string>
@@ -192,7 +194,8 @@ font: bold;</string>
  and measurement data.</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-width: 0px;</string>
+     <string notr="true">border-width: 0px;
+font: 9pt;</string>
     </property>
     <property name="text">
      <string>Data</string>
@@ -209,7 +212,7 @@ font: bold;</string>
      <rect>
       <x>120</x>
       <y>107</y>
-      <width>200</width>
+      <width>195</width>
       <height>22</height>
      </rect>
     </property>
@@ -218,7 +221,9 @@ font: bold;</string>
  to save the data.</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color:white;</string>
+     <string notr="true">background-color: #efefef;
+border: 1px solid #999999;
+color: #555555;</string>
     </property>
     <property name="text">
      <string/>
@@ -237,7 +242,8 @@ font: bold;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-width: 0px;</string>
+     <string notr="true">border-width: 0px;
+font: 9pt;</string>
     </property>
     <property name="text">
      <string>File Path: </string>
@@ -251,6 +257,21 @@ font: bold;</string>
       <width>460</width>
       <height>230</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>460</width>
+      <height>230</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>460</width>
+      <height>230</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-top: 6px solid #4F8A70;</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
@@ -269,19 +290,6 @@ font: bold;</string>
    <zorder>lineEdit_fileName</zorder>
    <zorder>label_filePath</zorder>
    <zorder>lineEdit_filePath</zorder>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>460</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="cursor">
-    <cursorShape>ArrowCursor</cursorShape>
-   </property>
   </widget>
  </widget>
  <resources/>
