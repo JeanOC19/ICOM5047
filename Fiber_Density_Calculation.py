@@ -81,10 +81,11 @@ def fiber_density_averages(fiber_density):
     fiber_density_with_average = copy.deepcopy(fiber_density)
     number_rings = len(fiber_density)
     number_wedges = len(fiber_density[0])
+
     # Sums the values of every column
     wedge_sum = [sum(x) for x in zip(*fiber_density)]
-
     wedge_averages = []
+
     # Calculates the average of each wedge
     for wedge in wedge_sum:
         average = wedge / number_rings

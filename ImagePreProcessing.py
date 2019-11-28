@@ -11,20 +11,19 @@ outer_units = ""
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
                       enhanced_image: object = None, t: object = None):
     """
-    Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters, centroid coordinates, and moment of inertia with respect to the x and y axes
-    :param t: Qt thread
-    :param num_of_measurements: number of measurements to use for determining average inner and outer diameters
-    :param image_dpi: DPI of the input image
-    :param units: units used for displaying measurements (cm, in, or mm)
-    :param image_path: path of the input image to be used
-    :param enhanced_image: data of the input image (for when image enhancement is used)
-    :return: bounded input image and bounded binarized input image
+    Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters,
+    centroid coordinates, and moment of inertia with respect to the x and y axes :param t: Qt thread :param
+    num_of_measurements: number of measurements to use for determining average inner and outer diameters :param
+    image_dpi: DPI of the input image :param units: units used for displaying measurements (cm, in, or mm) :param
+    image_path: path of the input image to be used :param enhanced_image: data of the input image (for when image
+    enhancement is used) :return: bounded input image and bounded binarized input image
     """
 
-    def binarize_image(source_image: object, blur_intensity: int, save_images = False, kernel_type = 0) -> object:
+    def binarize_image(source_image: object, blur_intensity: int, save_images=False, kernel_type=0) -> object:
         """
         Converts the input image into a binary image
-        :param save_images:
+        :param kernel_type: type of kernel for Gaussian Blur
+        :param save_images: bolean value that determines if images will be saved or not
         :param blur_intensity: size of the kernel for blurring the image
         :param source_image: image to be binarized
         :return: binarized image data
@@ -46,6 +45,11 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         return gray_image
 
     def find_largest_contours(contour_list: list) -> object:
+        '''
+        Finds the two largest contours of the image, these are those of the inner and outer bamboo ring
+        :param contour_list:  list containing all of the contours of an input image
+        :return: tuple containing the index of the largest and second largest contours
+        '''
 
         largest_area = 0
         largest_contour = 100
@@ -97,7 +101,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         """
         return lambda z: z / image_dpi * units_multiplier
 
-    def image_contours(binary_source_image: object):
+    def image_contours(binary_source_image: object, t: object):
         """
         Find the contours of the bamboo, bound the image and make all dimensional measurements
         :param binary_source_image: binarized input image
@@ -111,6 +115,9 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Find contours of the image and select those belonging to the bamboo
         contours, hierarchy = cv.findContours(eroded, cv.RETR_CCOMP, cv.CHAIN_APPROX_NONE)
         largest_contour_index, second_largest_index = find_largest_contours(contours)
+
+        # Update the progress bar
+        t.update_re_progress_bar()
 
         # Draw bamboo contours on the image and save the new image
         contoured = img.copy()
@@ -157,6 +164,9 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             x2, y2, w2, h2 = cv.boundingRect(new_contours[second_largest_index])
             inner_diameter_measurements.append(w2)
             inner_diameter_measurements.append(h2)
+
+        # Update the progress bar
+        t.update_re_progress_bar()
 
         # Convert the radial measurements to user input units
         outer_diameter_measurements = list(map(unit_converter(), outer_diameter_measurements))
@@ -237,15 +247,22 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     # Binarize the input image
     try:
         binarized_image = binarize_image(img, 5, True)
+
+        # Update the progress bar
+        t.update_re_progress_bar()
     except:
         raise Exception("Unable to binarize input image.")
 
     try:
         # Find contours of the image and make dimensional measurements
-        image, binarized_image, measurements_list, diameters_list = image_contours(binarized_image)
+        image, binarized_image, measurements_list, diameters_list = image_contours(binarized_image, t)
         Data_Management_Module.set_dimensional_measurements(measurements_list)
         Data_Management_Module.set_diameters(diameters_list)
         binarized_image = binarize_image(image.copy(), 0, kernel_type=cv.BORDER_ISOLATED)
+
+        # Update the progress bar
+        t.update_re_progress_bar()
+
     except Exception:
         raise Exception("Unable to calculate dimensional measurements of bamboo")
 

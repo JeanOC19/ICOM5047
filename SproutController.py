@@ -121,7 +121,7 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        self.update_progress_bar()
+        # self.update_progress_bar()
 
         if self.isInterruptionRequested():
             return
@@ -188,11 +188,11 @@ class SproutController (QThread):
         """
         if self.in_data['enhance']:
             self.percent_count += 6
-            if self.percent_count == 74:
+            if self.percent_count == 74 or self.percent_count == 49:
                 self.percent_count += 1
         else:
             self.percent_count += 8
-            if self.percent_count == 65:
+            if self.percent_count == 65 or self.percent_count == 32:
                 self.percent_count += 1
 
         self.sprout_ui.progressBar.setValue(self.percent_count)
