@@ -104,8 +104,6 @@ class SproutController (QThread):
                 self.sprout_ui.progressBar.setValue(2)
                 return
             self.update_progress_bar()
-        else:
-            step_enhanced_image = None;
 
         if self.isInterruptionRequested():
             return
@@ -137,7 +135,8 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Region Extraction:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        self.update_progress_bar()
+        # self.update_progress_bar()
+        # self.sprout_ui.progressBar.setValue(66)
 
         if self.isInterruptionRequested():
             return
@@ -152,6 +151,7 @@ class SproutController (QThread):
             self.sprout_ui.progressBar.setValue(2)
             return
         self.update_progress_bar()
+        # self.sprout_ui.progressBar.setValue(99)
 
         print("\n * Sprout Controller: Finished Successfully * ")
         print("      Total time: " + str(time.time() - time_start) + " sec")
@@ -163,9 +163,9 @@ class SproutController (QThread):
         self.terminate()
         self.__del__()
 
-    def update_progress_bar(self):
+    def update_progress_bar(self, re=False):
         """
-        Update the progress bar by 25% if image enhancement is required other wais update by 33%
+        Update the progress bar by 25% if image enhancement is required otherwise update by 33%
         :return: None
         """
         if self.in_data['enhance']:
@@ -177,6 +177,23 @@ class SproutController (QThread):
 
         if self.percent_count >= 100:
             self.percent_count = 99
+
+        self.sprout_ui.progressBar.setValue(self.percent_count)
+        return
+
+    def update_re_progress_bar(self):
+        """
+
+        :return: None
+        """
+        if self.in_data['enhance']:
+            self.percent_count += 6
+            if self.percent_count == 74:
+                self.percent_count += 1
+        else:
+            self.percent_count += 8
+            if self.percent_count == 65:
+                self.percent_count += 1
 
         self.sprout_ui.progressBar.setValue(self.percent_count)
         return

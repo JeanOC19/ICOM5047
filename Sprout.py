@@ -104,7 +104,8 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         temp = str(os.path.expanduser("~"))
-        split = temp.split("\\")
+        # split = temp.split("\\")
+        split = temp.split(os.path.sep)
         temp = str(split[0] + "/" + split[1] + "/" + split[2] + "/" + "Documents/Sprout/Run")
         in_data['intermediate_path'] = temp
 

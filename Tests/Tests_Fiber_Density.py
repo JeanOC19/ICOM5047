@@ -1,7 +1,8 @@
 import unittest
-import time
-import Fiber_Density_Calculation
-import Region_Extraction
+import Fiber_Density_Calculation as Fdc
+import Region_Extraction as Re
+import os
+import cv2
 
 
 class TestFiberDensity(unittest.TestCase):
@@ -10,44 +11,51 @@ class TestFiberDensity(unittest.TestCase):
         """
         Test that invalid number of wedges and rings throw an exception
         """
-        self.assertRaises(Exception, Fiber_Density_Calculation.fiber_density_calculation, 2, 11)
-        self.assertRaises(Exception, Fiber_Density_Calculation.fiber_density_calculation, 3, 0)
-        self.assertRaises(Exception, Fiber_Density_Calculation.fiber_density_calculation, 0, 12)
-        self.assertRaises(Exception, Fiber_Density_Calculation.fiber_density_calculation, 26, 401)
-        self.assertRaises(Exception, Fiber_Density_Calculation.fiber_density_calculation, 3, 500)
-        self.assertRaises(Exception, Fiber_Density_Calculation.fiber_density_calculation, 500, 12)
+        self.assertRaises(Exception, Fdc.fiber_density_calculation, 2, 11)
+        self.assertRaises(Exception, Fdc.fiber_density_calculation, 3, 0)
+        self.assertRaises(Exception, Fdc.fiber_density_calculation, 0, 12)
+        self.assertRaises(Exception, Fdc.fiber_density_calculation, 26, 401)
+        self.assertRaises(Exception, Fdc.fiber_density_calculation, 3, 500)
+        self.assertRaises(Exception, Fdc.fiber_density_calculation, 500, 12)
 
-    # def test_fiber_density_accuracy_rings(self):
-    #     """
-    #     Test that the average fiber density of rings is below 3.5% error
-    #     """
-    #     matlab_fiber_density = [[0.443516, 0.435262, 0.447433, 0.453988, 0.430503, 0.451662, 0.449479, 0.449918,
-    #                              0.429762, 0.393449, 0.401225, 0.429967],
-    #                             [0.551969, 0.569961, 0.549261, 0.529712, 0.563685, 0.567644, 0.590936, 0.521671,
-    #                              0.548483, 0.542541, 0.553700, 0.548965],
-    #                             [0.712373, 0.725422, 0.699161, 0.675843, 0.688871, 0.694169, 0.725839, 0.685522,
-    #                              0.706593, 0.715743, 0.714168, 0.703361]]
-    #
-    #     user_rings = 3
-    #     number_wedges = 12
-    #     dictionary = Region_Extraction.region_extraction_module(number_wedges, user_rings)
-    #     start_time = time.time()
-    #     fiber_density_sprout = Fiber_Density_Calculation.fiber_density_calculation(user_rings, number_wedges, dictionary)
-    #     print("Fiber Density Calculation Runtime: %s seconds ---" % (time.time() - start_time))
-    #
-    #     fd_with_average = Fiber_Density_Calculation.fiber_density_averages(fiber_density_sprout)
-    #     fd_matlab_average = Fiber_Density_Calculation.fiber_density_averages(matlab_fiber_density)
-    #
-    #     for i in range(user_rings):
-    #         exact = fd_matlab_average[i][number_wedges]
-    #         approx = fd_with_average[i][number_wedges]
-    #         percentage_error = (abs(exact - approx) / exact) * 100
-    #         print('Ring ' + str(i + 1) + ', Exact value: ' + str(exact) + ', Approximate value: ' + str(approx) +
-    #               ', Percentage of error: ' + str(percentage_error))
-    #         # self.assertTrue(percentage_error <= 3.5,
-    #         #                 "Error Percentage " + str(percentage_error) +
-    #         #                 " is larger than 3.5 in: [" + str(i) + "][" + str(number_wedges - 1) + "]")
-    #     print('-------------------------------------')
+    def test_fiber_density_accuracy_rings(self):
+        """
+        Test that the average fiber density of rings is below 3.5% error
+        """
+        matlab_fiber_density = [[0.443516, 0.435262, 0.447433, 0.453988, 0.430503, 0.451662, 0.449479, 0.449918,
+                                 0.429762, 0.393449, 0.401225, 0.429967],
+                                [0.551969, 0.569961, 0.549261, 0.529712, 0.563685, 0.567644, 0.590936, 0.521671,
+                                 0.548483, 0.542541, 0.553700, 0.548965],
+                                [0.712373, 0.725422, 0.699161, 0.675843, 0.688871, 0.694169, 0.725839, 0.685522,
+                                 0.706593, 0.715743, 0.714168, 0.703361]]
+
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'control_rgb.jpg'))
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
+        bin_image = Re.binarize_image(bw_image)
+        number_wedges = 12
+        number_rings = 3
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
+        os.chdir(int_path)
+
+        # Run Region Extraction Module
+        dictionary = Re.region_extraction(rgb_image, bin_image, number_wedges, number_rings)
+
+        # Run Fiber Density Calculation Module
+        fiber_density_sprout = Fdc.fiber_density_calculation(number_rings, number_wedges, dictionary)
+        fd_with_average = Fdc.fiber_density_averages(fiber_density_sprout)
+        fd_matlab_average = Fdc.fiber_density_averages(matlab_fiber_density)
+        print()
+        for i in range(number_rings):
+            exact = fd_matlab_average[i][number_wedges]
+            approx = fd_with_average[i][number_wedges]
+            percentage_error = (abs(exact - approx) / exact) * 100
+            print('Ring ' + str(i + 1) + ', Exact value: ' + str(exact) + ', Approximate value: ' + str(approx) +
+                  ', Percentage of error: ' + str(percentage_error))
+            # self.assertTrue(percentage_error <= 3.5,
+            #                 "Error Percentage " + str(percentage_error) +
+            #                 " is larger than 3.5 in: [" + str(i) + "][" + str(number_wedges - 1) + "]")
+        print('-------------------------------------')
 
     def test_fiber_density_accuracy_wedges(self):
         """
@@ -60,22 +68,32 @@ class TestFiberDensity(unittest.TestCase):
                                 [0.712373, 0.725422, 0.699161, 0.675843, 0.688871, 0.694169, 0.725839, 0.685522,
                                  0.706593, 0.715743, 0.714168, 0.703361]]
 
-        user_rings = 3
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'control_rgb.jpg'))
+        bw_image = cv2.imread(os.path.join(image_path, 'control.png'))
+        bin_image = Re.binarize_image(bw_image)
         number_wedges = 12
-        dictionary = Region_Extraction.region_extraction_module(number_wedges, user_rings)
-        fiber_density_sprout = Fiber_Density_Calculation.fiber_density_calculation(user_rings, number_wedges, dictionary)
-        fd_with_average = Fiber_Density_Calculation.fiber_density_averages(fiber_density_sprout)
-        fd_matlab_average = Fiber_Density_Calculation.fiber_density_averages(matlab_fiber_density)
+        number_rings = 3
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
+        os.chdir(int_path)
 
+        # Run Region Extraction Module
+        dictionary = Re.region_extraction(rgb_image, bin_image, number_wedges, number_rings)
+
+        # Run Fiber Density Calculation Module
+        fiber_density_sprout = Fdc.fiber_density_calculation(number_rings, number_wedges, dictionary)
+        fd_with_average = Fdc.fiber_density_averages(fiber_density_sprout)
+        fd_matlab_average = Fdc.fiber_density_averages(matlab_fiber_density)
+        print()
         for j in range(number_wedges):
-            exact = fd_matlab_average[user_rings][j]
-            approx = fd_with_average[user_rings][j]
+            exact = fd_matlab_average[number_rings][j]
+            approx = fd_with_average[number_rings][j]
             percentage_error = (abs(exact - approx) / exact) * 100
             print('Wedge ' + str(j + 1) + ', Exact value: ' + str(exact) + ', Approximate value: ' + str(approx) +
                   ', Percentage of error: ' + str(percentage_error))
             # self.assertTrue(percentage_error <= 3.5,
             #                 "Error Percentage " + str(percentage_error) +
-            #                 " is larger than 3.5 in: [" + str(user_rings) + "][" + str(j) + "]")
+            #                 " is larger than 3.5 in: [" + str(number_rings) + "][" + str(j) + "]")
 
     def test_correct_average_calculation_rings(self):
         """
@@ -89,7 +107,7 @@ class TestFiberDensity(unittest.TestCase):
                                 [0.712373, 0.725422, 0.699161, 0.675843, 0.688871, 0.694169, 0.725839, 0.685522,
                                  0.706593, 0.715743, 0.714168, 0.703361]]
 
-        fiber_density_with_average = Fiber_Density_Calculation.fiber_density_averages(matlab_fiber_density)
+        fiber_density_with_average = Fdc.fiber_density_averages(matlab_fiber_density)
 
         ring_average1 = (0.443516 + 0.435262 + 0.447433 + 0.453988 + 0.430503 + 0.451662 + 0.449479 + 0.449918 +
                          0.429762 + 0.393449 + 0.401225 + 0.429967) / 12

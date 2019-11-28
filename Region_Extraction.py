@@ -216,7 +216,7 @@ def extract_rectangle(img, img_mask):
     # With coordinates of rectangle obtain the rectangle from the wedge.
     img = img[y + int(area_y * 0.1): h - int(area_y * 0), x + int(area_x * 0.075): w - int(area_x * 0)]
 
-    # Binarize iamge
+    # Binarize image
     img = binarize_image(img)
 
     # Rotate image 90 degrees and return
@@ -456,11 +456,17 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
             wedge = rotate_cuadrant(image, int(current_angle % 90))
             filled_wedge = rotate_cuadrant(filled_image, int(current_angle % 90))
 
-            # Extract wedge and the wedge's mask from the rotated image
-            wedge, filled_wedge = extract_wedge(wedge, filled_wedge, wedge_angle)
+            try:
+                # Extract wedge and the wedge's mask from the rotated image
+                wedge, filled_wedge = extract_wedge(wedge, filled_wedge, wedge_angle)
+            except Exception:
+                raise Exception("Unable to extract wedge from image.")
 
-            # Extract the largest inscribed rectangle from wedge.
-            wedge = extract_rectangle(wedge, filled_wedge)
+            try:
+                # Extract the largest inscribed rectangle from wedge.
+                wedge = extract_rectangle(wedge, filled_wedge)
+            except Exception:
+                raise Exception("Unable to extract largest inscribed rectangle from image.")
 
             # Extract regions from the extracted rectangle
             regions_path = extract_regions(wedge, number_rings, wedge_number)
@@ -470,6 +476,9 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
 
             # Increment the wedge number
             wedge_number = wedge_number + 1
+
+        # Update Progress
+        t.update_re_progress_bar()
 
     # Print path where regions are stored
     print("Stored Regions at: " + regions_path)

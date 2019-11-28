@@ -75,8 +75,8 @@ def image_enhancement(image_path: str):
     assert type(image_path) is not None, "Image path cannot be none"
     assert type(image_path) is str, "Image path input must be a string"
     assert os.path.exists(image_path), "Input image not found"
+    assert image_path[-4:] in ('.bmp', '.jpg', 'jpeg', '.tif'), "Image format is not supported."
 
-    image = None
     # Load image
     try:
         image = cv2.imread(image_path)

@@ -71,10 +71,12 @@ class MyTestCase(unittest.TestCase):
         img_path2 = None
         image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
         img_path3 = cv2.imread(os.path.join(image_path, 'non_existing_photo.jpg'))
+        img_path4 = 'image.pdf'
 
         self.assertRaises(AssertionError, ie.image_enhancement, img_path1)
         self.assertRaises(AssertionError, ie.image_enhancement, img_path2)
         self.assertRaises(AssertionError, ie.image_enhancement, img_path3)
+        self.assertRaises(AssertionError, ie.image_enhancement, img_path4)
 
     def test_image_storage(self):
         print("Testing image storage")
