@@ -221,9 +221,16 @@ font: 9pt;</string>
  to save the data.</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #efefef;
-border: 1px solid #999999;
-color: #555555;</string>
+     <string notr="true">QWidget{
+	background-color: #efefef;
+	border: 1px solid #999999;
+	color: #555555;
+}
+
+QToolTip{
+	background-color:white;
+	border: 1px solid #555555;
+}</string>
     </property>
     <property name="text">
      <string/>

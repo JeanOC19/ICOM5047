@@ -154,7 +154,7 @@ QTabBar::tab:selected {
 </string>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="elideMode">
             <enum>Qt::ElideNone</enum>
@@ -569,10 +569,12 @@ QWidget{
  the fiber density of a bamboo cross-section.</string>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: #efefef;
-border: 1px solid #999999;
-color: #555555;
-font: 8pt;</string>
+                   <string notr="true">QWidget{
+	background-color: #efefef;
+	border: 1px solid #999999;
+	color: #555555;
+	font: 8pt;
+}</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -655,7 +657,7 @@ QWidget:toolTip{
                    </property>
                    <property name="toolTip">
                     <string>Start the fiber density
- calculation proces.</string>
+ calculation process.</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
@@ -894,8 +896,8 @@ QWidget:toolTip{
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="toolTip">
-                    <string>Start the fiber density
- calculation proces.</string>
+                    <string>Stop the fiber density
+ calculation process.</string>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton{
@@ -1205,10 +1207,12 @@ font: 9pt;</string>
  steps will be save.</string>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background-color: #efefef;
-border: 1px solid #999999;
-color: #555555;
-font: 8pt;</string>
+                   <string notr="true">QWidget{
+	background-color: #efefef;
+	border: 1px solid #999999;
+	color: #555555;
+	font: 8pt;
+}</string>
                   </property>
                   <property name="text">
                    <string/>

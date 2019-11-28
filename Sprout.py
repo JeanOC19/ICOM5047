@@ -56,6 +56,8 @@ class SproutUI(QtWidgets.QMainWindow):
 
         self.error_message = ""
 
+        self.loading_image = QPixmap("./Images/LoadingImage")
+
     def ui(self):
         """
         Sets Sprout user interface and displays the user interface
@@ -116,8 +118,8 @@ class SproutUI(QtWidgets.QMainWindow):
 
         if url[0] is not '':
             try:
-                cross_section = QPixmap("./Images/LoadingImage")
-                self.label_bamboo.setPixmap(cross_section)
+                # cross_section = QPixmap("./Images/LoadingImage")
+                self.label_bamboo.setPixmap(self.loading_image)
                 self.label_bamboo.repaint()
             except Exception:
                 self.warning_message_box("Missing loading image. ")
@@ -253,6 +255,9 @@ class SproutUI(QtWidgets.QMainWindow):
         if not self.is_int_inbound(self.lineEdit_imageDPI.text(), 1200, 4800, self.label_imageDPI.text()):
             return
 
+        # After all inputs have been validated
+        self.disable_dashboard()
+
         # Save input data in in_data dictionary
         in_data['units'] = self.comboBox_units.currentText()
         in_data['num_measurement'] = int(self.lineEdit_numMeasurements.text())*4
@@ -286,7 +291,6 @@ class SproutUI(QtWidgets.QMainWindow):
         global debounce
         # if program is currently in progress
 
-        self.disable_dashboard()
         self.stop_button.setEnabled(False)
         self.stop_button.repaint()
 
@@ -562,6 +566,7 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         self.windowModality()
+        self.save_window_ui.lineEdit_filePath.setText(os.getcwd())
         self.save_window_ui.show()
         self.save_window_ui.raise_()
 

@@ -84,7 +84,6 @@ class SproutController (QThread):
                 self.sprout_ui.error_message = "Unable to create new intermediate path folder."
                 self.sprout_ui.progressBar.setValue(2)
                 return
-        self.sprout_ui.save_window_ui.lineEdit_filePath.setText(os.getcwd())
 
         print("Current Working Directory:")
         print(" " + os.getcwd())
