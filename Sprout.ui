@@ -154,7 +154,7 @@ QTabBar::tab:selected {
 </string>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="elideMode">
             <enum>Qt::ElideNone</enum>
@@ -1928,7 +1928,7 @@ QTabBar::tab:selected {
 </string>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="graphs_tab">
                 <property name="enabled">
@@ -2895,7 +2895,12 @@ QScrollBar:vertical{
                 <item>
                  <widget class="QTextEdit" name="textEdit_2">
                   <property name="styleSheet">
-                   <string notr="true">border-right:4px solid #4F8A70</string>
+                   <string notr="true">QTextEdit{
+	border-right:4px solid #4F8A70;
+}
+QTextEdit:QText{
+	margin-rignt: 20px;
+}</string>
                   </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>

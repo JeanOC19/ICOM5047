@@ -138,7 +138,7 @@ class SproutController (QThread):
 
         # Run Region Extraction Module
         try:
-            dictionary = Region_Extraction.region_extraction(step_bounded_input_image, bounded_binarized_input_image,
+            region_dictionary = Region_Extraction.region_extraction(step_bounded_input_image, bounded_binarized_input_image,
                                                              self.in_data['num_wedges'], self.in_data['num_rings'],
                                                              self)
         except Exception as e:
@@ -154,7 +154,7 @@ class SproutController (QThread):
         try:
             Fiber_Density_Calculation.fiber_density_and_distribution(self.in_data['num_rings'],
                                                                      self.in_data['num_wedges'],
-                                                                     dictionary)
+                                                                     region_dictionary)
         except Exception as e:
             self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
