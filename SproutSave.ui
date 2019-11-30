@@ -137,7 +137,7 @@ font: 9pt;</string>
    <widget class="QPushButton" name="cancel_button">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>250</x>
       <y>150</y>
       <width>100</width>
       <height>30</height>
@@ -160,7 +160,7 @@ font: bold 9pt;</string>
    <widget class="QPushButton" name="save_button">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>110</x>
       <y>150</y>
       <width>100</width>
       <height>30</height>
