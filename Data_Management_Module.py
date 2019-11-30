@@ -21,7 +21,6 @@ def get_fiber_density():
     Getter or the fiber density list (without averages)
     :return: two dimensional list that contains the fiber density of each region.
     """
-    # Todo why no average?
     return Global_Module.global_fiber_density
 
 

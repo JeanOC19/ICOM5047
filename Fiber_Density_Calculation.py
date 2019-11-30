@@ -107,7 +107,7 @@ def fiber_density_and_distribution(number_rings, number_wedges, dictionary):
     list, with the averages, and send them to the Data Management Module.
     :param number_rings: the number of rings, specified by the user, for the sample cross-section analysis.
     :param number_wedges: the number of wedges, specified by the user, for the sample cross-section analysis.
-    :param dictionary: dictionary containing raw image data TODO: isra revisa
+    :param dictionary: dictionary containing raw image data
     :return: None
     """
     fiber_density_list = fiber_density_calculation(number_rings, number_wedges, dictionary)
