@@ -116,8 +116,12 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         contours, hierarchy = cv.findContours(eroded, cv.RETR_CCOMP, cv.CHAIN_APPROX_NONE)
         largest_contour_index, second_largest_index = find_largest_contours(contours)
 
+        # Check if has an interrupt request (Stop Button Interrupt)
+        if t is not None and t.isInterruptionRequested():
+            return
+
         # Update the progress bar
-        t.update_re_progress_bar()
+        t.update_module_progress(t.p_img_pre_processing, 25)
 
         # Draw bamboo contours on the image and save the new image
         contoured = img.copy()
@@ -165,8 +169,12 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             inner_diameter_measurements.append(w2)
             inner_diameter_measurements.append(h2)
 
+        # Check if has an interrupt request (Stop Button Interrupt)
+        if t is not None and t.isInterruptionRequested():
+            return
+
         # Update the progress bar
-        t.update_re_progress_bar()
+        t.update_module_progress(t.p_img_pre_processing, 25)
 
         # Convert the radial measurements to user input units
         outer_diameter_measurements = list(map(unit_converter(), outer_diameter_measurements))
@@ -241,6 +249,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             raise Exception("Unable to open input image")
     else:
         img = enhanced_image
+
+    # Check if has an interrupt request (Stop Button Interrupt)
     if t is not None and t.isInterruptionRequested():
         return
 
@@ -249,9 +259,13 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         binarized_image = binarize_image(img, 5, True)
 
         # Update the progress bar
-        t.update_re_progress_bar()
+        t.update_module_progress(t.p_img_pre_processing, 25)
     except:
         raise Exception("Unable to binarize input image.")
+
+    # Check if has an interrupt request (Stop Button Interrupt)
+    if t is not None and t.isInterruptionRequested():
+        return
 
     try:
         # Find contours of the image and make dimensional measurements
@@ -261,7 +275,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         binarized_image = binarize_image(image.copy(), 0, kernel_type=cv.BORDER_ISOLATED)
 
         # Update the progress bar
-        t.update_re_progress_bar()
+        t.update_module_progress(t.p_img_pre_processing, 25)
 
     except Exception:
         raise Exception("Unable to calculate dimensional measurements of bamboo")

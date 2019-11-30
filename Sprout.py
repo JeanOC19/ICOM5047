@@ -119,7 +119,6 @@ class SproutUI(QtWidgets.QMainWindow):
 
         if url[0] is not '':
             try:
-                # cross_section = QPixmap("./Images/LoadingImage")
                 self.label_bamboo.setPixmap(self.loading_image)
                 self.label_bamboo.repaint()
             except Exception:
@@ -128,14 +127,15 @@ class SproutUI(QtWidgets.QMainWindow):
             try:
                 cross_section = QPixmap(url[0])
                 cross_section = cross_section.scaled(500, 500)
-
                 if cross_section.isNull():
+                    self.label_bamboo.clear()
                     self.warning_message_box("Unable to open input file.  \n\n")
                 else:
                     self.label_bamboo.setPixmap(cross_section)
                     self.lineEdit_imagePath.setText(url[0])
                     in_data['img_path'] = url[0]
             except Exception as e:
+                self.label_bamboo.clear()
                 self.warning_message_box("Unable to open input file, verify  \n file path or image file type.\n\n")
 
     def browse_folder(self):
@@ -425,7 +425,6 @@ class SproutUI(QtWidgets.QMainWindow):
 
         if in_data['num_rings'] == 1:
             self.comboBox_rings.hide()
-            self.wedge_chart.series()[1].hide()
         else:
             self.comboBox_rings.show()
         self.comboBox_wedges.show()

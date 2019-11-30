@@ -28,7 +28,13 @@ class SproutController (QThread):
         QThread.__init__(self)
         self.sprout_ui = ui
         self.in_data = in_data
+
+        # progress bar and module percent weight
         self.percent_count = 0
+        self.p_img_enhancement_percent = 10
+        self.p_img_pre_processing = (43, 48)
+        self.p_region_extraction = (43, 48)
+        self.p_fiber_density_and_distribution = 4
 
     def __del__(self):
         self.wait()
@@ -92,6 +98,7 @@ class SproutController (QThread):
         num_rings = self.in_data['num_rings']
         num_wedges = self.in_data['num_wedges']
 
+        # Check if has an interrupt request (Stop Button Interrupt)
         if self.isInterruptionRequested():
             return
 
@@ -103,8 +110,11 @@ class SproutController (QThread):
                 self.sprout_ui.error_message = "Error in Image Enhancement:\n " + str(e)
                 self.sprout_ui.progressBar.setValue(2)
                 return
-            self.update_progress_bar()
+            self.update_progress_bar(self.p_img_enhancement_percent)
+        else:
+            step_enhanced_image = None
 
+        # Check if has an interrupt request (Stop Button Interrupt)
         if self.isInterruptionRequested():
             return
 
@@ -121,8 +131,8 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        # self.update_progress_bar()
 
+        # Check if has an interrupt request (Stop Button Interrupt)
         if self.isInterruptionRequested():
             return
 
@@ -135,9 +145,8 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Region Extraction:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        # self.update_progress_bar()
-        # self.sprout_ui.progressBar.setValue(66)
 
+        # Check if has an interrupt request (Stop Button Interrupt)
         if self.isInterruptionRequested():
             return
 
@@ -150,50 +159,38 @@ class SproutController (QThread):
             self.sprout_ui.error_message = "Error in Fiber Density and Distribution:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)
             return
-        self.update_progress_bar()
-        # self.sprout_ui.progressBar.setValue(99)
+        self.update_progress_bar(self.p_fiber_density_and_distribution)
 
         print("\n * Sprout Controller: Finished Successfully * ")
         print("      Total time: " + str(time.time() - time_start) + " sec")
         print("        Equal to: " + str((time.time() - time_start)/60) + " min")
         return
 
-    def clear_mem(self):
-        gc.collect()
-        self.terminate()
-        self.__del__()
-
-    def update_progress_bar(self, re=False):
+    def update_progress_bar(self, percent: int):
         """
-        Update the progress bar by 25% if image enhancement is required otherwise update by 33%
+        Update the progress bar by indicated percent.
+        :param percent: indicated percent to increase
         :return: None
         """
-        if self.in_data['enhance']:
-            self.percent_count += 25
-        else:
-            self.percent_count += 33
-            if self.percent_count == 99:
-                self.percent_count += 1
-
-        if self.percent_count >= 100:
+        self.percent_count += percent
+        if self.percent_count > 99:
             self.percent_count = 99
 
         self.sprout_ui.progressBar.setValue(self.percent_count)
         return
 
-    def update_re_progress_bar(self):
+    def update_module_progress(self, weight, internal_percent_completed: int):
         """
-
+        Updates the progress bar by a given percent for the calling module. Calling module must indicate it's
+        corresponding default weight (defined in thread initialization).
+        :param weight: default percent weight of the module calling the function
+        :param internal_percent_completed: percent of completion of the module that is calling the function
         :return: None
         """
         if self.in_data['enhance']:
-            self.percent_count += 6
-            if self.percent_count == 74 or self.percent_count == 49:
-                self.percent_count += 1
+            self.percent_count += weight[0] * internal_percent_completed/100
         else:
-            self.percent_count += 8
-            if self.percent_count == 65 or self.percent_count == 32:
-                self.percent_count += 1
+            self.percent_count += weight[1] * internal_percent_completed/100
 
         self.sprout_ui.progressBar.setValue(self.percent_count)
         return

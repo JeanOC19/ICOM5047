@@ -448,7 +448,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
 
         for cuadrant_wedge_num in range(int(number_wedges / 4)):
 
-            # Check if has an interrupt request
+            # Check if has an interrupt request (Stop Button Interrupt)
             if t is not None and t.isInterruptionRequested():
                 return
 
@@ -478,7 +478,7 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
             wedge_number = wedge_number + 1
 
         # Update Progress
-        t.update_re_progress_bar()
+        t.update_module_progress(t.p_region_extraction, 25)
 
     # Print path where regions are stored
     print("Stored Regions at: " + regions_path)
