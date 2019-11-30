@@ -75,7 +75,6 @@ def set_diameters(diameters):
     :return: None
     """
     # Validate that the received list is not empty and has appropriate dimensions
-   # Utils.validate_diameter_list(diameters)
     Global_Module.global_diameters = diameters
 
 
@@ -299,7 +298,7 @@ def save_graph_fiber_vs_rings(name, path):
     if len(x) == 1:
         for columns in wedges:
             for value in columns:
-                #Plot points
+                # Plot points
                 plt.plot(1, value, 'o')
     else:
         # Graph lines, each line represents the fiber densities of the rings across a wedge.
@@ -309,7 +308,7 @@ def save_graph_fiber_vs_rings(name, path):
             # Plot line
             plt.plot(x, y)
 
-    #Show every value in the x axis
+    # Show every value in the x axis
     plt.xticks(x)
     fig = plt.gcf()
     # Increase image size

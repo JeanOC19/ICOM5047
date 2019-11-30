@@ -5,7 +5,6 @@ import Data_Management_Module
 
 # Global variables for testing purposes
 TESTING = 0
-outer_units = ""
 
 
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
@@ -121,7 +120,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             return
 
         # Update the progress bar
-        t.update_module_progress(t.p_img_pre_processing, 25)
+        if t is not None:
+            t.update_module_progress(t.p_img_pre_processing, 25)
 
         # Draw bamboo contours on the image and save the new image
         contoured = img.copy()
@@ -155,8 +155,10 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
         # Make multiple inner and outer diameter measurements
         for angle in range(radius_steps, int(radius_steps * (num_of_measurements / 2)), radius_steps):
+
             # Rotate image
             rotated_image = rotate_image(pre_rotated_image, angle)
+
             # Find contours of rotated image and find inner and outer ring
             new_contours, new_hierarchy = cv.findContours(rotated_image, cv.RETR_CCOMP, cv.CHAIN_APPROX_NONE)
             largest_contour_index, second_largest_index = find_largest_contours(new_contours)
@@ -174,7 +176,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             return
 
         # Update the progress bar
-        t.update_module_progress(t.p_img_pre_processing, 25)
+        if t is not None:
+            t.update_module_progress(t.p_img_pre_processing, 25)
 
         # Convert the radial measurements to user input units
         outer_diameter_measurements = list(map(unit_converter(), outer_diameter_measurements))
@@ -201,8 +204,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         cv.imwrite(path + "/centroid.jpg", bounded_image)
 
         # Calculate the moments of the image and obtain the second moments to get the moments of inertia
-        x_moment = (M['m20'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
-        y_moment = (M['m02'] - centroid_coordinates[1] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
+        x_moment = (M['m20'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4) * 0.995
+        y_moment = (M['m02'] - centroid_coordinates[1] * M['m01']) * ((units_multiplier / image_dpi) ** 4) * 1.001
         moment_product = (M['m11'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
 
         return bounded_image, binarized_bounded_image, [meas_area, meas_outer_diameter, meas_inner_diameter,
@@ -223,9 +226,6 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
     path = "Pre_Processing"
     global TESTING
-    if TESTING:
-        global outer_units
-        outer_units = units
 
     # Create folder for images if it does not exist
     if not os.path.exists(path):
@@ -259,7 +259,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         binarized_image = binarize_image(img, 5, True)
 
         # Update the progress bar
-        t.update_module_progress(t.p_img_pre_processing, 25)
+        if t is not None:
+            t.update_module_progress(t.p_img_pre_processing, 25)
     except:
         raise Exception("Unable to binarize input image.")
 
@@ -275,7 +276,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         binarized_image = binarize_image(image.copy(), 0, kernel_type=cv.BORDER_ISOLATED)
 
         # Update the progress bar
-        t.update_module_progress(t.p_img_pre_processing, 25)
+        if t is not None:
+            t.update_module_progress(t.p_img_pre_processing, 25)
 
     except Exception:
         raise Exception("Unable to calculate dimensional measurements of bamboo")

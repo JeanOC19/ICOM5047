@@ -478,7 +478,8 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
             wedge_number = wedge_number + 1
 
         # Update Progress
-        t.update_module_progress(t.p_region_extraction, 25)
+        if t is not None:
+            t.update_module_progress(t.p_region_extraction, 25)
 
     # Print path where regions are stored
     print("Stored Regions at: " + regions_path)

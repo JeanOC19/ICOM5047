@@ -24,13 +24,13 @@ num_rings = 0
 
 class MyTestCase(unittest.TestCase):
     def test_sample_0(self):
-        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/R_0.0.0.jpg',
+        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/1.11.B2.jpg',
                       'intermediate_path': "Run1",
                       'num_measurement': 12,
-                      'num_wedges': 12,
+                      'num_wedges': 24,
                       'units': 'cm',
                       'num_rings': 3,
-                      'img_dpi': 1200,
+                      'img_dpi': 1800,
                       'enhance': 0
                       }
 
@@ -84,7 +84,7 @@ class MyTestCase(unittest.TestCase):
         self.assertLessEqual(calculate_error(density, 0.4491), 3.5, "Area calculation has more than 3.5% of error")
 
     def test_sample_2(self):
-        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/2400dpi.jpg',
+        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/2400dpi.bmp',
                       'intermediate_path': "Run3",
                       'num_measurement': 12,
                       'num_wedges': 24,
@@ -99,24 +99,24 @@ class MyTestCase(unittest.TestCase):
         density = Data_Management_Module.get_fiber_density_average()[-1][-1]
         print(density)
         measurements = Data_Management_Module.get_dimensional_measurements()
-        self.assertLessEqual(calculate_error(measurements[0], 10.7366), 3.5,
+        self.assertLessEqual(calculate_error(measurements[0], 10.8251), 3.5,
                              "Area calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[1], 6.3156), 3.5, "Outer diam. has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[2], 5.1202), 3.5, "Inner diam. has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[3], 3.1771), 3.5,
+        self.assertLessEqual(calculate_error(measurements[1], 6.3167), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 5.1197), 3.5, "Inner diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[3], 3.1742), 3.5,
                              "Centroid X axis has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[4], 3.1654), 3.5,
+        self.assertLessEqual(calculate_error(measurements[4], 3.1610), 3.5,
                              "Centroid Y axis has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[5], 27.5068), 3.5,
+        self.assertLessEqual(calculate_error(measurements[5], 29.3268), 3.5,
                              "X-axis moment calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[6], 29.5814), 3.5,
+        self.assertLessEqual(calculate_error(measurements[6], 31.7996), 3.5,
                              "Y-axis moment calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[7], 0.5871), 3.5,
+        self.assertLessEqual(calculate_error(measurements[7], 0.63259), 3.5,
                              "Product of inertia calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(density, 0.53688), 3.5, "Area calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(density, 0.52648), 3.5, "Area calculation has more than 3.5% of error")
 
     def test_sample_3(self):
-        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/4800dpi.jpg',
+        parameters = {'img_path': 'C:/Users/jeano/PycharmProjects/ICOM5047/Images/Sample2.tif',
                       'intermediate_path': "Run4",
                       'num_measurement': 12,
                       'num_wedges': 24,
@@ -131,22 +131,54 @@ class MyTestCase(unittest.TestCase):
         density = Data_Management_Module.get_fiber_density_average()[-1][-1]
         print(density)
         measurements = Data_Management_Module.get_dimensional_measurements()
-        self.assertLessEqual(calculate_error(measurements[0], 10.8041), 3.5,
+        self.assertLessEqual(calculate_error(measurements[0], 10.8029), 3.5,
                              "Area calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[1], 6.3167), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 6.3156), 3.5, "Outer diam. has more than 3.5% of error")
         self.assertLessEqual(calculate_error(measurements[2], 5.1197), 3.5, "Inner diam. has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[3], 3.1689), 3.5,
+        self.assertLessEqual(calculate_error(measurements[3], 3.1696), 3.5,
                              "Centroid X axis has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[4], 3.1572), 3.5,
+        self.assertLessEqual(calculate_error(measurements[4], 3.1571), 3.5,
                              "Centroid Y axis has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[5], 30.7145), 3.5,
+        self.assertLessEqual(calculate_error(measurements[5], 30.6929), 3.5,
                              "X-axis moment calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[6], 33.2111), 3.5,
+        self.assertLessEqual(calculate_error(measurements[6], 33.1669), 3.5,
                              "Y-axis moment calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(measurements[7], 0.6567), 3.5,
+        self.assertLessEqual(calculate_error(measurements[7], 0.64975), 3.5,
                              "Product of inertia calculation has more than 3.5% of error")
-        self.assertLessEqual(calculate_error(density, 0.53688), 3.5, "Area calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(density, 0.52648), 3.5, "Area calculation has more than 3.5% of error")
 
+    def test_sample_4(self):
+        parameters = {'img_path': '../../Images/1200dpi.jpg',
+                      'intermediate_path': "Run5",
+                      'num_measurement': 12,
+                      'num_wedges': 12,
+                      'units': 'cm',
+                      'num_rings': 3,
+                      'img_dpi': 1200,
+                      'enhance': 0
+                      }
+
+        controller = SproutController(parameters)
+        controller.run()
+        density = Data_Management_Module.get_fiber_density_average()[-1][-1]
+        print(density)
+        measurements = Data_Management_Module.get_dimensional_measurements()
+        self.assertLessEqual(calculate_error(measurements[0], 10.7992), 3.5,
+                             "Area calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[1], 6.3140), 3.5, "Outer diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[2], 5.1075), 3.5, "Inner diam. has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[3], 3.1784), 3.5,
+                             "Centroid X axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[4], 3.1662), 3.5,
+                             "Centroid Y axis has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[5], 27.3069), 3.5,
+                             "X-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[6], 29.2833), 3.5,
+                             "Y-axis moment calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(measurements[7], 0.56596), 3.5,
+                             "Product of inertia calculation has more than 3.5% of error")
+        self.assertLessEqual(calculate_error(density, 0.52648), 3.5,
+                             "Fiber density calculation has more than 3.5% of error")
 
 class SproutController ():
     def __init__(self, in_data):
