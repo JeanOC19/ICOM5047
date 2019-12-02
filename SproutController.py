@@ -6,7 +6,7 @@ import Region_Extraction
 import Fiber_Density_Calculation
 import os
 import time
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, pyqtSignal
 
 # sample for time delay of modules
 test_delay = 1
@@ -24,6 +24,8 @@ num_rings = 0
 
 # class SproutController (threading.Thread):
 class SproutController (QThread):
+    progress = pyqtSignal(int, name="update_progress")
+
     def __init__(self, ui, in_data):
         QThread.__init__(self)
         self.sprout_ui = ui
@@ -173,10 +175,7 @@ class SproutController (QThread):
         :return: None
         """
         self.percent_count += percent
-        if self.percent_count > 99:
-            self.percent_count = 99
-
-        self.sprout_ui.progressBar.setValue(self.percent_count)
+        self.progress.emit(self.percent_count)
         return
 
     def update_module_progress(self, weight, internal_percent_completed: int):
@@ -192,5 +191,5 @@ class SproutController (QThread):
         else:
             self.percent_count += weight[1] * internal_percent_completed/100
 
-        self.sprout_ui.progressBar.setValue(self.percent_count)
+        self.progress.emit(self.percent_count)
         return

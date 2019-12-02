@@ -252,8 +252,7 @@ def save_graph_fiber_vs_wedges(name, path):
         plt.xlabel("Wedges")
         # Plot line
         plt.plot(x, y)
-    # Show every value in the x axis
-    plt.xticks(x)
+
     fig = plt.gcf()
     # Increase image size
     fig.set_size_inches(18.5, 10.5)

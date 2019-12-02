@@ -8,6 +8,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtGui import QPixmap, QIcon, QMovie
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt5.QtChart import QChart, QLineSeries, QScatterSeries, QChartView
+from PyQt5.QtCore import pyqtSignal
 
 import SproutController as Sprout
 import Data_Management_Module as DM
@@ -104,7 +105,6 @@ class SproutUI(QtWidgets.QMainWindow):
         :return: None
         """
         temp = str(os.path.expanduser("~"))
-        # split = temp.split("\\")
         split = temp.split(os.path.sep)
         temp = str(split[0] + "/" + split[1] + "/" + split[2] + "/" + "Documents/Sprout/Run")
         in_data['intermediate_path'] = temp
@@ -278,6 +278,7 @@ class SproutUI(QtWidgets.QMainWindow):
         self.myThread = Sprout.SproutController(self, in_data)
         try:
             self.myThread.start()
+            self.myThread.progress.connect(self.progressBar.setValue)
         except:
             self.warning_message_box("Error while starting process.")
 
@@ -299,10 +300,10 @@ class SproutUI(QtWidgets.QMainWindow):
             self.myThread.requestInterruption()
             self.myThread.wait()
 
-        if self.progressBar.value() == 99:
+        if self.progressBar.value() == 100:
             # if finished successfully
 
-            self.progressBar.setValue(100)
+            # self.progressBar.setValue(100)
             self.dashboard_tab.setEnabled(True)
             self.tabWidget_2.setEnabled(True)
             self.graphs_tab.setEnabled(True)
@@ -578,7 +579,7 @@ class SproutUI(QtWidgets.QMainWindow):
         if self.progressBar.value() == 2:
             self.stop_button_func()
             self.warning_message_box(str(self.error_message))
-        elif self.progressBar.value() == 99:
+        elif self.progressBar.value() == 100:
             self.densities = DM.get_fiber_density_average()
             self.measurement_data = DM.get_dimensional_measurements()
             self.stop_button_func()
@@ -673,6 +674,8 @@ def main():
     sys.exit(app.exec_())
 
 
-
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(e)
