@@ -47,7 +47,6 @@ class SproutController (QThread):
         Image Pre-Processing Module, Region Extraction Module, and  Fiber Density and Distribution Module.
         :return: None
         """
-
         global step_enhanced_image, step_bounded_input_image, num_rings, num_wedges, bounded_binarized_input_image
 
         print("--------------------------------------------")
@@ -167,6 +166,7 @@ class SproutController (QThread):
         print("      Total time: " + str(time.time() - time_start) + " sec")
         print("        Equal to: " + str((time.time() - time_start)/60) + " min")
         return
+
 
     def update_progress_bar(self, percent: int):
         """

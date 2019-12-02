@@ -96,13 +96,17 @@ def save_fiber_density_csv(name, path):
     """
     # Validate that the file name given does not contain special characters
     Utils.validate_name(name)
+
     # Validate that the directory path exists
     Utils.validate_path(path)
+
     # Generate full path to store file
     file_path = Utils.get_path('_RegionFiberDensity.csv', name, path)
+
     # Get fiber density list with averages and validate that its dimensions are correct.
     fiber_density_og = get_fiber_density_average()
     Utils.validate_fiber_list_average(fiber_density_og)
+
     # Initialize variables
     fiber_density = copy.deepcopy(fiber_density_og)
     column_titles = []
@@ -111,23 +115,27 @@ def save_fiber_density_csv(name, path):
     counter_rings = 1
     number_columns = len(fiber_density[0])
     number_rows = len(fiber_density)
+
     # Fill column titles
     for i in range(number_columns - 1):
         column = 'W' + str(counter_wedges)
         column_titles.append(column)
         counter_wedges += 1
     column_titles.append('Averages')
+
     # Fill row titles
     for j in range(number_rows - 1):
         row = 'R' + str(counter_rings)
         fiber_density[j].insert(0, row)
         counter_rings += 1
     fiber_density[number_rows - 1].insert(0, 'Averages')
+
     # Create csv and save to local file system
     with open(file_path, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(column_titles)
         writer.writerows(fiber_density)
+
     # Validate that created csv was successfully saved
     Utils.validate_path(file_path)
 
@@ -144,15 +152,20 @@ def save_dimensional_measurements_csv(name, path, units):
     """
     # Validate that the file name given does not contain special characters
     Utils.validate_name(name)
+
     # Validate that the directory path exists
     Utils.validate_path(path)
+
     # Validate that the units received are supported
     Utils.validate_units(units)
+
     # Generate full path to store file
     file_path = Utils.get_path('_AdditionalData.csv', name, path)
+
     # Get dimensional measurements list and validate that its dimensions are correct.
     dimensional_measurements_og = get_dimensional_measurements()
     Utils.validate_dimension_list(dimensional_measurements_og)
+
     # Initialize variables
     area = 'Area ' + '(' + units + '^2' + ')'
     outer_diameter = 'Outer Diameter ' + '(' + units + ')'
@@ -167,10 +180,12 @@ def save_dimensional_measurements_csv(name, path, units):
     for index in range(len(dimensional_measurements_og)):
         temporary = [column_titles[index], dimensional_measurements_og[index]]
         dimension_new.append(temporary)
+
     # Create csv and save to local file system
     with open(file_path, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(dimension_new)
+
     # Validate that created csv was successfully saved
     Utils.validate_path(file_path)
     save_diameter_csv(path, units)
@@ -186,13 +201,17 @@ def save_diameter_csv(path, units):
 
     # Validate that the directory path exists
     Utils.validate_path(path)
+
     # Validate that the units received are supported
     Utils.validate_units(units)
+
     # Generate full path to store file
     file_path = Utils.get_path('.csv', 'Bamboo_Diameters', path)
+
     # Get diameters list and validate that its dimensions are correct.
     diameters_og = get_diameters()
     Utils.validate_diameter_list(diameters_og)
+
     # Initialize variables
     diameters = []
     for index in range(len(diameters_og[0])):
@@ -203,16 +222,19 @@ def save_diameter_csv(path, units):
     column_titles = ['Measurement', outer_diameter, inner_diameter]
     counter_diameter = 1
     number_rows = len(diameters)
+
     # Set row titles
     for j in range(number_rows):
         row = str(counter_diameter)
         diameters[j].insert(0, row)
         counter_diameter += 1
+
     # Create csv and save to local file system
     with open(file_path, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(column_titles)
         writer.writerows(diameters)
+
     # Validate that created csv was successfully saved
     Utils.validate_path(file_path)
 
@@ -226,38 +248,52 @@ def save_graph_fiber_vs_wedges(name, path):
     """
     # Validate that the file name given does not contain special characters
     Utils.validate_name(name)
+
     # Validate that the directory path exists
     Utils.validate_path(path)
+
     # Generate full path to store image
     graph_path = Utils.get_path('_RingGraph.jpg', name, path)
+
     # Get fiber density list (without averages) and validate its dimensions
     fiber_density = get_fiber_density()
     Utils.validate_fiber_list(fiber_density)
+
     # Initialize variables
     number_columns = len(fiber_density[0])
     x = range(1, number_columns + 1)
+
     # Clear any previous graph still in memory
     plt.clf()
+
     # Change font size to 14pt
     plt.rcParams.update({'font.size': 14})
+
     # Graph lines, each line represents the fiber densities of the wedges across a ring.
     # Points in the graph: (Number of wedge, Fiber Density)
     for row in fiber_density:
         y = row
+
         # Graph title
         plt.title('Fiber Density vs. Wedges')
+
         # Y axis title
         plt.ylabel('Fiber Density')
+
         # X axis title
         plt.xlabel("Wedges")
+
         # Plot line
         plt.plot(x, y)
 
     fig = plt.gcf()
+
     # Increase image size
     fig.set_size_inches(18.5, 10.5)
+
     # Store image in local file system
     fig.savefig(graph_path, dpi=100)
+
     # Validate that the image was successfully saved
     Utils.validate_path(graph_path)
 
@@ -271,26 +307,35 @@ def save_graph_fiber_vs_rings(name, path):
     """
     # Validate that the file name given does not contain special characters
     Utils.validate_name(name)
+
     # Validate that the directory path exists
     Utils.validate_path(path)
+
     # Generate full path to store image
     graph_path = Utils.get_path('_WedgeGraph.jpg', name, path)
+
     # Get fiber density list (without averages) and validate its dimensions
     fiber_density = get_fiber_density()
     Utils.validate_fiber_list(fiber_density)
+
     # Initialize variables
     number_rows = len(fiber_density)
     x = range(1, number_rows + 1)
     wedges = []
     [wedges.append(x) for x in zip(*fiber_density)]
+
     # Clear any previous graph still in memory
     plt.clf()
+
     # Change font size to 14pt
     plt.rcParams.update({'font.size': 14})
+
     # Graph title
     plt.title('Fiber Density vs. Rings')
+
     # Y axis title
     plt.ylabel('Fiber Density')
+
     # X axis title
     plt.xlabel("Rings")
 
@@ -304,16 +349,20 @@ def save_graph_fiber_vs_rings(name, path):
         # Points in the graph: (Number of ring, Fiber Density)
         for columns in wedges:
             y = columns
+
             # Plot line
             plt.plot(x, y)
 
     # Show every value in the x axis
     plt.xticks(x)
     fig = plt.gcf()
+
     # Increase image size
     fig.set_size_inches(18.5, 10.5)
+
     # Store image in local file system
     fig.savefig(graph_path, dpi=100)
+
     # Validate that the image was successfully saved
     Utils.validate_path(graph_path)
 
@@ -327,5 +376,6 @@ def save_graphs(name, path):
     """
     # Generate Fiber Density vs. Wedges graph
     save_graph_fiber_vs_wedges(name, path)
+
     # Generate Fiber Density vs. Rings graph
     save_graph_fiber_vs_rings(name, path)

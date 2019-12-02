@@ -24,12 +24,15 @@ def fiber_density_calculation(number_rings, number_wedges, raw_dictionary):
     column_wedges = []
     row_rings = []
     regions = number_rings * number_wedges
+
     # Validates that the number of files matches the expected number of regions
     Utils.validate_number_regions(len(raw_dictionary), regions)
+
     # Main loop that iterates through every region
     for i in range(regions):
 
         key = 'R' + str(ring_counter + 1) + 'W' + str(wedge_counter + 1)
+
         # Get region image path from dictionary
         try:
             image = raw_dictionary.get(key)
@@ -54,6 +57,7 @@ def fiber_density_calculation(number_rings, number_wedges, raw_dictionary):
         # Calculate the area of the whole region.
         for area in output[2]:
             total_area += area[4]
+
         # Calculate the area of fiber (total area - black pixels area)
         fiber_area = total_area - output[2][0][4]
 
@@ -62,6 +66,7 @@ def fiber_density_calculation(number_rings, number_wedges, raw_dictionary):
         column_wedges.append(fiber_density)
 
         wedge_counter += 1
+
         # Change to the next ring after all the densities  have been added
         if wedge_counter >= number_wedges:
             wedge_counter = 0
@@ -92,6 +97,7 @@ def fiber_density_averages(fiber_density):
         wedge_averages.append(average)
 
     fiber_density_with_average.append(wedge_averages)
+
     # Calculates the average of each row
     for ring in fiber_density_with_average:
         ring_sum = sum(ring)

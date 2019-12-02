@@ -125,12 +125,20 @@ class SproutUI(QtWidgets.QMainWindow):
                 self.warning_message_box("Missing loading image. ")
 
             try:
+                assert (url[0])[-4:] in ('.bmp', '.jpg', 'jpeg', '.tif'), "Image format is not supported."
+            except Exception as e:
+                self.warning_message_box(str(e))
+                self.label_bamboo.clear()
+                return
+
+            try:
                 cross_section = QPixmap(url[0])
                 cross_section = cross_section.scaled(500, 500)
                 if cross_section.isNull():
                     self.label_bamboo.clear()
                     self.warning_message_box("Unable to open input file.  \n\n")
                 else:
+                    self.label_bamboo.clear()
                     self.label_bamboo.setPixmap(cross_section)
                     self.lineEdit_imagePath.setText(url[0])
                     in_data['img_path'] = url[0]
