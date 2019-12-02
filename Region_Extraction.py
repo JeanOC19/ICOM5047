@@ -4,7 +4,7 @@ import math
 import os
 import shutil
 
-# List generated after separating image into regions
+# Declaration
 regions_list = dict()
 regions_path_name = str('Regions')
 full_regions_path = str()
@@ -115,14 +115,13 @@ def extract_wedge(img, filled_img, angle):
         mask = generate_wedge_mask(filled_img, (angle % 90))
 
     # Create a blank canvas and extract Wedge from main image
-    wedge = filled_img & mask
+    filled_wedge = filled_img & mask
 
     mask = None
     del mask
 
-    # Binarize wedge rectangle
     # Find contours for the wedge
-    contours, _ = cv2.findContours(wedge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(filled_wedge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     # Find the contour with the best area that covers the wedge.
     areas = [cv2.contourArea(c) for c in contours]
@@ -132,7 +131,8 @@ def extract_wedge(img, filled_img, angle):
     # Get the coordinates of the bounding rectangle of the wedge.
     x, y, w, h = cv2.boundingRect(cnt)
 
-    return img[y:y + h, x:x + w], wedge[y:y + h, x:x + w]
+    # Extract bounding rectangle of image's wedge and filled wedge
+    return img[y:y + h, x:x + w], filled_wedge[y:y + h, x:x + w]
 
 
 def find_max_ins_rect(data):
@@ -183,14 +183,21 @@ def find_max_ins_rect(data):
 
 
 def rotate_cuadrant(image, angle):
-    """Given an image, make a rotation including its boundaries"""
-
+    """
+    Given an image, make a rotation including its boundaries
+    :param image: Input image
+    :param angle: Desired angle to rotate image
+    :return:
+    """
+    # Extract image shape properties
     h, w = image.shape[0], image.shape[1]
+    # Create an extra blank space to append at the right of the image so image isn't cut due to rotation.
     extra = np.zeros_like(image[:, int(w * .9):])
     image = np.append(image, extra, axis=1)
 
     # If input angle is 0, there is no need of rotating the image
     if angle != 0:
+        # Rotate image
         m = cv2.getRotationMatrix2D((0, h), -1 * angle, 1)
         return cv2.warpAffine(image, m, (0, h))
     else:
@@ -440,12 +447,15 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     bounded_binarized_input_image = cv2.erode(cv2.dilate(bounded_binarized_input_image, None, iterations=n_iterations),
                                               None, iterations=n_iterations + 2)
 
+    # Iterate through each quadrant of the image
     for cuadrant_num in range(4):
-        # Extract the cuadrant of the image
+
+        # Extract the quadrant of the image
         image = extract_cuadrant(bounded_input_image, cuadrant_num)
-        # Extract the cuadrant of the filled image
+        # Extract the quadrant of the filled image
         filled_image = extract_cuadrant(bounded_binarized_input_image, cuadrant_num)
 
+        # Iterate through each wedge of the image's quadrant
         for cuadrant_wedge_num in range(int(number_wedges / 4)):
 
             # Check if has an interrupt request (Stop Button Interrupt)
