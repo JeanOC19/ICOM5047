@@ -101,8 +101,9 @@ font: bold 9pt;</string>
      </rect>
     </property>
     <property name="toolTip">
-     <string>Enter file name. Do not use special 
-characters: &lt;, &gt;, :, /, , |, ?, *, &quot;</string>
+     <string>Please make sure to provide a valid file name. Do not
+ leave blank and do not use special character (&lt;, &gt;, :,
+ /, , |, ?, *, \&quot;).</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color:white;</string>

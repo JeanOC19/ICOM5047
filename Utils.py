@@ -17,6 +17,7 @@ def validate_name(name):
     if not is_string:
         raise InvalidInput('Exception: Name is not a string')
     special_characters = ['<', '>', ':', '/', '\\', '|', '?', '*', '"']
+
     # Validates that provided name does not contain any special characters.
     for c in special_characters:
         if c in name:
@@ -87,10 +88,12 @@ def validate_fiber_list(list):
     if not list:
         raise InvalidInput('Exception: fiber density list is empty')
     rows = len(list)
+
     # If rows are less than 1 or larger than 25 raise an exception since it does not match rings max. and min.
     if rows < 1 or rows > 25:
         raise InvalidInput('Exception: fiber density list has less than three rings')
     columns = len(list[0])
+
     # If columns are less than 12 or larger than 400 raise an exception since it does not match wedges max. and min.
     if columns < 12 or columns > 400:
         raise InvalidInput('Exception: fiber density list has less than twelve wedges')
@@ -106,11 +109,13 @@ def validate_fiber_list_average(list):
     if not list:
         raise InvalidInput('Exception: fiber density list is empty')
     rows = len(list)
+
     # If rows are less than 4 or larger than 26 raise an exception since it does not match rings max. and min.
     # min. is 1 ring rows + 1 average row and max. is 25 ring rows + 1 average row
     if rows < 2 or rows > 26:
         raise InvalidInput('Exception: fiber density list has less than three rings')
     columns = len(list[0])
+
     # If columns are less than 13 or larger than 401 raise an exception since it does not match wedges max. and min.
     # min. is 12 wedge columns + 1 average column and max. is 400 wedge columns + 1 average column
     if columns < 13 or columns > 401:
@@ -129,6 +134,7 @@ def validate_dimension_list(list):
     if not list:
         raise InvalidInput('Exception: dimensional measurement list is empty')
     measurements = len(list)
+
     # If length of list is not 8 raise an exception, since the amount of measurements is incorrect
     if measurements != 8:
         raise InvalidInput('Exception: number of elements in the list is incorrect')
@@ -144,11 +150,13 @@ def validate_diameter_list(list):
     if not list:
         raise InvalidInput('Exception: dimensional measurement list is empty')
     columns = len(list)
+
     # If number of columns is not 2 raise an exception since there should be a column for inner diameters
     # and a second one for outer diameters
     if columns != 2:
         raise InvalidInput('Exception: number of columns in the list is incorrect')
     rows = len(list[0])
+
     # If number of rows is not a multiple of 4 raise exception
     if not(rows % 4 == 0):
         raise InvalidInput('Exception: number of rows in the list is incorrect')
@@ -162,6 +170,7 @@ def get_files_path(directory_path, file_type):
     :return: list of the paths of every file inside of the directory
     """
     file_paths = []
+
     # root: root directory, f: file, directories: directories inside root
     # generates the file names in a directory tree by traversing the tree
     for root, directories, f in os.walk(directory_path):
@@ -182,11 +191,14 @@ def sort_files(file_list):
     for file in file_list:
         # Separate string into elements
         file_split = (file.split('\\'))
+
         # Take the file name and file type element
         file_name = file_split[len(file_split) - 1]
+
         # Remove file type
         file_type_split = (file_name.split('.'))
         file_key = file_type_split[0]
+
         # Store file name (region name) as key and the path as its value
         file_dictionary[file_key] = file
     return file_dictionary
@@ -203,6 +215,7 @@ def get_path(default, name, path):
     counter = 1
     # Append directory path with file name and default name
     file_path = path + '\\' + name + default
+
     # Verify if this path exists, if it does exist add a number after file name and verify again.
     # Continue this loop, increasing the appended number, until the file path does not exist.
     while os.path.exists(file_path):

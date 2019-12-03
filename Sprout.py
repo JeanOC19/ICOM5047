@@ -5,7 +5,7 @@ import time
 from PyQt5 import QtWidgets, uic
 from PyQt5 import QtCore
 from PyQt5.Qt import Qt
-from PyQt5.QtGui import QPixmap, QIcon, QMovie
+from PyQt5.QtGui import QPixmap, QIcon, QFont
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt5.QtChart import QChart, QLineSeries, QScatterSeries, QChartView
 from PyQt5.QtCore import pyqtSignal
@@ -127,8 +127,8 @@ class SproutUI(QtWidgets.QMainWindow):
             try:
                 assert (url[0])[-4:] in ('.bmp', '.jpg', 'jpeg', '.tif'), "Image format is not supported."
             except Exception as e:
-                self.warning_message_box(str(e))
                 self.label_bamboo.clear()
+                self.warning_message_box(str(e))
                 return
 
             try:
@@ -504,6 +504,13 @@ class SproutUI(QtWidgets.QMainWindow):
             for wedge in ring:
                 item = QTableWidgetItem("{:.4f}".format(wedge))
                 item.setTextAlignment(Qt.AlignCenter)
+
+                # if average of average
+                if j == (len(self.densities[0])-1) and i == (len(self.densities)-1):
+                    font = QFont()
+                    font.setBold(True)
+                    item.setFont(font)
+
                 self.tableWidget.setItem(i, j, item)
                 j += 1
             j = 0
@@ -543,7 +550,7 @@ class SproutUI(QtWidgets.QMainWindow):
 
     def is_int_inbound(self, ui_in: str, lower: int, upper: int, ui_in_name: str = None):
         """
-        Test if user input is in specified upper and lower bound, including upper and lower bound valu.
+        Test if user input is in specified upper and lower bound, including upper and lower bound value.
         :param ui_in: user input for value that will be tested
         :param lower: lowest value that ui_in can have to return True
         :param upper: highest value that ui_in can hava to return True
@@ -634,8 +641,9 @@ class SaveWindow(QtWidgets.QMainWindow):
             QMessageBox.critical(self, "Warning!", "Please make sure to have at least   \n"
                                                              " one checkbox selected.")
         elif self.lineEdit_fileName.text().strip() is "":
-            QMessageBox.critical(self, "Warning!", "Please make sure to provide a valid file name.   \n"
-                                                      "No spaces or any special character.  ")
+            QMessageBox.critical(self, "Warning!", "Please make sure to provide a valid file name. Do not   \n"
+                                                   " leave blank and do not use special character (<, >, :,  \n"
+                                                   " /, , |, ?, *, \").  ")
         elif self.lineEdit_filePath.text() is "":
             QMessageBox.critical(self, "Warning!", "Please make sure to provide a folder path.   ")
         else:
@@ -645,8 +653,9 @@ class SaveWindow(QtWidgets.QMainWindow):
             special_characters = ['<', '>', ':', '/', '\\', '|', '?', '*', '"']
             for c in special_characters:
                 if c in save_file_name:
-                    QMessageBox.critical(self, "Warning!", "Do not use special character for "
-                                                           "\nFile Name: <, >, :, /, , |, ?, *, \"")
+                    QMessageBox.critical(self, "Warning!", "Please make sure to provide a valid file name. Do not   \n"
+                                                   " leave blank and do not use special character (<, >, :,  \n"
+                                                   " /, , |, ?, *, \").  ")
                     return
             try:
                 if self.checkBox_graphs.isChecked():
