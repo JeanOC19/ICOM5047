@@ -160,7 +160,7 @@ def save_dimensional_measurements_csv(name, path, units):
     Utils.validate_units(units)
 
     # Generate full path to store file
-    file_path = Utils.get_path('_AdditionalData.csv', name, path)
+    file_path = Utils.get_path('_MeasurementData.csv', name, path)
 
     # Get dimensional measurements list and validate that its dimensions are correct.
     dimensional_measurements_og = get_dimensional_measurements()
@@ -188,10 +188,10 @@ def save_dimensional_measurements_csv(name, path, units):
 
     # Validate that created csv was successfully saved
     Utils.validate_path(file_path)
-    save_diameter_csv(path, units)
+    save_diameter_csv(path, units, name)
 
 
-def save_diameter_csv(path, units):
+def save_diameter_csv(path, units, file_name):
     """
     Save csv that contains the inner and outer diameters of the cross-section
     :param path: path that indicates the location of the directory where the csv file will be stored
@@ -206,7 +206,7 @@ def save_diameter_csv(path, units):
     Utils.validate_units(units)
 
     # Generate full path to store file
-    file_path = Utils.get_path('.csv', 'Bamboo_Diameters', path)
+    file_path = Utils.get_path('_BambooDiameters.csv', file_name, path)
 
     # Get diameters list and validate that its dimensions are correct.
     diameters_og = get_diameters()
