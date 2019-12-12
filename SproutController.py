@@ -62,6 +62,7 @@ class SproutController (QThread):
         print(" num_rings = " + str(self.in_data['num_rings']))
         print(" img_dpi = " + str(self.in_data['img_dpi']))
         print(" enhance = " + str(self.in_data['enhance']))
+        print(" Pixel Map = " + str(self.in_data['pixelMap']))
 
         time_start = time.time()
 
@@ -127,7 +128,8 @@ class SproutController (QThread):
                 self.in_data['units'],
                 self.in_data['img_path'],
                 step_enhanced_image,
-                self)
+                self,
+                self.in_data['pixelMap'])
         except Exception as e:
             self.sprout_ui.error_message = "Error in Image Pre-processing:\n " + str(e)
             self.sprout_ui.progressBar.setValue(2)

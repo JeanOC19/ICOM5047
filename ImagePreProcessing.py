@@ -8,7 +8,7 @@ TESTING = 0
 
 
 def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, image_path: str = None,
-                      enhanced_image: object = None, t: object = None):
+                      enhanced_image: object = None, t: object = None, pixel_map: bool = False):
     """
     Takes a bamboo image and binarizes it then bounds it and determines its area, inner and outer diameters,
     centroid coordinates, and moment of inertia with respect to the x and y axes :param t: Qt thread :param
@@ -202,14 +202,15 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         meas_centroid[1] = centroid_coordinates[1] * units_multiplier / image_dpi
 
         # Create a pixel map that has the coordinate of every pixel, distance to centroid and if its a fiber
-        pixel_table = []
-        for i in range(new_binarized_bounded_image.shape[0]):
-            for j in range(new_binarized_bounded_image.shape[1]):
-                if bounded_filled_image[i][j] == 255:
-                    pixel_table.append([i, j, abs(i - int(centroid_coordinates[0])), abs(j - int(centroid_coordinates[1])),
-                                        0 if new_binarized_bounded_image[i, j] == 255 else 1])
-        Data_Management_Module.set_pixel_table(pixel_table)
-        pixel_table = None
+        if pixel_map:
+            pixel_table = []
+            for i in range(new_binarized_bounded_image.shape[0]):
+                for j in range(new_binarized_bounded_image.shape[1]):
+                    if bounded_filled_image[i][j] == 255:
+                        pixel_table.append([i, j, abs(i - int(centroid_coordinates[0])), abs(j - int(centroid_coordinates[1])),
+                                            0 if new_binarized_bounded_image[i, j] == 255 else 1])
+            Data_Management_Module.set_pixel_table(pixel_table)
+            pixel_table = None
 
         # Draw the centroid on the image and save it
         cv.circle(bounded_image, (int(centroid_coordinates[0]), int(centroid_coordinates[1])), 10, (0, 255, 255), 10)

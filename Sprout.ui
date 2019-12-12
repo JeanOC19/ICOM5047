@@ -494,11 +494,119 @@ QToolTip{
                  <number>80</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>50</number>
+                 <number>20</number>
                 </property>
                 <property name="horizontalSpacing">
                  <number>20</number>
                 </property>
+                <item row="12" column="1" colspan="4" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                 <widget class="QFrame" name="frame_11">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>8</horstretch>
+                    <verstretch>8</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>450</width>
+                    <height>60</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>110</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border:0px</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <widget class="QProgressBar" name="progressBar">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="geometry">
+                    <rect>
+                     <x>0</x>
+                     <y>30</y>
+                     <width>450</width>
+                     <height>26</height>
+                    </rect>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>450</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: white;
+border-color: black;
+border-width: 1px 1px 1px 1px;
+border-style: inset;
+font: 9pt
+</string>
+                   </property>
+                   <property name="inputMethodHints">
+                    <set>Qt::ImhNone</set>
+                   </property>
+                   <property name="value">
+                    <number>75</number>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="textVisible">
+                    <bool>true</bool>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="invertedAppearance">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                  <widget class="QLabel" name="label_progressBar">
+                   <property name="geometry">
+                    <rect>
+                     <x>0</x>
+                     <y>0</y>
+                     <width>97</width>
+                     <height>25</height>
+                    </rect>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">border-width: 0px; 
+font: 9pt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Progress</string>
+                   </property>
+                  </widget>
+                 </widget>
+                </item>
                 <item row="8" column="4">
                  <widget class="QComboBox" name="comboBox_units">
                   <property name="minimumSize">
@@ -584,17 +692,6 @@ QWidget{
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="1" colspan="2">
-                 <widget class="QLabel" name="label_numWedges">
-                  <property name="styleSheet">
-                   <string notr="true">border-width: 0px; 
-font: 9pt;</string>
-                  </property>
-                  <property name="text">
-                   <string>Num. Wedges per Quadrant:</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="1" colspan="3">
                  <widget class="QLabel" name="label_imagePath">
                   <property name="maximumSize">
@@ -610,6 +707,83 @@ font: 9pt;</string>
                   <property name="text">
                    <string>Image Path: </string>
                   </property>
+                 </widget>
+                </item>
+                <item row="6" column="1" colspan="2">
+                 <widget class="QLabel" name="label_numWedges">
+                  <property name="styleSheet">
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
+                  </property>
+                  <property name="text">
+                   <string>Num. Wedges per Quadrant:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1" colspan="4">
+                 <widget class="QFrame" name="frame_4">
+                  <property name="minimumSize">
+                   <size>
+                    <width>450</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color:white;
+border-width:1px;
+border-style:inset;
+border-radius: 50px;
+border-color:#333333;</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_5">
+                   <property name="leftMargin">
+                    <number>10</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>10</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>10</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>10</number>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_9">
+                     <property name="minimumSize">
+                      <size>
+                       <width>360</width>
+                       <height>150</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>360</width>
+                       <height>150</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">border-radius:0px;
+border-width:0px;</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="pixmap">
+                      <pixmap>Images/Sprout Logo.png</pixmap>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item row="10" column="4">
@@ -747,15 +921,6 @@ QWidget:toolTip{
                         </color>
                        </brush>
                       </colorrole>
-                      <colorrole role="PlaceholderText">
-                       <brush brushstyle="NoBrush">
-                        <color alpha="128">
-                         <red>255</red>
-                         <green>255</green>
-                         <blue>255</blue>
-                        </color>
-                       </brush>
-                      </colorrole>
                      </active>
                      <inactive>
                       <colorrole role="WindowText">
@@ -809,15 +974,6 @@ QWidget:toolTip{
                          <red>218</red>
                          <green>42</green>
                          <blue>42</blue>
-                        </color>
-                       </brush>
-                      </colorrole>
-                      <colorrole role="PlaceholderText">
-                       <brush brushstyle="NoBrush">
-                        <color alpha="128">
-                         <red>255</red>
-                         <green>255</green>
-                         <blue>255</blue>
                         </color>
                        </brush>
                       </colorrole>
@@ -877,15 +1033,6 @@ QWidget:toolTip{
                         </color>
                        </brush>
                       </colorrole>
-                      <colorrole role="PlaceholderText">
-                       <brush brushstyle="NoBrush">
-                        <color alpha="128">
-                         <red>255</red>
-                         <green>255</green>
-                         <blue>255</blue>
-                        </color>
-                       </brush>
-                      </colorrole>
                      </disabled>
                     </palette>
                    </property>
@@ -918,6 +1065,23 @@ QPushButton:disabled{
                   </widget>
                   <zorder>stop_button</zorder>
                   <zorder>start_button</zorder>
+                 </widget>
+                </item>
+                <item row="7" column="1">
+                 <widget class="QLabel" name="label_numRings">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border-width: 0px; 
+font: 9pt;</string>
+                  </property>
+                  <property name="text">
+                   <string>Num. Rings:</string>
+                  </property>
                  </widget>
                 </item>
                 <item row="4" column="4">
@@ -985,15 +1149,6 @@ QPushButton:disabled{
                        </color>
                       </brush>
                      </colorrole>
-                     <colorrole role="PlaceholderText">
-                      <brush brushstyle="NoBrush">
-                       <color alpha="128">
-                        <red>255</red>
-                        <green>255</green>
-                        <blue>255</blue>
-                       </color>
-                      </brush>
-                     </colorrole>
                     </active>
                     <inactive>
                      <colorrole role="WindowText">
@@ -1047,15 +1202,6 @@ QPushButton:disabled{
                         <red>83</red>
                         <green>152</green>
                         <blue>68</blue>
-                       </color>
-                      </brush>
-                     </colorrole>
-                     <colorrole role="PlaceholderText">
-                      <brush brushstyle="NoBrush">
-                       <color alpha="128">
-                        <red>255</red>
-                        <green>255</green>
-                        <blue>255</blue>
                        </color>
                       </brush>
                      </colorrole>
@@ -1115,15 +1261,6 @@ QPushButton:disabled{
                        </color>
                       </brush>
                      </colorrole>
-                     <colorrole role="PlaceholderText">
-                      <brush brushstyle="NoBrush">
-                       <color alpha="128">
-                        <red>255</red>
-                        <green>255</green>
-                        <blue>255</blue>
-                       </color>
-                      </brush>
-                     </colorrole>
                     </disabled>
                    </palette>
                   </property>
@@ -1154,23 +1291,6 @@ QPushButton:disabled{
                   </property>
                  </widget>
                 </item>
-                <item row="7" column="1">
-                 <widget class="QLabel" name="label_numRings">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">border-width: 0px; 
-font: 9pt;</string>
-                  </property>
-                  <property name="text">
-                   <string>Num. Rings:</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="5" column="1" colspan="2">
                  <widget class="QLabel" name="label_numMeasurements">
                   <property name="minimumSize">
@@ -1188,202 +1308,6 @@ font: 9pt;</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1" colspan="3">
-                 <widget class="QLineEdit" name="lineEdit_intermediateStepPath">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>320</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="focusPolicy">
-                   <enum>Qt::NoFocus</enum>
-                  </property>
-                  <property name="toolTip">
-                   <string>Path were data of intermediate
- steps will be save.</string>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">QWidget{
-	background-color: #efefef;
-	border: 1px solid #999999;
-	color: #555555;
-	font: 8pt;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1" colspan="4">
-                 <widget class="QFrame" name="frame_4">
-                  <property name="minimumSize">
-                   <size>
-                    <width>450</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-color:white;
-border-width:1px;
-border-style:inset;
-border-radius: 50px;
-border-color:#333333;</string>
-                  </property>
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_5">
-                   <property name="leftMargin">
-                    <number>10</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>10</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>10</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>10</number>
-                   </property>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_9">
-                     <property name="minimumSize">
-                      <size>
-                       <width>360</width>
-                       <height>150</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>360</width>
-                       <height>150</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">border-radius:0px;
-border-width:0px;</string>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="pixmap">
-                      <pixmap>Images/Sprout Logo.png</pixmap>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="11" column="1" colspan="4">
-                 <widget class="QFrame" name="frame_11">
-                  <property name="minimumSize">
-                   <size>
-                    <width>450</width>
-                    <height>60</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">border:0px</string>
-                  </property>
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <widget class="QProgressBar" name="progressBar">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="geometry">
-                    <rect>
-                     <x>0</x>
-                     <y>30</y>
-                     <width>450</width>
-                     <height>26</height>
-                    </rect>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>450</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="layoutDirection">
-                    <enum>Qt::LeftToRight</enum>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: white;
-border-color: black;
-border-width: 1px 1px 1px 1px;
-border-style: inset;
-font: 9pt
-</string>
-                   </property>
-                   <property name="inputMethodHints">
-                    <set>Qt::ImhNone</set>
-                   </property>
-                   <property name="value">
-                    <number>75</number>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                   <property name="textVisible">
-                    <bool>true</bool>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="invertedAppearance">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                  <widget class="QLabel" name="label_progressBar">
-                   <property name="geometry">
-                    <rect>
-                     <x>0</x>
-                     <y>0</y>
-                     <width>97</width>
-                     <height>25</height>
-                    </rect>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>30</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">border-width: 0px; 
-font: 9pt;</string>
-                   </property>
-                   <property name="text">
-                    <string>Progress</string>
-                   </property>
-                  </widget>
-                 </widget>
-                </item>
                 <item row="10" column="1" colspan="2">
                  <widget class="QCheckBox" name="checkBox_imageEnhancement">
                   <property name="focusPolicy">
@@ -1391,6 +1315,9 @@ font: 9pt;</string>
                   </property>
                   <property name="toolTip">
                    <string>Check if image enhancement is requiered.</string>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">QWidget{
@@ -1492,15 +1419,6 @@ font: 9pt;</string>
                        </color>
                       </brush>
                      </colorrole>
-                     <colorrole role="PlaceholderText">
-                      <brush brushstyle="NoBrush">
-                       <color alpha="128">
-                        <red>255</red>
-                        <green>255</green>
-                        <blue>255</blue>
-                       </color>
-                      </brush>
-                     </colorrole>
                     </active>
                     <inactive>
                      <colorrole role="WindowText">
@@ -1557,15 +1475,6 @@ font: 9pt;</string>
                        </color>
                       </brush>
                      </colorrole>
-                     <colorrole role="PlaceholderText">
-                      <brush brushstyle="NoBrush">
-                       <color alpha="128">
-                        <red>255</red>
-                        <green>255</green>
-                        <blue>255</blue>
-                       </color>
-                      </brush>
-                     </colorrole>
                     </inactive>
                     <disabled>
                      <colorrole role="WindowText">
@@ -1619,15 +1528,6 @@ font: 9pt;</string>
                         <red>160</red>
                         <green>176</green>
                         <blue>160</blue>
-                       </color>
-                      </brush>
-                     </colorrole>
-                     <colorrole role="PlaceholderText">
-                      <brush brushstyle="NoBrush">
-                       <color alpha="128">
-                        <red>255</red>
-                        <green>255</green>
-                        <blue>255</blue>
                        </color>
                       </brush>
                      </colorrole>
@@ -1719,6 +1619,40 @@ font: 9pt;</string>
                   </property>
                   <property name="text">
                    <string>Units:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1" colspan="3">
+                 <widget class="QLineEdit" name="lineEdit_intermediateStepPath">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>320</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
+                  <property name="toolTip">
+                   <string>Path were data of intermediate
+ steps will be save.</string>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QWidget{
+	background-color: #efefef;
+	border: 1px solid #999999;
+	color: #555555;
+	font: 8pt;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1859,6 +1793,37 @@ font: 8pt;</string>
                   </property>
                  </widget>
                 </item>
+                <item row="11" column="1" colspan="2">
+                 <widget class="QCheckBox" name="checkBox_pixelMap">
+                  <property name="font">
+                   <font>
+                    <pointsize>9</pointsize>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>Check to create table of bamboo's pixels.</string>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QWidget{
+	background-color: #EDFFE3;
+	font: 9pt;
+	border: 0px
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Create Pixel Map</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="tristate">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </widget>
              </item>
@@ -1928,7 +1893,7 @@ QTabBar::tab:selected {
 </string>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="graphs_tab">
                 <property name="enabled">
@@ -2805,6 +2770,92 @@ color: black;
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                   </property>
                  </widget>
+                 <widget class="QLineEdit" name="lineEdit_OuterT">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="geometry">
+                   <rect>
+                    <x>370</x>
+                    <y>120</y>
+                    <width>250</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: #ffffff;
+border: 0px;
+font: 10pt;
+color: black;
+</string>
+                  </property>
+                  <property name="text">
+                   <string>0 cm</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                 <widget class="QLineEdit" name="lineEdit_InnerT">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="geometry">
+                   <rect>
+                    <x>370</x>
+                    <y>175</y>
+                    <width>250</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: #ffffff;
+border: 0px;
+font: 10pt;
+color: black;
+</string>
+                  </property>
+                  <property name="text">
+                   <string>0 cm</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="label_25">
+                  <property name="geometry">
+                   <rect>
+                    <x>350</x>
+                    <y>150</y>
+                    <width>300</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">font: bold 10pt;
+color: black;</string>
+                  </property>
+                  <property name="text">
+                   <string>Inner Diameter t:</string>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="label_26">
+                  <property name="geometry">
+                   <rect>
+                    <x>350</x>
+                    <y>95</y>
+                    <width>300</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">font: bold 10pt;
+color: black;</string>
+                  </property>
+                  <property name="text">
+                   <string>Outer Diameter t:</string>
+                  </property>
+                 </widget>
                  <zorder>label_31</zorder>
                  <zorder>label_32</zorder>
                  <zorder>label_23</zorder>
@@ -2823,6 +2874,10 @@ color: black;
                  <zorder>lineEdit_centroid_y</zorder>
                  <zorder>label_24</zorder>
                  <zorder>lineEdit_productOfInertia</zorder>
+                 <zorder>lineEdit_OuterT</zorder>
+                 <zorder>lineEdit_InnerT</zorder>
+                 <zorder>label_25</zorder>
+                 <zorder>label_26</zorder>
                 </widget>
                </widget>
               </widget>
@@ -3013,38 +3068,38 @@ QTextEdit:QText{
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;Input Parameters:&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;1. Image Path&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - the file path where the bamboo cross section image can be found in the computer.&lt;/span&gt;&lt;a name=&quot;docs-internal-guid-4f5e4779-7fff-63c9-29d5-3ca13f8cbe13&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Arial'; font-size:11pt; color:#000000; background-color:transparent;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;Supported file types: bmp, jpg, jpeg, tif.&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;a name=&quot;docs-internal-guid-7b260e50-7fff-7348-3105-598b80913b5e&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;use the browse button to the right of image path)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;2. Intermediate Step Path &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- the file path where all the images for intermediate steps will be saved. This includes enhanced image, binarized image, region images, binarized region images, and additional necessary images for the completion of the tasks. &lt;/span&gt;&lt;a name=&quot;docs-internal-guid-291dc71f-7fff-18fb-358f-9f10416cfe08&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;use the browse button to the right of intermediate step)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;3. Number of Diameter Measurements &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- the number of diameter measurements for each quadrant. This information will be used to measure the internal and external diameter of the bamboo.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;4. Num. Wedges per Quadrant &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- the number of wedges in which to divide each quadrant. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;5. Num. Rings &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- the number of rings in which to divide the bamboo cross-section. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;6. Image DPI &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- the number of the image dots per inch of the bamboo cross-section image.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;7. Units &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- the units in which the calculation will be completed and presented by the system.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;8. Image Enhancement &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- if image enhancement is required then select the checkbox to perform image enhancement at the beginning of the fiber density calculation sequence.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;Dashboard Data:&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;1. The Ring Numbers &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- is the number used to identify the ring. The lower the number, the closer the ring is to the center of the bamboo cross-section.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;2. The Wedge Numbers&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - is the number used to identify the wedge. The lower the number, the closer the wedge is to 0º in a cartesian plane.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;3. The Fiber Density vs Wedges Graph or Ring Graph &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- presents the fiber density across the rings analyzed for the bamboo cross-section. In addition, an average of the fibers in the wedges is shown. Below the graph a filter can select what to see in the graph: all the rings with the average, all the rings without the average, the average alone or the ring by number.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;4. The Fiber Density vs Rings Graph or Wedge Graph &lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;- presents the fiber density across the wedges analyzed for the bamboo cross-section. In addition, an average of the fibers in the rings is shown. Below the graph, a filter can select what to see in the graph: all the wedges with the average, all the wedges without the average, the average alone, or the wedges by number.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt; font-weight:600;&quot;&gt;5. Region Density Table&lt;/span&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt; - presents the rings by number in the rows and the wedges by number in the columns. The cells represent the fiber density. The last column is the average for each ring and the last row is the average for each wedge.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;Input Parameters:&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;1. Image Path&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; - the file path where the bamboo cross section image can be found in the computer.&lt;/span&gt;&lt;a name=&quot;docs-internal-guid-4f5e4779-7fff-63c9-29d5-3ca13f8cbe13&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Arial'; font-size:11pt; color:#000000; background-color:transparent;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;Supported file types: bmp, jpg, jpeg, tif.&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;a name=&quot;docs-internal-guid-7b260e50-7fff-7348-3105-598b80913b5e&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;use the browse button to the right of image path)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;2. Intermediate Step Path &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- the file path where all the images for intermediate steps will be saved. This includes enhanced image, binarized image, region images, binarized region images, and additional necessary images for the completion of the tasks. &lt;/span&gt;&lt;a name=&quot;docs-internal-guid-291dc71f-7fff-18fb-358f-9f10416cfe08&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot; font-family:'Arial'; font-size:10pt; color:#000000; background-color:transparent;&quot;&gt;use the browse button to the right of intermediate step)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;3. Number of Diameter Measurements &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- the number of diameter measurements for each quadrant. This information will be used to measure the internal and external diameter of the bamboo.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;4. Num. Wedges per Quadrant &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- the number of wedges in which to divide each quadrant. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;5. Num. Rings &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- the number of rings in which to divide the bamboo cross-section. This information is used to determine the number of regions.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;6. Image DPI &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- the number of the image dots per inch of the bamboo cross-section image.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;7. Units &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- the units in which the calculation will be completed and presented by the system.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;8. Image Enhancement &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- if image enhancement is required then select the checkbox to perform image enhancement at the beginning of the fiber density calculation sequence.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;Dashboard Data:&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;1. The Ring Numbers &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- is the number used to identify the ring. The lower the number, the closer the ring is to the center of the bamboo cross-section.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;2. The Wedge Numbers&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; - is the number used to identify the wedge. The lower the number, the closer the wedge is to 0º in a cartesian plane.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;3. The Fiber Density vs Wedges Graph or Ring Graph &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- presents the fiber density across the rings analyzed for the bamboo cross-section. In addition, an average of the fibers in the wedges is shown. Below the graph a filter can select what to see in the graph: all the rings with the average, all the rings without the average, the average alone or the ring by number.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;4. The Fiber Density vs Rings Graph or Wedge Graph &lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;- presents the fiber density across the wedges analyzed for the bamboo cross-section. In addition, an average of the fibers in the rings is shown. Below the graph, a filter can select what to see in the graph: all the wedges with the average, all the wedges without the average, the average alone, or the wedges by number.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;5. Region Density Table&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; - presents the rings by number in the rows and the wedges by number in the columns. The cells represent the fiber density. The last column is the average for each ring and the last row is the average for each wedge.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>

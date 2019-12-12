@@ -272,6 +272,7 @@ class SproutUI(QtWidgets.QMainWindow):
         in_data['num_measurement'] = int(self.lineEdit_numMeasurements.text())*4
         in_data['img_dpi'] = int(self.lineEdit_imageDPI.text())
         in_data['enhance'] = bool(self.checkBox_imageEnhancement.isChecked())
+        in_data['pixelMap'] = bool(self.checkBox_pixelMap.isChecked())
 
         self.inputs_set_enabled(False)
 
@@ -353,6 +354,7 @@ class SproutUI(QtWidgets.QMainWindow):
         self.lineEdit_numRings.setEnabled(val)
         self.lineEdit_imageDPI.setEnabled(val)
         self.checkBox_imageEnhancement.setEnabled(val)
+        self.checkBox_pixelMap.setEnabled(val)
 
         self.label_imagePath.setEnabled(val)
         self.label_intermediateStepPath.setEnabled(val)
@@ -539,6 +541,8 @@ class SproutUI(QtWidgets.QMainWindow):
         self.lineEdit_area.setText(str("{:.4f}".format(self.measurement_data[0])) + " " + in_data['units'] + "^2")
         self.lineEdit_avgOuterDiameter.setText(str("{:.4f}".format(self.measurement_data[1])) + " " + in_data['units'])
         self.lineEdit_avgInnerDiameter.setText(str("{:.4f}".format(self.measurement_data[2])) + " " + in_data['units'])
+        self.lineEdit_OuterT.setText(str("{:.4f}".format(self.measurement_data[8])) + " " + in_data['units'])
+        self.lineEdit_InnerT.setText(str("{:.4f}".format(self.measurement_data[9])) + " " + in_data['units'])
         self.lineEdit_centroid_x.setText(str("{:.4f}".format(self.measurement_data[3])) + " " + in_data['units'])
         self.lineEdit_centroid_y.setText(str("{:.4f}".format(self.measurement_data[4])) + " " + in_data['units'])
         self.lineEdit_momentOfInertia_x.setText(str("{:.4f}".format(self.measurement_data[5])) + " " +
