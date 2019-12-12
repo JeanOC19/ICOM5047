@@ -140,7 +140,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         num_of_iterations = int((30 / 3600) * image_dpi) + 1
         eroded = binarized_bounded_image
         eroded = cv.dilate(eroded, None, iterations=num_of_iterations)
-        eroded = cv.erode(eroded, None, iterations=num_of_iterations+1)
+        eroded = cv.erode(eroded, None, iterations=num_of_iterations + 1)
         bounded_filled_image = eroded
         cv.imwrite(path + '/filled_image.jpg', bounded_filled_image)
 
@@ -155,7 +155,6 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
         # Make multiple inner and outer diameter measurements
         for angle in range(radius_steps, int(radius_steps * (num_of_measurements / 2)), radius_steps):
-
             # Rotate image
             rotated_image = rotate_image(pre_rotated_image, angle)
 
@@ -182,6 +181,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Convert the radial measurements to user input units
         outer_diameter_measurements = list(map(unit_converter(), outer_diameter_measurements))
         inner_diameter_measurements = list(map(unit_converter(), inner_diameter_measurements))
+        t_outer_diam = (max(outer_diameter_measurements) - min(outer_diameter_measurements)) / 2
+        t_inner_diam = (max(inner_diameter_measurements) - min(inner_diameter_measurements)) / 2
 
         # Calculate the average inner and outer diameters
         meas_outer_diameter = sum(outer_diameter_measurements) / len(outer_diameter_measurements)
@@ -194,10 +195,21 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Find the coordinates of the centroid and convert them to the specified units
         new_binarized_bounded_image = binarize_image(img, 0)[y:y + h, x:x + w]
         meas_centroid = [0, 0]
-        M = cv.moments(new_binarized_bounded_image & bounded_filled_image, binaryImage=True)
+        new_binarized_bounded_image = new_binarized_bounded_image & bounded_filled_image
+        M = cv.moments(new_binarized_bounded_image, binaryImage=True)
         centroid_coordinates = (M['m10'] / M['m00'], M['m01'] / M['m00'])
         meas_centroid[0] = centroid_coordinates[0] * units_multiplier / image_dpi
         meas_centroid[1] = centroid_coordinates[1] * units_multiplier / image_dpi
+
+        # Create a pixel map that has the coordinate of every pixel, distance to centroid and if its a fiber
+        pixel_table = []
+        for i in range(new_binarized_bounded_image.shape[0]):
+            for j in range(new_binarized_bounded_image.shape[1]):
+                if bounded_filled_image[i][j] == 255:
+                    pixel_table.append([i, j, abs(i - int(centroid_coordinates[0])), abs(j - int(centroid_coordinates[1])),
+                                        0 if new_binarized_bounded_image[i, j] == 255 else 1])
+        Data_Management_Module.set_pixel_table(pixel_table)
+        pixel_table = None
 
         # Draw the centroid on the image and save it
         cv.circle(bounded_image, (int(centroid_coordinates[0]), int(centroid_coordinates[1])), 10, (0, 255, 255), 10)
@@ -210,8 +222,8 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
 
         return bounded_image, binarized_bounded_image, [meas_area, meas_outer_diameter, meas_inner_diameter,
                                                         meas_centroid[0], meas_centroid[1], x_moment, y_moment,
-                                                        moment_product], [outer_diameter_measurements,
-                                                                          inner_diameter_measurements]
+                                                        moment_product, t_outer_diam, t_inner_diam], \
+            [outer_diameter_measurements, inner_diameter_measurements]
 
     # Validate inputs
     assert image_path is not None, "Image path must be given as input."

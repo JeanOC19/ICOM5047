@@ -8,3 +8,5 @@ global_dimensional_measurements = []
 global_fiber_density_with_average = []
 
 global_diameters = []
+
+global_pixel_table = []

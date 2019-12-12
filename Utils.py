@@ -136,7 +136,7 @@ def validate_dimension_list(list):
     measurements = len(list)
 
     # If length of list is not 8 raise an exception, since the amount of measurements is incorrect
-    if measurements != 8:
+    if measurements != 10:
         raise InvalidInput('Exception: number of elements in the list is incorrect')
 
 

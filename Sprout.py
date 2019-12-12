@@ -663,6 +663,7 @@ class SaveWindow(QtWidgets.QMainWindow):
                 if self.checkBox_data.isChecked():
                     DM.save_fiber_density_csv(save_file_name, save_folder_file_path)
                     DM.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
+                    DM.save_pixel_table(save_file_name, save_folder_file_path)
 
                 # Close save window
                 self.close()

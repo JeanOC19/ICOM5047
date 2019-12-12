@@ -175,7 +175,10 @@ def save_dimensional_measurements_csv(name, path, units):
     x_moment = 'X Moment of Inertia ' + '(' + units + '^4' + ')'
     y_moment = 'Y Moment of Inertia ' + '(' + units + '^4' + ')'
     product_inertia = 'Product of Inertia ' + '(' + units + '^4' + ')'
-    column_titles = [area, outer_diameter, inner_diameter, x_centroid, y_centroid, x_moment, y_moment, product_inertia]
+    outer_diam_t = 'Outer diam. t ' + '(' + units + ')'
+    inner_diam_t = 'Inner diam. t ' + '(' + units + ')'
+    column_titles = [area, outer_diameter, inner_diameter, x_centroid, y_centroid, x_moment, y_moment, product_inertia,
+                     outer_diam_t, inner_diam_t]
     dimension_new = []
     for index in range(len(dimensional_measurements_og)):
         temporary = [column_titles[index], dimensional_measurements_og[index]]
@@ -379,3 +382,42 @@ def save_graphs(name, path):
 
     # Generate Fiber Density vs. Rings graph
     save_graph_fiber_vs_rings(name, path)
+
+
+def set_pixel_table(pixel_table):
+    """
+
+    :param pixel_table:
+    :return:
+    """
+
+    Global_Module.global_pixel_table = pixel_table
+
+    return
+
+
+def save_pixel_table(name, path):
+
+    # Validate that the file name given does not contain special characters
+    Utils.validate_name(name)
+
+    # Validate that the directory path exists
+    Utils.validate_path(path)
+
+    # Generate full path to store file
+    file_path = Utils.get_path('_PixelMap.csv', name, path)
+
+    pixel_list_og = Global_Module.global_pixel_table
+
+    # Initialize variables
+    pixel_map = copy.deepcopy(pixel_list_og)
+    column_titles = ['x', 'y', 'x dist.', 'y dist.', 'Fiber?']
+
+    # Create csv and save to local file system
+    with open(file_path, 'w', encoding='utf-8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(column_titles)
+        writer.writerows(pixel_map)
+
+    # Validate that created csv was successfully saved
+    Utils.validate_path(file_path)
