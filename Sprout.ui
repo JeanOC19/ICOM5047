@@ -2502,7 +2502,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>130</x>
-                    <y>230</y>
+                    <y>280</y>
                     <width>250</width>
                     <height>20</height>
                    </rect>
@@ -2551,7 +2551,7 @@ color: black;
                   <property name="geometry">
                    <rect>
                     <x>100</x>
-                    <y>205</y>
+                    <y>255</y>
                     <width>300</width>
                     <height>20</height>
                    </rect>
@@ -2568,7 +2568,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>100</x>
-                    <y>285</y>
+                    <y>335</y>
                     <width>300</width>
                     <height>20</height>
                    </rect>
@@ -2588,7 +2588,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>130</x>
-                    <y>310</y>
+                    <y>360</y>
                     <width>250</width>
                     <height>20</height>
                    </rect>
@@ -2614,7 +2614,7 @@ color: black;
                   <property name="geometry">
                    <rect>
                     <x>130</x>
-                    <y>335</y>
+                    <y>385</y>
                     <width>250</width>
                     <height>20</height>
                    </rect>
@@ -2637,7 +2637,7 @@ color: black;
                   <property name="geometry">
                    <rect>
                     <x>105</x>
-                    <y>310</y>
+                    <y>360</y>
                     <width>95</width>
                     <height>20</height>
                    </rect>
@@ -2654,7 +2654,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>105</x>
-                    <y>335</y>
+                    <y>385</y>
                     <width>90</width>
                     <height>20</height>
                    </rect>
@@ -2674,7 +2674,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>130</x>
-                    <y>255</y>
+                    <y>305</y>
                     <width>250</width>
                     <height>20</height>
                    </rect>
@@ -2697,7 +2697,7 @@ color: black;
                   <property name="geometry">
                    <rect>
                     <x>105</x>
-                    <y>230</y>
+                    <y>280</y>
                     <width>95</width>
                     <height>20</height>
                    </rect>
@@ -2714,7 +2714,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>105</x>
-                    <y>255</y>
+                    <y>305</y>
                     <width>90</width>
                     <height>20</height>
                    </rect>
@@ -2731,7 +2731,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>100</x>
-                    <y>365</y>
+                    <y>415</y>
                     <width>300</width>
                     <height>20</height>
                    </rect>
@@ -2751,7 +2751,7 @@ color: black;</string>
                   <property name="geometry">
                    <rect>
                     <x>120</x>
-                    <y>390</y>
+                    <y>440</y>
                     <width>250</width>
                     <height>22</height>
                    </rect>
@@ -2770,14 +2770,14 @@ color: black;
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                   </property>
                  </widget>
-                 <widget class="QLineEdit" name="lineEdit_OuterT">
+                 <widget class="QLineEdit" name="lineEdit_AverageT">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
                   <property name="geometry">
                    <rect>
-                    <x>370</x>
-                    <y>120</y>
+                    <x>120</x>
+                    <y>225</y>
                     <width>250</width>
                     <height>20</height>
                    </rect>
@@ -2794,56 +2794,13 @@ color: black;
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                 <widget class="QLineEdit" name="lineEdit_InnerT">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="geometry">
-                   <rect>
-                    <x>370</x>
-                    <y>175</y>
-                    <width>250</width>
-                    <height>20</height>
-                   </rect>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-color: #ffffff;
-border: 0px;
-font: 10pt;
-color: black;
-</string>
-                  </property>
-                  <property name="text">
-                   <string>0 cm</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                  </property>
-                 </widget>
-                 <widget class="QLabel" name="label_25">
-                  <property name="geometry">
-                   <rect>
-                    <x>350</x>
-                    <y>150</y>
-                    <width>300</width>
-                    <height>20</height>
-                   </rect>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">font: bold 10pt;
-color: black;</string>
-                  </property>
-                  <property name="text">
-                   <string>Inner Diameter t:</string>
                   </property>
                  </widget>
                  <widget class="QLabel" name="label_26">
                   <property name="geometry">
                    <rect>
-                    <x>350</x>
-                    <y>95</y>
+                    <x>100</x>
+                    <y>200</y>
                     <width>300</width>
                     <height>20</height>
                    </rect>
@@ -2853,7 +2810,7 @@ color: black;</string>
 color: black;</string>
                   </property>
                   <property name="text">
-                   <string>Outer Diameter t:</string>
+                   <string>Average Thickness (t):</string>
                   </property>
                  </widget>
                  <zorder>label_31</zorder>
@@ -2874,9 +2831,7 @@ color: black;</string>
                  <zorder>lineEdit_centroid_y</zorder>
                  <zorder>label_24</zorder>
                  <zorder>lineEdit_productOfInertia</zorder>
-                 <zorder>lineEdit_OuterT</zorder>
-                 <zorder>lineEdit_InnerT</zorder>
-                 <zorder>label_25</zorder>
+                 <zorder>lineEdit_AverageT</zorder>
                  <zorder>label_26</zorder>
                 </widget>
                </widget>

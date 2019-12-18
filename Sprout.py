@@ -541,15 +541,14 @@ class SproutUI(QtWidgets.QMainWindow):
         self.lineEdit_area.setText(str("{:.4f}".format(self.measurement_data[0])) + " " + in_data['units'] + "^2")
         self.lineEdit_avgOuterDiameter.setText(str("{:.4f}".format(self.measurement_data[1])) + " " + in_data['units'])
         self.lineEdit_avgInnerDiameter.setText(str("{:.4f}".format(self.measurement_data[2])) + " " + in_data['units'])
-        self.lineEdit_OuterT.setText(str("{:.4f}".format(self.measurement_data[8])) + " " + in_data['units'])
-        self.lineEdit_InnerT.setText(str("{:.4f}".format(self.measurement_data[9])) + " " + in_data['units'])
-        self.lineEdit_centroid_x.setText(str("{:.4f}".format(self.measurement_data[3])) + " " + in_data['units'])
-        self.lineEdit_centroid_y.setText(str("{:.4f}".format(self.measurement_data[4])) + " " + in_data['units'])
-        self.lineEdit_momentOfInertia_x.setText(str("{:.4f}".format(self.measurement_data[5])) + " " +
+        self.lineEdit_AverageT.setText(str("{:.4f}".format(self.measurement_data[3])) + " " + in_data['units'])
+        self.lineEdit_centroid_x.setText(str("{:.4f}".format(self.measurement_data[4])) + " " + in_data['units'])
+        self.lineEdit_centroid_y.setText(str("{:.4f}".format(self.measurement_data[5])) + " " + in_data['units'])
+        self.lineEdit_momentOfInertia_x.setText(str("{:.4f}".format(self.measurement_data[6])) + " " +
                                                 in_data['units'] + "^4")
-        self.lineEdit_momentOfInertia_y.setText(str("{:.4f}".format(self.measurement_data[6])) + " " +
+        self.lineEdit_momentOfInertia_y.setText(str("{:.4f}".format(self.measurement_data[7])) + " " +
                                                 in_data['units'] + "^4")
-        self.lineEdit_productOfInertia.setText(str("{:.4f}".format(self.measurement_data[7])) + " " +
+        self.lineEdit_productOfInertia.setText(str("{:.4f}".format(self.measurement_data[8])) + " " +
                                                (in_data['units']) + "^4")
 
     def is_int_inbound(self, ui_in: str, lower: int, upper: int, ui_in_name: str = None):
@@ -667,7 +666,8 @@ class SaveWindow(QtWidgets.QMainWindow):
                 if self.checkBox_data.isChecked():
                     DM.save_fiber_density_csv(save_file_name, save_folder_file_path)
                     DM.save_dimensional_measurements_csv(save_file_name, save_folder_file_path, in_data['units'])
-                    DM.save_pixel_table(save_file_name, save_folder_file_path)
+                    if in_data['pixelMap'] is True:
+                        DM.save_pixel_table(save_file_name, save_folder_file_path)
 
                 # Close save window
                 self.close()

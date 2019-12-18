@@ -170,15 +170,13 @@ def save_dimensional_measurements_csv(name, path, units):
     area = 'Area ' + '(' + units + '^2' + ')'
     outer_diameter = 'Outer Diameter ' + '(' + units + ')'
     inner_diameter = 'Inner Diameter ' + '(' + units + ')'
+    bamboo_t = 'Thickness (t)' + '(' + units + ')'
     x_centroid = 'X Centroid ' + '(' + units + ')'
     y_centroid = 'Y Centroid ' + '(' + units + ')'
     x_moment = 'X Moment of Inertia ' + '(' + units + '^4' + ')'
     y_moment = 'Y Moment of Inertia ' + '(' + units + '^4' + ')'
     product_inertia = 'Product of Inertia ' + '(' + units + '^4' + ')'
-    outer_diam_t = 'Outer diam. t ' + '(' + units + ')'
-    inner_diam_t = 'Inner diam. t ' + '(' + units + ')'
-    column_titles = [area, outer_diameter, inner_diameter, x_centroid, y_centroid, x_moment, y_moment, product_inertia,
-                     outer_diam_t, inner_diam_t]
+    column_titles = [area, outer_diameter, inner_diameter, bamboo_t, x_centroid, y_centroid, x_moment, y_moment, product_inertia]
     dimension_new = []
     for index in range(len(dimensional_measurements_og)):
         temporary = [column_titles[index], dimensional_measurements_og[index]]
@@ -218,11 +216,12 @@ def save_diameter_csv(path, units, file_name):
     # Initialize variables
     diameters = []
     for index in range(len(diameters_og[0])):
-        temp = [diameters_og[0][index], diameters_og[1][index]]
+        temp = [diameters_og[0][index], diameters_og[1][index], diameters_og[2][index]]
         diameters.append(temp)
     outer_diameter = 'Outer Diameter ' + '(' + units + ')'
     inner_diameter = 'Inner Diameter ' + '(' + units + ')'
-    column_titles = ['Measurement', outer_diameter, inner_diameter]
+    thickness = 'Thickness (t) ' + '(' + units + ')'
+    column_titles = ['Measurement', outer_diameter, inner_diameter, thickness]
     counter_diameter = 1
     number_rows = len(diameters)
 
@@ -411,7 +410,7 @@ def save_pixel_table(name, path):
 
     # Initialize variables
     pixel_map = copy.deepcopy(pixel_list_og)
-    column_titles = ['x', 'y', 'x dist.', 'y dist.', 'Fiber?']
+    column_titles = ['X', 'Y', 'X dist. from Centroid', 'Y dist. from Centroid', 'Fiber?']
 
     # Create csv and save to local file system
     with open(file_path, 'w', encoding='utf-8', newline='') as f:

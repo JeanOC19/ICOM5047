@@ -136,7 +136,7 @@ def validate_dimension_list(list):
     measurements = len(list)
 
     # If length of list is not 8 raise an exception, since the amount of measurements is incorrect
-    if measurements != 10:
+    if measurements != 9:
         raise InvalidInput('Exception: number of elements in the list is incorrect')
 
 
@@ -153,7 +153,7 @@ def validate_diameter_list(list):
 
     # If number of columns is not 2 raise an exception since there should be a column for inner diameters
     # and a second one for outer diameters
-    if columns != 2:
+    if columns != 3:
         raise InvalidInput('Exception: number of columns in the list is incorrect')
     rows = len(list[0])
 

@@ -148,6 +148,7 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         x2, y2, w2, h2 = cv.boundingRect(contours[second_largest_index])
         outer_diameter_measurements = [w, h]
         inner_diameter_measurements = [w2, h2]
+        bamboo_thickness = [(w - w2)/2, (h - h2)/2]
         pre_rotated_image = bounded_filled_image.copy()
 
         # Calculate the degrees between each measurement
@@ -170,6 +171,10 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
             inner_diameter_measurements.append(w2)
             inner_diameter_measurements.append(h2)
 
+            # Calculate thickness of each measurement
+            bamboo_thickness.append((outer_diameter_measurements[-1] - inner_diameter_measurements[-1])/2)
+            bamboo_thickness.append((outer_diameter_measurements[-2] - inner_diameter_measurements[-2])/2)
+
         # Check if has an interrupt request (Stop Button Interrupt)
         if t is not None and t.isInterruptionRequested():
             return
@@ -181,12 +186,12 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         # Convert the radial measurements to user input units
         outer_diameter_measurements = list(map(unit_converter(), outer_diameter_measurements))
         inner_diameter_measurements = list(map(unit_converter(), inner_diameter_measurements))
-        t_outer_diam = (max(outer_diameter_measurements) - min(outer_diameter_measurements)) / 2
-        t_inner_diam = (max(inner_diameter_measurements) - min(inner_diameter_measurements)) / 2
+        bamboo_thickness = list(map(unit_converter(), bamboo_thickness))
 
         # Calculate the average inner and outer diameters
         meas_outer_diameter = sum(outer_diameter_measurements) / len(outer_diameter_measurements)
         meas_inner_diameter = sum(inner_diameter_measurements) / len(inner_diameter_measurements)
+        meas_thickness = sum(bamboo_thickness) / len(bamboo_thickness)
 
         # Find the statistics of the filled ring and convert the area to specified units
         output = cv.connectedComponentsWithStats(bounded_filled_image, 4, cv.CV_32S)
@@ -221,10 +226,10 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
         y_moment = (M['m02'] - centroid_coordinates[1] * M['m01']) * ((units_multiplier / image_dpi) ** 4) * 1.001
         moment_product = (M['m11'] - centroid_coordinates[0] * M['m01']) * ((units_multiplier / image_dpi) ** 4)
 
-        return bounded_image, binarized_bounded_image, [meas_area, meas_outer_diameter, meas_inner_diameter,
+        return bounded_image, binarized_bounded_image, [meas_area, meas_outer_diameter, meas_inner_diameter, meas_thickness,
                                                         meas_centroid[0], meas_centroid[1], x_moment, y_moment,
-                                                        moment_product, t_outer_diam, t_inner_diam], \
-            [outer_diameter_measurements, inner_diameter_measurements]
+                                                        moment_product], \
+               [outer_diameter_measurements, inner_diameter_measurements, bamboo_thickness]
 
     # Validate inputs
     assert image_path is not None, "Image path must be given as input."
@@ -299,6 +304,6 @@ def pre_process_image(num_of_measurements: int, image_dpi: int, units: str, imag
     if TESTING:
         return binarized_image, image, measurements_list[0], measurements_list[1], measurements_list[2], \
                measurements_list[3], measurements_list[4], measurements_list[5], measurements_list[6], \
-               measurements_list[7], diameters_list[0], diameters_list[1]
+               measurements_list[7], measurements_list[8], diameters_list[0], diameters_list[1]
     else:
         return binarized_image, image
