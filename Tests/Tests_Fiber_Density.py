@@ -146,6 +146,27 @@ class TestFiberDensity(unittest.TestCase):
         self.assertTrue(wedge_average11 == fiber_density_with_average[3][10],
                         "Calculated average does not match the expected one")
 
+    def test_fiber_density_w_grid(self):
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'square.bmp'))
+        bw_image = cv2.imread(os.path.join(image_path, 'square.bmp'))
+        bin_image = Re.binarize_image(bw_image)
+        number_columns = 12
+        number_rows = 5
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
+        os.chdir(int_path)
+
+        # Run Region Extraction Module
+        dictionary = Re.grid_region_extraction(rgb_image, bin_image, number_columns, number_rows)
+
+        # Run Fiber Density Calculation Module
+        fiber_density_sprout = Fdc.fiber_density_calculation(number_rows, number_columns, dictionary)
+        fd_with_average = Fdc.fiber_density_averages(fiber_density_sprout)
+
+        print(fiber_density_sprout)
+        print(fd_with_average)
+
+        pass
 
 if __name__ == '__main__':
     unittest.main()

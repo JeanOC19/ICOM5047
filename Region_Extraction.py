@@ -495,3 +495,149 @@ def region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_i
     print("Stored Regions at: " + regions_path)
 
     return regions_list
+
+
+def grid_extract_rectangle(img, img_mask):
+    """
+    Given a bounded wedge, extract its largest inscribed rectangle.
+    :param img: image of bounded wedge
+    :param img_mask: image mask of a bounded wedge.
+    :return: Image containing the largest inscribed rectangle of the wedge
+    """
+
+    # Get coordinates of the largest inscribed rectangle a given wedge.
+    coord = find_max_ins_rect(img_mask)
+
+    if len(coord) == 0:
+        return img
+
+    # Extract values from coord and calculate area_x and area_y
+    x, y, w, h = coord[0], coord[1], coord[2], coord[3]
+
+    # img2 = img.copy()
+    # cv2.rectangle(img2, (x, y), (w, h), (0, 255, 0), 2)
+    # show_image(img2)
+
+    # With coordinates of rectangle obtain the rectangle from the wedge.
+    img = img[y:h, x: w]
+
+    # show_image(img)
+
+    # Binarize image
+    img = binarize_image(img)
+
+    # show_image(img)
+
+    # Rotate image 90 degrees and return
+    return img
+
+
+def grid_region_extraction(bounded_input_image: np.ndarray, bounded_binarized_input_image: np.ndarray,
+                      number_columns: int, number_rows: int, t=None):
+    """
+    Extract regions from an input bamboo cross-section image.
+    :param bounded_input_image: Input image bounded
+    :param bounded_binarized_input_image: Input image binarized and bounded
+    :param number_columns: Integer with the number of wedges, specified by the user
+    :param number_rows: Integer with the number of rings, specified by the user
+    :param t: Thread object. Default is None
+    :return: None
+    """
+
+    # Validate Inputs
+    assert type(number_columns) is int, "Number of columns has to be int."
+    assert type(number_rows) is int, "Number of rings has to be int."
+    assert 60 >= number_columns >= 12, "Number of columns should be between 12 and 400"
+    assert (number_columns % 4) == 0, "Number of columns mus be divisible by 4"
+    assert 25 >= number_rows >= 3, "Number of columns should be between 1 and 25"
+    assert isinstance(bounded_input_image, np.ndarray), "bounded_input_image is wrong type"
+    assert isinstance(bounded_binarized_input_image, np.ndarray), "bounded_binarized_input_image is wrong type"
+
+    # Initialize variables
+    current_angle = 0
+    regions_path = get_regions_path_name()
+    wedge_number = 1
+    clear_regions_dict()
+
+    # Name of the path where regions will be stored.
+    set_full_regions_path(os.getcwd())
+    full_path = get_full_regions_path()
+
+    # Check if path exists, if not then create the path
+    if not os.path.exists(full_path):
+        print("Didn't found directory: %s. Proceeding to create directory." % full_path)
+        try:
+            os.mkdir(regions_path)
+        except OSError:
+            raise Exception("Creation of the directory %s failed" % regions_path)
+        else:
+            print("Successfully created the directory: %s " % regions_path)
+
+    # Check if path is empty , if not then delete contents
+    elif os.listdir(full_path):
+        print("Found directory: %s with content. Proceeding to delete contents" % full_path)
+        try:
+            shutil.rmtree(full_path)
+            os.mkdir(regions_path)
+        except OSError:
+            raise Exception("Could not delete contents of directory: %s" % full_path)
+        else:
+            print("Successfully deleted contents of the directory: %s " % full_path)
+
+    # Calculate the number of iterations necesary to generate filled image
+    n_iterations = int((30 / 3600) * bounded_binarized_input_image.shape[1] * 0.60)
+
+    # Create a mask of the extracted wedge
+    bounded_binarized_input_image = cv2.erode(cv2.dilate(bounded_binarized_input_image, None, iterations=n_iterations),
+                                              None, iterations=n_iterations + 2)
+
+    # Extract image coordinates
+    image_height, image_width = bounded_binarized_input_image.shape[0], bounded_binarized_input_image.shape[1]
+    current_height, current_width = 0, 0
+    block_height = int(image_height/number_rows)
+    block_width = int(image_width/number_columns)
+
+    for row_num in range(number_rows):
+        for col_num in range(number_columns):
+
+            # Check if has an interrupt request (Stop Button Interrupt)
+            if t is not None and t.isInterruptionRequested():
+                return
+
+            rgb_block = bounded_input_image[current_height:(current_height+block_height),
+                        current_width:(current_width+block_width)]
+            bin_block = bounded_binarized_input_image[current_height:(current_height+block_height),
+                        current_width:(current_width+block_width)]
+
+            try:
+                # Extract the largest inscribed rectangle from block.
+                region = grid_extract_rectangle(rgb_block, bin_block)
+            except Exception:
+                raise Exception("Unable to extract largest inscribed rectangle from image.")
+
+            # Generate region name
+            region_name = "R" + str(row_num + 1) + "W" + str(col_num)
+            # Name of complete path with regions_path
+            full_path = get_full_regions_path()
+            # Defining type of image that will be used to store
+            image_type = 'jpg'
+            # Name of file that will be used to store region
+            file_name = region_name + "." + str(image_type)
+
+            # Store region image
+            try:
+                cv2.imwrite(os.path.join(full_path, str(file_name)), region)
+            except OSError:
+                raise Exception("Storage of %s failed on path %s" % (file_name, full_path))
+            else:
+                print("Stored: ", os.path.join(full_path, str(file_name)))
+
+            # Store region on dictionary
+            append_regions_dict(region_name, region)
+
+            current_width += block_width
+
+        current_width = 0
+        current_height += block_height
+
+    return regions_list

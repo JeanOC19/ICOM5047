@@ -113,6 +113,19 @@ class MyTestCase(unittest.TestCase):
         except Exception:
             raise Exception("Failed test at: Number of Wedges(%d), Number of Rings(%d)" % (12, 25))
 
+    def test_grid_region_extraction(self):
+        image_path = os.path.join(os.path.dirname(os.getcwd()), 'Images')
+        rgb_image = cv2.imread(os.path.join(image_path, 'square.bmp'))
+        bw_image = cv2.imread(os.path.join(image_path, 'square.bmp'))
+        bin_image = re.binarize_image(bw_image)
+        int_path = os.path.join(os.path.expanduser("~"), "Desktop", "Sprout_Images")
+        os.chdir(int_path)
+
+        try:
+            re.grid_region_extraction(rgb_image, bin_image, 12, 12)
+        except Exception:
+            raise Exception("Test Failed")
+
 
 def calculate_error(measure, actual):
     return (abs(actual - measure)/actual) * 100
